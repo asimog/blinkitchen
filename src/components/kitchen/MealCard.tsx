@@ -16,11 +16,14 @@ const COMPLEXITY_LABEL = {
 export function MealCard({
   recommendation,
   planned,
+  planBadge = "In this week's plan",
   catalog,
   action,
 }: {
   recommendation: MealRecommendation;
   planned?: boolean;
+  /** Label for the planned badge; the caller distinguishes suggested from chosen. */
+  planBadge?: string;
   catalog: Catalog;
   /** Optional interactive control (e.g. add to plan) rendered in the footer. */
   action?: ReactNode;
@@ -38,12 +41,7 @@ export function MealCard({
     <article className={`${styles.mealCard} ${planned ? styles.mealCardPlanned : ""}`}>
       <div className={styles.mealTop}>
         <h4 className={styles.mealName}>{recipe.name}</h4>
-        <span
-          className="pill pill-positive"
-          title="Deterministic fit score from pantry, cuisine, reuse, budget, convenience and use-soon signals"
-        >
-          {fit}% fit
-        </span>
+        <span className="pill pill-positive">{fit}% fit</span>
       </div>
 
       <div className={styles.mealBadges}>
@@ -51,7 +49,7 @@ export function MealCard({
         {recipe.discoveryLevel === "explore" ? (
           <span className="pill pill-accent">A little new</span>
         ) : null}
-        {planned ? <span className="pill pill-positive">In this week&apos;s plan</span> : null}
+        {planned ? <span className="pill pill-positive">{planBadge}</span> : null}
       </div>
 
       <div>
@@ -112,8 +110,8 @@ export function MealCard({
         <span>{COMPLEXITY_LABEL[recipe.preparationComplexity]}</span>
         <span aria-hidden>·</span>
         <span>
-          {Math.round(factors.pantryFit * 100)} pantry / {Math.round(factors.cuisineFit * 100)}{" "}
-          cuisine / {Math.round(factors.ingredientReuse * 100)} reuse
+          fit: pantry {Math.round(factors.pantryFit * 100)} · cuisine{" "}
+          {Math.round(factors.cuisineFit * 100)} · reuse {Math.round(factors.ingredientReuse * 100)}
         </span>
       </div>
       {action ? <div className={styles.actionRow}>{action}</div> : null}

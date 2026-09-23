@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ShoppingBasket, UtensilsCrossed } from "lucide-react";
+import { UtensilsCrossed } from "lucide-react";
 import { loadCatalog } from "@/catalog/load";
 import { locationById, recipeRequirements } from "@/catalog/grocery-graph";
 import { roundQuantity } from "@/domain/units";
@@ -21,6 +21,7 @@ import { DecisionChips } from "@/components/kitchen/DecisionChips";
 import { UsageRecorder } from "@/components/kitchen/UsageRecorder";
 import { WeekChecklist, buildChecklistState } from "@/components/kitchen/WeekChecklist";
 import { WeekView } from "@/components/kitchen/WeekView";
+import { kitchenErrorCopy } from "@/components/kitchen/error-copy";
 import styles from "@/components/kitchen/kitchen.module.css";
 
 /**
@@ -36,12 +37,24 @@ export function KitchenJourney() {
   const [storageWarning, setStorageWarning] = useState<string | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
 
-  const kitchen = edited ?? stored;
+  const kitchen = edited ?? (stored.status === "ready" ? stored.kitchen : null);
 
   const intelligence = useMemo(
     () => (kitchen ? buildWeekIntelligence(kitchen, catalog) : null),
     [kitchen, catalog],
   );
+
+  if (stored.status === "loading") {
+    return (
+      <div className="container" aria-busy="true">
+        <section style={{ padding: "2.5rem 0", maxWidth: "60ch" }}>
+          <p className="eyebrow">My kitchen</p>
+          <h1 style={{ fontSize: "1.9rem" }}>Loading your kitchen…</h1>
+          <p className="muted">Reading the household stored in this browser.</p>
+        </section>
+      </div>
+    );
+  }
 
   if (!kitchen || !intelligence) {
     return (
@@ -88,11 +101,7 @@ export function KitchenJourney() {
     }
 
     if (failure) {
-      setError(
-        failure.code === "insufficient_stock"
-          ? `${failure.message}. Receive the basket first, or record smaller quantities.`
-          : `${failure.code}: ${failure.message}`,
-      );
+      setError(kitchenErrorCopy(failure));
 
       return null;
     }
@@ -260,7 +269,7 @@ export function KitchenJourney() {
       ) : null}
 
       {storageWarning ? (
-        <p role="status" className={styles.error}>
+        <p role="alert" className={styles.error}>
           {storageWarning}
         </p>
       ) : null}
@@ -289,6 +298,17 @@ export function KitchenJourney() {
           </button>
         }
         mealsHeading="What you could cook"
+        mealsHeaderAction={
+          selectedIds.length > 0 && !complete ? (
+            <button
+              type="button"
+              className="btn btn-ghost btn-small"
+              onClick={() => applyAll([{ type: "select_meals", recipeIds: [] }])}
+            >
+              <UtensilsCrossed size={14} aria-hidden /> Use suggested plan
+            </button>
+          ) : null
+        }
         renderMealAction={(recipeId, planned) => (
           <button
             type="button"
@@ -296,7 +316,11 @@ export function KitchenJourney() {
             onClick={() => toggleMeal(recipeId)}
             disabled={complete}
           >
-            {planned ? "Remove from plan" : "Add to plan"}
+            {planned
+              ? intelligence.planSource === "suggested"
+                ? "Swap out"
+                : "Remove from plan"
+              : "Add to plan"}
           </button>
         )}
         substitutionDecisions={decisions}
@@ -329,35 +353,6 @@ export function KitchenJourney() {
           </>
         }
       />
-
-      <section className={styles.panel} aria-label="Plan controls">
-        <div className={styles.panelHeader}>
-          <h3 className={styles.panelTitle}>Plan shortcuts</h3>
-          <p className={styles.panelHint}>
-            {selectedIds.length > 0
-              ? `${selectedIds.length} meals selected`
-              : "the suggested plan is shown until you pick meals"}
-          </p>
-        </div>
-        <div className={styles.actionRow}>
-          <button
-            type="button"
-            className="btn btn-secondary btn-small"
-            onClick={() => applyAll([{ type: "select_meals", recipeIds: [] }])}
-            disabled={selectedIds.length === 0 || complete}
-          >
-            <UtensilsCrossed size={14} aria-hidden /> Use suggested plan again
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary btn-small"
-            onClick={receiveBasket}
-            disabled={complete || checklist.basketReceived}
-          >
-            <ShoppingBasket size={14} aria-hidden /> Receive basket
-          </button>
-        </div>
-      </section>
     </div>
   );
 }

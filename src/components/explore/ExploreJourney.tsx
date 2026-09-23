@@ -31,6 +31,7 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
 
   const [index, setIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [confirmReset, setConfirmReset] = useState(false);
 
   const kitchen = states[Math.min(index, Math.max(0, states.length - 1))];
 
@@ -103,7 +104,14 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
   };
 
   const reset = () => {
+    if (!confirmReset) {
+      setConfirmReset(true);
+
+      return;
+    }
+
     setError(null);
+    setConfirmReset(false);
     setStates([buildFixtureKitchen(fixture)]);
     setIndex(0);
   };
@@ -133,7 +141,7 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
             key={week}
             type="button"
             className={`${styles.weekChip} ${kitchen.week === week ? styles.weekChipActive : ""}`}
-            aria-current={kitchen.week === week ? "true" : undefined}
+            aria-current={kitchen.week === week ? "step" : undefined}
             onClick={() => goToWeek(week)}
           >
             W{week}
@@ -162,8 +170,14 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
             <button type="button" className="btn btn-secondary btn-small" onClick={replayToWeek8}>
               <ChevronsRight size={14} aria-hidden /> Replay to Week 8
             </button>
-            <button type="button" className="btn btn-ghost btn-small" onClick={reset}>
-              <RotateCcw size={14} aria-hidden /> Reset
+            <button
+              type="button"
+              className={`btn btn-small ${confirmReset ? "btn-primary" : "btn-ghost"}`}
+              onClick={reset}
+              onBlur={() => setConfirmReset(false)}
+            >
+              <RotateCcw size={14} aria-hidden />{" "}
+              {confirmReset ? "Tap again to reset this replay" : "Reset"}
             </button>
           </>
         }

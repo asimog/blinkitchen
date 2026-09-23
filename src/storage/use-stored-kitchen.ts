@@ -8,14 +8,22 @@ import type { KitchenState } from "@/domain/kitchen/types";
 /**
  * Read the browser-stored household without hydration mismatches.
  *
- * useSyncExternalStore is the React-sanctioned way to read an external store:
- * the server snapshot is null, and the client snapshot is cached by raw value
- * so the returned reference stays stable between renders.
+ * `useSyncExternalStore` uses the server snapshot for the hydration render, so
+ * the server snapshot is a neutral "loading" state rather than "no household":
+ * a returning household must never see the empty state flash before its
+ * kitchen paints. The client snapshot is cached by raw value so the returned
+ * reference stays stable between renders.
  */
+
+export type StoredKitchen =
+  | { status: "loading" }
+  | { status: "ready"; kitchen: KitchenState | null };
+
+const LOADING: StoredKitchen = { status: "loading" };
 
 let cachedRaw: string | null = null;
 
-let cachedKitchen: KitchenState | null = null;
+let cachedSnapshot: StoredKitchen = LOADING;
 
 function browserStorage(): StorageLike | null {
   if (typeof window === "undefined") return null;
@@ -39,19 +47,20 @@ function readRaw(): string | null {
   }
 }
 
-function getSnapshot(): KitchenState | null {
+function getSnapshot(): StoredKitchen {
   const raw = readRaw();
 
-  if (raw !== cachedRaw) {
+  if (raw !== cachedRaw || cachedSnapshot.status === "loading") {
     cachedRaw = raw;
-    cachedKitchen = loadKitchen();
+    const kitchen = loadKitchen();
+    cachedSnapshot = { status: "ready", kitchen };
   }
 
-  return cachedKitchen;
+  return cachedSnapshot;
 }
 
-function getServerSnapshot(): KitchenState | null {
-  return null;
+function getServerSnapshot(): StoredKitchen {
+  return LOADING;
 }
 
 const subscribe = () => () => {
@@ -59,6 +68,6 @@ const subscribe = () => () => {
   // re-render their components; no external subscription is needed.
 };
 
-export function useStoredKitchen(): KitchenState | null {
+export function useStoredKitchen(): StoredKitchen {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

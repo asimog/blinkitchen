@@ -42,7 +42,7 @@ test.describe("home to kitchen", () => {
       };
     });
     await page.getByRole("button", { name: /Receive basket/i }).first().click();
-    await expect(page.getByRole("status")).toContainText(/refused to save/i);
+    await expect(page.getByRole("alert").filter({ hasText: /refused to save/i })).toBeVisible();
   });
 });
 
@@ -72,14 +72,63 @@ test.describe("explore journeys", () => {
   });
 });
 
+test.describe("shell, metadata and focus", () => {
+  test("serves a neutral kitchen shell before hydration", async ({ request }) => {
+    const response = await request.get("/kitchen");
+    const html = await response.text();
+    expect(html).toContain("Loading your kitchen");
+    expect(html).not.toContain("No household in this browser yet");
+  });
+
+  test("gives every route its own title and a styled 404", async ({ page }) => {
+    await page.goto("/blinkit");
+    await expect(page).toHaveTitle(/Blinkit lens · Blinkitchen/);
+    await page.goto("/explore/value_optimizer");
+    await expect(page).toHaveTitle(/The Sharmas — Value Optimizer · Blinkitchen/);
+    await page.goto("/explore/does-not-exist");
+    await expect(page.getByRole("heading", { name: /isn't here/i })).toBeVisible();
+  });
+
+  test("focus ring is high contrast and week changes reset the viewport", async ({ page }) => {
+    await page.goto("/explore/pantry_planner");
+    await expect(page.getByText("Week 1 of 8", { exact: true })).toBeVisible();
+
+    const ring = await page.getByRole("button", { name: /Advance one week/i }).evaluate((el) => {
+      el.focus();
+
+      return getComputedStyle(el).outlineColor;
+    });
+
+    expect(ring).toBe("rgb(27, 26, 20)");
+
+    await page.evaluate(() => window.scrollTo(0, 2600));
+    await page.getByRole("button", { name: "W5", exact: true }).click();
+    await expect(page.getByText("Week 5 of 8", { exact: true })).toBeVisible();
+
+    const weekHeaderInView = await page
+      .getByText("Week 5 of 8", { exact: true })
+      .evaluate((el) => {
+        const rect = el.getBoundingClientRect();
+
+        return rect.top >= 0 && rect.top < window.innerHeight;
+      });
+
+    expect(weekHeaderInView).toBe(true);
+
+    const announcement = page.locator("p[role='status']").first();
+    await expect(announcement).toContainText(/Week 5 of 8/);
+  });
+});
+
 test.describe("blinkit lens", () => {
   test("loads cohort insights and labels them as simulated", async ({ page }) => {
     await page.goto("/blinkit");
     await expect(page.getByText(/SIMULATED DATA/)).toBeVisible();
-    await expect(page.getByRole("table").first()).toBeVisible();
+    const archetypeTable = page.locator("table").first();
+    await expect(archetypeTable).toBeVisible();
 
     for (const household of ["The Mehtas", "The Khannas", "The Sharmas", "The Iyers"]) {
-      await expect(page.getByText(household)).toBeVisible();
+      await expect(archetypeTable.getByText(household, { exact: true })).toBeVisible();
     }
 
     await expect(page.getByLabel("Strategic read-out")).toBeVisible();

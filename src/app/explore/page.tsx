@@ -1,10 +1,17 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowRight, MapPin, Users, Wallet } from "lucide-react";
 import { loadCatalog } from "@/catalog/load";
 import { locationById } from "@/catalog/grocery-graph";
 import { humanizeId } from "@/intelligence";
 import { HOUSEHOLD_FIXTURES } from "@/simulation/fixtures";
 import styles from "@/components/explore/explore.module.css";
+
+export const metadata: Metadata = {
+  title: "Explore four households",
+  description:
+    "Four simulated kitchens replay Weeks 1–8 deterministically: pantry reuse, ingredient chaining, swaps, replenishment and learning.",
+};
 
 export default function ExplorePage() {
   const catalog = loadCatalog();

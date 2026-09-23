@@ -66,6 +66,61 @@
   gap: 0.4rem;
 }
 
+/* Archetype comparison: table on desktop, stacked cards on small screens */
+
+.archetypeTable {
+  display: block;
+}
+
+.archetypeCards {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.75rem;
+}
+
+.archetypeCard {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+}
+
+.archetypeCard h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.archetypeMetrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+  margin: 0.7rem 0 0;
+}
+
+.archetypeMetrics dt {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.archetypeMetrics dd {
+  margin: 0.1rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+  .archetypeTable {
+    display: none;
+  }
+
+  .archetypeCards {
+    display: grid;
+  }
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);

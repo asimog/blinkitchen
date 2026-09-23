@@ -7,12 +7,36 @@ import { formatRupees } from "@/domain/units";
 import type { KitchenState } from "@/domain/kitchen/types";
 import { humanizeId } from "@/intelligence";
 import { buildBlinkitInsights } from "@/insights/blinkit";
+import type { ArchetypeSummary } from "@/insights/blinkit";
 import { buildFixtureKitchen, HOUSEHOLD_FIXTURES } from "@/simulation/fixtures";
 import { householdPolicy } from "@/simulation/policies";
 import { simulateJourney } from "@/simulation/simulate";
 import { MetricCard } from "@/components/kitchen/MetricCard";
 import kitchenStyles from "@/components/kitchen/kitchen.module.css";
 import styles from "@/components/blinkit/blinkit.module.css";
+
+/** Column order shared by the desktop table and the mobile cards. */
+const ARCHETYPE_METRICS = [
+  "Meals cooked",
+  "Basket spend",
+  "Final coverage",
+  "Swaps accepted / rejected",
+  "Spoilage",
+  "Reuse chains",
+  "Avg prep",
+] as const;
+
+function archetypeValues(row: ArchetypeSummary): string[] {
+  return [
+    String(row.mealsCooked),
+    formatRupees(row.basketSpend),
+    `${Math.round(row.finalCoveragePercent)}%`,
+    `${row.acceptedSwaps} / ${row.rejectedSwaps}`,
+    String(row.spoilageEvents),
+    String(row.reuseChains),
+    `${row.avgPreparationMinutes} min`,
+  ];
+}
 
 /**
  * The Blinkit lens: cohort intelligence over the four simulated households.
@@ -88,41 +112,62 @@ export function BlinkitLens() {
             Same engine, different inputs · recorded facts through week 7, week 8 shown as planned
           </p>
         </div>
-        <div className={kitchenStyles.tableWrap}>
+        <div className={`${kitchenStyles.tableWrap} ${styles.archetypeTable}`}>
           <table className={styles.table}>
             <thead>
               <tr>
                 <th scope="col">Household</th>
-                <th scope="col">Meals cooked</th>
-                <th scope="col">Basket spend</th>
-                <th scope="col">Final coverage</th>
-                <th scope="col">Swaps ✓ / ✗</th>
-                <th scope="col">Spoilage</th>
-                <th scope="col">Reuse chains</th>
-                <th scope="col">Avg prep</th>
+                {ARCHETYPE_METRICS.map((label) => (
+                  <th scope="col" key={label}>
+                    {label}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {insights.archetypes.map((row) => (
-                <tr key={row.householdId}>
-                  <td>
-                    <strong>{row.householdName}</strong>
-                    <div className="small muted">{archetypeOf(row.householdId)}</div>
-                  </td>
-                  <td className={styles.numeric}>{row.mealsCooked}</td>
-                  <td className={styles.numeric}>{formatRupees(row.basketSpend)}</td>
-                  <td className={styles.numeric}>{Math.round(row.finalCoveragePercent)}%</td>
-                  <td className={styles.numeric}>
-                    {row.acceptedSwaps} / {row.rejectedSwaps}
-                  </td>
-                  <td className={styles.numeric}>{row.spoilageEvents}</td>
-                  <td className={styles.numeric}>{row.reuseChains}</td>
-                  <td className={styles.numeric}>{row.avgPreparationMinutes} min</td>
-                </tr>
-              ))}
+              {insights.archetypes.map((row) => {
+                const values = archetypeValues(row);
+
+                return (
+                  <tr key={row.householdId}>
+                    <td>
+                      <strong>{row.householdName}</strong>
+                      <div className="small muted">{archetypeOf(row.householdId)}</div>
+                    </td>
+                    {ARCHETYPE_METRICS.map((label, index) => (
+                      <td className={styles.numeric} key={label}>
+                        {values[index]}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
+
+        <ul className={styles.archetypeCards}>
+          {insights.archetypes.map((row) => {
+            const values = archetypeValues(row);
+
+            return (
+              <li key={row.householdId} className={styles.archetypeCard}>
+                <h3>{row.householdName}</h3>
+                <p className="small muted" style={{ margin: 0 }}>
+                  {archetypeOf(row.householdId)}
+                </p>
+                <dl className={styles.archetypeMetrics}>
+                  {ARCHETYPE_METRICS.map((label, index) => (
+                    <div key={label}>
+                      <dt>{label}</dt>
+                      <dd>{values[index]}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </li>
+            );
+          })}
+        </ul>
       </section>
 
       <div className={styles.grid}>

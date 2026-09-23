@@ -14,7 +14,7 @@ export function SubstitutionPanel({
   onDecision?: (substitutionId: string, accepted: boolean) => void;
 }) {
   return (
-    <section className={styles.panel} aria-label="Suggested substitutions">
+    <section className={styles.panel} aria-label="Suggested swaps">
       <div className={styles.panelHeader}>
         <h3 className={styles.panelTitle}>Suggested swaps</h3>
         <p className={styles.panelHint}>Explicit ingredient relationships — no guessing</p>

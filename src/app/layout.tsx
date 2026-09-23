@@ -3,9 +3,17 @@ import Link from "next/link";
 import "../styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "Blinkitchen — the kitchen, not just the cart",
+  title: {
+    default: "Blinkitchen — the kitchen, not just the cart",
+    template: "%s · Blinkitchen",
+  },
   description:
     "A prototype of a longitudinal household grocery intelligence layer. Household facts are truth; intelligence is derived.",
+  openGraph: {
+    title: "Blinkitchen",
+    description: "Your grocery app remembers the kitchen, not just the cart.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -66,7 +66,7 @@ export function LearningPanel({
 
           {substitutionMemory.length > 0 ? (
             <>
-              <p className={styles.signalGroupTitle}>Substitution memory</p>
+              <p className={styles.signalGroupTitle}>Swap memory</p>
               <ul className={styles.chipList}>
                 {substitutionMemory.map(([key, affinity]) => {
                   const [requested, substitute] = key.split("->");

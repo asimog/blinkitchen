@@ -45,8 +45,12 @@ export function UsageRecorder({
           The pantry is empty. Receive a basket or wait for the next week to build stock.
         </p>
       ) : (
-        <ul className={styles.usageList}>
-          {rows.map((item) => {
+        <details>
+          <summary className={styles.detailsToggle}>
+            Open the recorder ({rows.length} pantry {rows.length === 1 ? "item" : "items"})
+          </summary>
+          <ul className={`${styles.usageList} ${styles.detailsBody}`}>
+            {rows.map((item) => {
             const ingredient = ingredientById(catalog, item.ingredientId);
             const quantityValue = quantities[item.ingredientId] ?? "";
             const parsed = Number(quantityValue);
@@ -105,7 +109,8 @@ export function UsageRecorder({
               </li>
             );
           })}
-        </ul>
+          </ul>
+        </details>
       )}
     </section>
   );

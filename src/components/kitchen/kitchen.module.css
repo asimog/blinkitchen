@@ -40,6 +40,8 @@
 
 .pipActive {
   background: var(--accent);
+  height: 11px;
+  align-self: center;
 }
 
 .metrics {
@@ -595,10 +597,76 @@
 
 .usageInput {
   width: 90px;
+  min-height: 40px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   padding: 0.35rem 0.5rem;
   font: inherit;
+}
+
+/* Disclosure toggles (show all meals, usage recorder, scoring note) */
+
+.detailsToggle {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.detailsBody {
+  margin-top: 0.5rem;
+}
+
+.scoreNote {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.scoreNote ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.15rem;
+}
+
+/* Basket on small screens: compact stacked lines instead of a 6-column table */
+
+.basketMobile {
+  display: none;
+}
+
+.basketLine {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.basketLine:last-child {
+  border-bottom: none;
+}
+
+.basketLineTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.basketLineCost {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.basketLineMeta {
+  font-size: 0.82rem;
+  color: var(--muted);
 }
 
 /* Completion panel */
@@ -658,5 +726,11 @@
   }
   .signalRow {
     grid-template-columns: 90px 1fr 40px;
+  }
+  .tableWrap {
+    display: none;
+  }
+  .basketMobile {
+    display: block;
   }
 }

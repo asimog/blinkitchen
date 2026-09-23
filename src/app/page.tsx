@@ -32,7 +32,7 @@ export default function HomePage() {
       <section className="grid grid-4 home-pillars" aria-label="What Blinkitchen does">
         <div className="card">
           <ShoppingBasket size={20} aria-hidden className="pillar-icon" />
-          <h3>Know what&apos;s already home</h3>
+          <h2>Know what&apos;s already home</h2>
           <p className="small muted">
             Pantry coverage subtracts what the kitchen already owns before suggesting anything to
             buy.
@@ -40,14 +40,14 @@ export default function HomePage() {
         </div>
         <div className="card">
           <ChefHat size={20} aria-hidden className="pillar-icon" />
-          <h3>Plan across ingredients</h3>
+          <h2>Plan across ingredients</h2>
           <p className="small muted">
             Buy once, use across meals. Ingredient chaining shapes which dishes rank highest.
           </p>
         </div>
         <div className="card">
           <Sparkles size={20} aria-hidden className="pillar-icon" />
-          <h3>Learn what the household prefers</h3>
+          <h2>Learn what the household prefers</h2>
           <p className="small muted">
             Cuisine affinities, substitution decisions and waste facts change future
             recommendations.
@@ -55,7 +55,7 @@ export default function HomePage() {
         </div>
         <div className="card">
           <LineChart size={20} aria-hidden className="pillar-icon" />
-          <h3>Predict what comes next</h3>
+          <h2>Predict what comes next</h2>
           <p className="small muted">
             Replenishment prompts emerge from consumption history, not from guesswork.
           </p>
