@@ -12,9 +12,14 @@
  * - Quantities are rounded to 2 decimal places.
  */
 
+import { z } from "zod";
+
 export const UNITS = ["g", "kg", "ml", "l", "piece", "packet"] as const;
 
 export type Unit = (typeof UNITS)[number];
+
+/** Boundary parser for units; the single definition reused by every schema. */
+export const unitSchema = z.enum(UNITS);
 
 /** Canonical units: what quantities are normalized to for comparison. */
 export const CANONICAL_UNITS = ["g", "ml", "piece", "packet"] as const;
@@ -47,7 +52,7 @@ const CANONICAL_BY_UNIT: Record<Unit, CanonicalUnit> = {
 };
 
 export function isUnit(value: unknown): value is Unit {
-  return typeof value === "string" && (UNITS as readonly string[]).includes(value);
+  return unitSchema.safeParse(value).success;
 }
 
 export function dimensionOf(unit: Unit): UnitDimension {
@@ -80,7 +85,9 @@ export function normalizeQuantity(quantity: number, unit: Unit): Quantity {
   if (!Number.isFinite(quantity) || quantity < 0) {
     throw new RangeError(`Quantity must be a nonnegative finite number, got ${quantity}`);
   }
+
   const factor = unit === "kg" || unit === "l" ? 1000 : 1;
+
   return { quantity: roundQuantity(quantity * factor), unit: canonicalUnitOf(unit) };
 }
 
@@ -92,19 +99,24 @@ export function convertQuantity(quantity: number, from: Unit, to: Unit): number 
   if (!unitsCompatible(from, to)) return null;
   const normalized = normalizeQuantity(quantity, from);
   const targetFactor = to === "kg" || to === "l" ? 1000 : 1;
+
   return roundQuantity(normalized.quantity / targetFactor);
 }
 
 /** Human-readable quantity, e.g. "180 g", "1.5 kg", "2 piece". */
 export function formatQuantity(quantity: number, unit: CanonicalUnit): string {
   const rounded = roundQuantity(quantity);
+
   if (unit === "g" && rounded >= 1000) {
     return `${roundQuantity(rounded / 1000)} kg`;
   }
+
   if (unit === "ml" && rounded >= 1000) {
     return `${roundQuantity(rounded / 1000)} l`;
   }
+
   const label = rounded === 1 ? unit : `${unit}`;
+
   return `${rounded} ${label}`;
 }
 

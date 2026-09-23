@@ -6,9 +6,9 @@ test.describe("mobile smoke", () => {
     await expect(page.getByRole("heading", { name: /remembers the kitchen/i })).toBeVisible();
 
     await page.goto("/explore/value_optimizer");
-    await expect(page.getByText("Week 1 of 8")).toBeVisible();
+    await expect(page.getByText("Week 1 of 8", { exact: true })).toBeVisible();
     await page.getByRole("button", { name: /Advance one week/i }).click();
-    await expect(page.getByText("Week 2 of 8")).toBeVisible();
+    await expect(page.getByText("Week 2 of 8", { exact: true })).toBeVisible();
 
     await page.goto("/blinkit");
     await expect(page.getByText(/SIMULATED DATA/)).toBeVisible();

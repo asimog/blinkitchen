@@ -55,6 +55,7 @@ describe("kitchenStateSchema", () => {
       { kitchenType: "fresh", starterIngredientIds: ["rice", "oil"] },
       [],
     );
+
     expect(kitchenStateSchema.safeParse(freshEmpty).success).toBe(true);
 
     const existingWithStarters = makeKitchen({}, { kitchenType: "existing", starterIngredientIds: ["rice"] });

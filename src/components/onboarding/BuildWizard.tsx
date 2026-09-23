@@ -33,6 +33,13 @@ const DIET_OPTIONS: { id: DietPreference; label: string }[] = [
 
 const STEPS = ["Household", "Food preferences", "Kitchen & pantry", "Cooking routine", "Review"] as const;
 
+/** Numeric 0..1 preference fields, keyed for the routine sliders. */
+type PreferenceKey =
+  | "conveniencePreference"
+  | "priceSensitivity"
+  | "explorationPreference"
+  | "planningPreference";
+
 type Draft = {
   displayName: string;
   memberCount: number;
@@ -54,7 +61,9 @@ type Draft = {
 
 function level(value: number): string {
   if (value < 0.34) return "Low";
+
   if (value < 0.67) return "Medium";
+
   return "High";
 }
 
@@ -64,6 +73,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
   const cuisines = useMemo(() => listCuisines(catalog), [catalog]);
   const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+
   const [draft, setDraft] = useState<Draft>({
     displayName: "",
     memberCount: 4,
@@ -84,6 +94,14 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
   });
 
   const update = (patch: Partial<Draft>) => setDraft((current) => ({ ...current, ...patch }));
+
+  const updatePreference = (key: PreferenceKey, value: number) =>
+    setDraft((current) => {
+      const next = { ...current };
+      next[key] = value;
+
+      return next;
+    });
 
   const toggle = (list: string[], value: string): string[] =>
     list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
@@ -109,25 +127,34 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
   const validateStep = (index: number): string | null => {
     if (index === 0) {
       if (draft.displayName.trim().length < 2) return "Give the household a name (at least 2 characters).";
+
       if (draft.memberCount < 1 || draft.memberCount > 20) return "People must be between 1 and 20.";
+
       if (draft.weeklyBudget < 100 || draft.weeklyBudget > 100_000) return "Weekly budget must be between ₹100 and ₹1,00,000.";
     }
+
     if (index === 1 && draft.cuisines.length === 0) {
       return "Pick at least one cuisine you actually cook.";
     }
+
     if (index === 2) {
       const invalid = draft.pantry.find((item) => !(item.quantity > 0));
+
       if (invalid) return "Every pantry item needs a quantity above zero.";
     }
+
     return null;
   };
 
   const next = () => {
     const problem = validateStep(step);
+
     if (problem) {
       setError(problem);
+
       return;
     }
+
     setError(null);
     setStep((current) => Math.min(STEPS.length - 1, current + 1));
   };
@@ -139,20 +166,26 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
 
   const finish = () => {
     const parsed = kitchenProfileSchema.safeParse(profile);
+
     if (!parsed.success) {
       setError(formatIssues(parsed.error));
+
       return;
     }
+
     const kitchen = createKitchenState({
       id: LOCAL_KITCHEN_ID,
       profile: parsed.data,
       pantry: draft.pantry,
       createdAt: new Date().toISOString(),
     });
+
     if (!saveKitchen(kitchen)) {
       setError("The household could not be saved in this browser.");
+
       return;
     }
+
     router.push("/kitchen");
   };
 
@@ -266,7 +299,13 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
               <select
                 id="diet"
                 value={draft.diet}
-                onChange={(event) => update({ diet: event.target.value as DietPreference })}
+                onChange={(event) =>
+                  update({
+                    diet:
+                      DIET_OPTIONS.find((option) => option.id === event.target.value)?.id ??
+                      draft.diet,
+                  })
+                }
               >
                 {DIET_OPTIONS.map((option) => (
                   <option key={option.id} value={option.id}>
@@ -376,7 +415,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
                   step={0.05}
                   value={draft[key]}
                   aria-valuetext={level(draft[key])}
-                  onChange={(event) => update({ [key]: Number(event.target.value) } as Partial<Draft>)}
+                  onChange={(event) => updatePreference(key, Number(event.target.value))}
                 />
                 <p className={styles.hint}>{hint}</p>
               </div>
@@ -486,20 +525,28 @@ function PantryEditor({
   const add = () => {
     if (!ingredient) {
       setProblem("Pick an ingredient first.");
+
       return;
     }
+
     if (!(quantity > 0)) {
       setProblem("Quantity must be above zero.");
+
       return;
     }
+
     if (!units.includes(unit)) {
       setProblem(`Use one of: ${units.join(", ")} for ${ingredient.name}.`);
+
       return;
     }
+
     if (draft.pantry.some((item) => item.ingredientId === ingredient.id)) {
       setProblem(`${ingredient.name} is already in the pantry — remove it first to change it.`);
+
       return;
     }
+
     setProblem(null);
     update({
       pantry: [...draft.pantry, { ingredientId: ingredient.id, quantity, unit, useSoon, acquiredWeek: 1 }],
@@ -521,6 +568,7 @@ function PantryEditor({
             onChange={(event) => {
               const nextIngredient = ingredientById(catalog, event.target.value);
               setIngredientId(event.target.value);
+
               if (nextIngredient && nextIngredient.commonUnits[0]) setUnit(nextIngredient.commonUnits[0]);
             }}
           >
@@ -547,7 +595,9 @@ function PantryEditor({
           <select
             id="pantry-unit"
             value={unit}
-            onChange={(event) => setUnit(event.target.value as Unit)}
+            onChange={(event) =>
+              setUnit(units.find((candidate) => candidate === event.target.value) ?? unit)
+            }
           >
             {units.map((option) => (
               <option key={option} value={option}>
@@ -576,6 +626,7 @@ function PantryEditor({
         <ul className={styles.pantryList}>
           {draft.pantry.map((item) => {
             const row = ingredientById(catalog, item.ingredientId);
+
             return (
               <li key={item.ingredientId}>
                 <span>

@@ -1,4 +1,5 @@
 import { roundQuantity } from "@/domain/units";
+import { compareStrings } from "@/domain/order";
 import type { Catalog } from "@/catalog/types";
 import { findProductForUnit, ingredientById, substitutionsFor } from "@/catalog/grocery-graph";
 import type { KitchenState } from "@/domain/kitchen/types";
@@ -14,6 +15,7 @@ import { substitutionAffinityFor } from "@/intelligence/learning";
  */
 
 const MAX_SUGGESTIONS = 4;
+
 const CUISINE_MATCH_BONUS = 0.05;
 
 type DecisionCounts = { accepted: number; rejected: number };
@@ -21,13 +23,16 @@ type DecisionCounts = { accepted: number; rejected: number };
 function countDecisions(kitchen: KitchenState, substitutionId: string): DecisionCounts {
   let accepted = 0;
   let rejected = 0;
+
   for (const choices of kitchen.weeklyChoices) {
     for (const decision of choices.substitutionDecisions) {
       if (decision.substitutionId !== substitutionId) continue;
+
       if (decision.accepted) accepted += 1;
       else rejected += 1;
     }
   }
+
   return { accepted, rejected };
 }
 
@@ -42,11 +47,14 @@ export function recommendSubstitutions(
 
   for (const item of basket.items) {
     if (item.status !== "buy") continue;
+
     for (const substitution of substitutionsFor(catalog, item.ingredientId)) {
-      if (substitution.id.endsWith("_self")) continue;
       const substitute = ingredientById(catalog, substitution.substituteIngredientId);
+
       if (!substitute) continue;
+
       if (!ingredientAllowedForDiet(substitute, kitchen.profile.diet)) continue;
+
       if (!findProductForUnit(catalog, substitute.id, locationId, item.unit)) continue;
 
       const affinity = substitutionAffinityFor(
@@ -54,10 +62,13 @@ export function recommendSubstitutions(
         substitution.requestedIngredientId,
         substitution.substituteIngredientId,
       );
+
       const affinity01 = (affinity + 1) / 2;
+
       const cuisineMatch = substitution.cuisines.some((cuisine) =>
         kitchen.profile.cuisines.includes(cuisine),
       );
+
       const score = Math.min(
         1,
         Math.max(
@@ -88,6 +99,6 @@ export function recommendSubstitutions(
   }
 
   return suggestions
-    .sort((a, b) => b.score - a.score || a.substitution.id.localeCompare(b.substitution.id))
+    .sort((a, b) => b.score - a.score || compareStrings(a.substitution.id, b.substitution.id))
     .slice(0, MAX_SUGGESTIONS);
 }

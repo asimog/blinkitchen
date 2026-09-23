@@ -40,12 +40,15 @@ describe("substitution suggestions", () => {
     const kitchen = makeKitchen();
     const basket = buildBasket(kitchen, catalog, plan("rajma_chawal"));
     const suggestions = recommendSubstitutions(kitchen, catalog, basket, deriveLearning(kitchen, catalog));
+
     for (const suggestion of suggestions) {
       const item = basket.items.find(
         (row) => row.ingredientId === suggestion.substitution.requestedIngredientId,
       );
+
       expect(item?.status).toBe("buy");
     }
+
     expect(suggestions.every((row) => row.substitution.id !== "paneer_to_tofu")).toBe(true);
   });
 
@@ -68,6 +71,7 @@ describe("substitution suggestions", () => {
       { ...base, week: 3 },
       [{ substitutionId: "paneer_to_tofu", accepted: true }],
     );
+
     const accepted = recommendSubstitutions(
       acceptedKitchen,
       catalog,
@@ -79,6 +83,7 @@ describe("substitution suggestions", () => {
       { ...base, week: 3 },
       [{ substitutionId: "paneer_to_tofu", accepted: false }],
     );
+
     const rejected = recommendSubstitutions(
       rejectedKitchen,
       catalog,
@@ -95,12 +100,14 @@ describe("substitution suggestions", () => {
   it("explains its source relationship", () => {
     const kitchen = makeKitchen();
     const basket = buildBasket(kitchen, catalog, plan("palak_paneer"));
+
     const suggestion = recommendSubstitutions(
       kitchen,
       catalog,
       basket,
       deriveLearning(kitchen, catalog),
     ).find((row) => row.substitution.id === "paneer_to_tofu");
+
     expect(suggestion).toBeDefined();
     expect(suggestion?.explanation[0]).toContain("Plant protein");
     expect(suggestion?.explanation.join(" ")).toContain("84%");
@@ -110,6 +117,7 @@ describe("substitution suggestions", () => {
 describe("replenishment", () => {
   it("requires repeated recent consumption", () => {
     const kitchen = makeKitchen({}, { memberCount: 4 });
+
     const used = {
       ...kitchen,
       week: 5,
@@ -118,12 +126,14 @@ describe("replenishment", () => {
       ],
       pantry: [pantryItem("onion", 50, "g")],
     };
+
     const basket = buildBasket(used, catalog, plan());
     expect(recommendReplenishments(used, catalog, basket)).toHaveLength(0);
   });
 
   it("fires when a repeatedly used ingredient runs low", () => {
     const kitchen = makeKitchen({}, { memberCount: 4 });
+
     const used = {
       ...kitchen,
       week: 5,
@@ -137,6 +147,7 @@ describe("replenishment", () => {
       })),
       pantry: [pantryItem("onion", 100, "g")],
     };
+
     const basket = buildBasket(used, catalog, plan());
     const suggestions = recommendReplenishments(used, catalog, basket);
     expect(suggestions).toHaveLength(1);
@@ -150,6 +161,7 @@ describe("replenishment", () => {
 
   it("stays quiet when the pantry is well stocked", () => {
     const kitchen = makeKitchen({}, { memberCount: 4 });
+
     const used = {
       ...kitchen,
       week: 5,
@@ -163,12 +175,14 @@ describe("replenishment", () => {
       })),
       pantry: [pantryItem("onion", 2000, "g")],
     };
+
     const basket = buildBasket(used, catalog, plan());
     expect(recommendReplenishments(used, catalog, basket)).toHaveLength(0);
   });
 
   it("does not duplicate what the basket is already buying", () => {
     const kitchen = makeKitchen({}, { memberCount: 4 });
+
     const used = {
       ...kitchen,
       week: 5,
@@ -182,6 +196,7 @@ describe("replenishment", () => {
       })),
       pantry: [pantryItem("onion", 60, "g")],
     };
+
     const basket = buildBasket(used, catalog, plan("rajma_chawal", "poha"));
     expect(basket.items.find((item) => item.ingredientId === "onion")?.status).toBe("buy");
     expect(recommendReplenishments(used, catalog, basket)).toHaveLength(0);
@@ -194,6 +209,7 @@ describe("buildWeekIntelligence", () => {
       pantryItem("spinach", 500, "g", { useSoon: true }),
       pantryItem("onion", 300, "g"),
     ]);
+
     const intelligence = buildWeekIntelligence(kitchen, catalog);
     expect(intelligence.week).toBe(1);
     expect(intelligence.planSource).toBe("suggested");
@@ -219,6 +235,7 @@ describe("buildWeekIntelligence", () => {
         },
       ],
     });
+
     const intelligence = buildWeekIntelligence(kitchen, catalog);
     expect(intelligence.planSource).toBe("selected");
     expect(intelligence.plan.map((meal) => meal.recipeId)).toEqual(["chole", "poha"]);
@@ -237,6 +254,7 @@ describe("buildWeekIntelligence", () => {
         },
       ],
     });
+
     const intelligence = buildWeekIntelligence(kitchen, catalog);
     expect(intelligence.chains.length).toBeGreaterThan(0);
     const onion = intelligence.chains.find((chain) => chain.ingredientId === "onion");
@@ -249,6 +267,7 @@ describe("buildWeekIntelligence", () => {
     const kitchen = makeKitchen({ week: 3 }, {}, [
       pantryItem("spinach", 200, "g", { acquiredWeek: 1 }),
     ]);
+
     const intelligence = buildWeekIntelligence(kitchen, catalog);
     const entry = intelligence.useSoon.find((row) => row.ingredientId === "spinach");
     expect(entry?.reason).toBe("stale");
@@ -262,5 +281,28 @@ describe("buildWeekIntelligence", () => {
     const second = buildWeekIntelligence(kitchen, catalog);
     expect(first).toEqual(second);
     expect(JSON.stringify(kitchen)).toBe(before);
+  });
+
+  it("counts rescued use-soon items against the swapped plan, not the recipe text", () => {
+    const kitchen = makeKitchen(
+      {
+        weeklyChoices: [
+          {
+            week: 1,
+            selectedRecipeIds: ["tofu_bhurji"],
+            skippedRecipeIds: [],
+            substitutionDecisions: [{ substitutionId: "tofu_to_paneer", accepted: true }],
+            completed: false,
+          },
+        ],
+      },
+      {},
+      [pantryItem("tofu", 300, "g", { useSoon: true })],
+    );
+
+    const intelligence = buildWeekIntelligence(kitchen, catalog);
+    const rescueLine = intelligence.narrative.find((line) => line.includes("use-soon"));
+    // The plan cooks paneer (the accepted swap), so the flagged tofu is NOT rescued.
+    expect(rescueLine).toBe("1 use-soon item is still waiting to be used.");
   });
 });

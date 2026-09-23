@@ -1,7 +1,5 @@
 import { z } from "zod";
-import { UNITS } from "@/domain/units";
-
-const unitSchema = z.enum(UNITS);
+import { unitSchema } from "@/domain/units";
 
 export const ingredientSchema = z.strictObject({
   id: z.string().min(1),
@@ -64,7 +62,11 @@ export const substitutionSchema = z.strictObject({
 });
 
 export const ingredientsFileSchema = z.array(ingredientSchema);
+
 export const recipesFileSchema = z.array(recipeSchema);
+
 export const productTemplatesFileSchema = z.array(productTemplateSchema);
+
 export const locationsFileSchema = z.array(locationSchema);
+
 export const substitutionsFileSchema = z.array(substitutionSchema);

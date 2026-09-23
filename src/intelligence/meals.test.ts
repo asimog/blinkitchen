@@ -45,6 +45,7 @@ describe("ranking behaviour", () => {
 
   it("responds to pantry stock", () => {
     const empty = makeKitchen();
+
     const stocked = makeKitchen({}, {}, [
       pantryItem("rajma", 300, "g"),
       pantryItem("rice", 400, "g"),
@@ -57,6 +58,7 @@ describe("ranking behaviour", () => {
       pantryItem("garam_masala", 5, "g"),
       pantryItem("salt", 8, "g"),
     ]);
+
     const impact = rank(stocked).find((row) => row.recipe.id === "rajma_chawal")?.impact;
     expect(impact?.coveragePercent).toBe(100);
     expect(impact?.missingIngredientIds).toEqual([]);
@@ -76,11 +78,12 @@ describe("ranking behaviour", () => {
   it("strengthens cuisines the household actually cooks", () => {
     let kitchen = makeKitchen();
     const before = scoreOf(kitchen, "chole");
-    for (const week of [1, 2, 3]) {
-      kitchen = { ...kitchen, week };
+
+    for (let week = 0; week < 3; week += 1) {
       kitchen = expectOk(kitchen, { type: "complete_meal", recipeId: "rajma_chawal" });
       kitchen = expectOk(kitchen, { type: "complete_week" });
     }
+
     expect(scoreOf(kitchen, "chole")).toBeGreaterThan(before);
     expect(deriveLearning(kitchen, catalog).cuisineAffinity["punjabi"]).toBeGreaterThan(0.55);
   });
@@ -88,10 +91,11 @@ describe("ranking behaviour", () => {
   it("penalizes skipped recommendations", () => {
     const fresh = makeKitchen();
     const top = rank(fresh)[0]?.recipe.id;
-    expect(top).toBeDefined();
-    const skipped = expectOk(fresh, { type: "skip_recommendation", recipeId: top as string });
-    expect(scoreOf(skipped, top as string)).toBeLessThan(scoreOf(fresh, top as string));
-    expect(rankIndexOf(skipped, top as string)).toBeGreaterThan(rankIndexOf(fresh, top as string));
+
+    if (top === undefined) throw new Error("expected a top recommendation");
+    const skipped = expectOk(fresh, { type: "skip_recommendation", recipeId: top });
+    expect(scoreOf(skipped, top)).toBeLessThan(scoreOf(fresh, top));
+    expect(rankIndexOf(skipped, top)).toBeGreaterThan(rankIndexOf(fresh, top));
   });
 
   it("penalizes meals cooked in the last two weeks", () => {
@@ -104,11 +108,13 @@ describe("ranking behaviour", () => {
       week: 5,
       mealFacts: [{ id: "meal-1-0", week: 1, recipeId: "rajma_chawal" }],
     };
+
     const recently = {
       ...fresh,
       week: 5,
       mealFacts: [{ id: "meal-5-0", week: 5, recipeId: "rajma_chawal" }],
     };
+
     expect(scoreOf(longAgo, "rajma_chawal")).toBeGreaterThan(
       scoreOf(recently, "rajma_chawal"),
     );
@@ -116,11 +122,50 @@ describe("ranking behaviour", () => {
 
   it("explains every recommendation with concrete reasons", () => {
     const kitchen = makeKitchen({}, {}, [pantryItem("spinach", 500, "g", { useSoon: true })]);
+
     for (const row of rank(kitchen)) {
       expect(row.explanation.length).toBeGreaterThan(0);
       expect(row.explanation.length).toBeLessThanOrEqual(5);
       expect(row.explanation.join(" ")).not.toMatch(/AI|algorithm|model says/i);
     }
+  });
+
+  it("applies accepted swaps to a meal's impact so cards agree with the basket", () => {
+    const pantry = [
+      pantryItem("spinach", 500, "g"),
+      pantryItem("onion", 150, "g"),
+      pantryItem("tomato", 100, "g"),
+      pantryItem("garlic", 15, "g"),
+      pantryItem("ginger", 10, "g"),
+      pantryItem("oil", 30, "ml"),
+      pantryItem("cumin", 5, "g"),
+      pantryItem("garam_masala", 5, "g"),
+      pantryItem("salt", 8, "g"),
+    ];
+
+    const plain = makeKitchen({}, {}, pantry);
+    const plainImpact = rank(plain).find((row) => row.recipe.id === "palak_paneer")?.impact;
+    expect(plainImpact?.missingIngredientIds).toContain("paneer");
+
+    const swapped = makeKitchen(
+      {
+        weeklyChoices: [
+          {
+            week: 1,
+            selectedRecipeIds: [],
+            skippedRecipeIds: [],
+            substitutionDecisions: [{ substitutionId: "paneer_to_tofu", accepted: true }],
+            completed: false,
+          },
+        ],
+      },
+      {},
+      pantry,
+    );
+
+    const swappedImpact = rank(swapped).find((row) => row.recipe.id === "palak_paneer")?.impact;
+    expect(swappedImpact?.missingIngredientIds).toContain("tofu");
+    expect(swappedImpact?.missingIngredientIds).not.toContain("paneer");
   });
 });
 
@@ -147,6 +192,8 @@ function expectOk(
   command: Parameters<typeof applyKitchenCommand>[1],
 ): KitchenState {
   const result = applyKitchenCommand(state, command);
+
   if (!result.ok) throw new Error(`Expected ok, got ${result.error.code}`);
+
   return result.state;
 }

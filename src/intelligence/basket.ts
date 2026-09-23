@@ -1,6 +1,7 @@
 import { normalizeQuantity, roundQuantity } from "@/domain/units";
-import type { CanonicalUnit, Unit } from "@/domain/units";
-import type { Basket, BasketItem, BasketItemStatus, PlannedMeal } from "@/intelligence/types";
+import type { CanonicalUnit } from "@/domain/units";
+import { compareStrings } from "@/domain/order";
+import type { Basket, BasketItem, BasketItemStatus, EffectiveRequirement, PlannedMeal } from "@/intelligence/types";
 import type { Catalog, Recipe, RecipeRequirement, Substitution } from "@/catalog/types";
 import { findProductForUnit, ingredientById, recipeRequirements } from "@/catalog/grocery-graph";
 import { currentChoices, pantryQuantity } from "@/domain/kitchen/state";
@@ -36,7 +37,7 @@ function acceptedSubstitutionFor(
         substitution.requestedIngredientId === ingredientId &&
         acceptedIds.has(substitution.id),
     )
-    .sort((a, b) => a.id.localeCompare(b.id))[0];
+    .sort((a, b) => compareStrings(a.id, b.id))[0];
 }
 
 /**
@@ -47,13 +48,15 @@ export function effectiveRequirement(
   kitchen: KitchenState,
   catalog: Catalog,
   requirement: RecipeRequirement,
-): { ingredientId: string; quantity: number; unit: Unit; substitution?: Substitution } {
+): EffectiveRequirement {
   const acceptedIds = new Set(
     currentChoices(kitchen)
       .substitutionDecisions.filter((decision) => decision.accepted)
       .map((decision) => decision.substitutionId),
   );
+
   const substitution = acceptedSubstitutionFor(catalog, acceptedIds, requirement.ingredient.id);
+
   if (!substitution) {
     return {
       ingredientId: requirement.ingredient.id,
@@ -61,6 +64,7 @@ export function effectiveRequirement(
       unit: requirement.unit,
     };
   }
+
   return {
     ingredientId: substitution.substituteIngredientId,
     quantity: requirement.quantity * substitution.quantityRatio,
@@ -78,12 +82,15 @@ function aggregateRequirements(
 
   for (const recipe of recipes) {
     const scale = kitchen.profile.memberCount / recipe.servings;
+
     for (const requirement of recipeRequirements(catalog, recipe)) {
       const effective = effectiveRequirement(kitchen, catalog, requirement);
+
       if (!ingredientById(catalog, effective.ingredientId)) continue;
       const required = normalizeQuantity(effective.quantity * scale, effective.unit);
       const key = `${effective.ingredientId}:${required.unit}`;
       const existing = aggregates.get(key);
+
       if (existing) {
         existing.required = roundQuantity(existing.required + required.quantity);
         existing.usedInRecipeIds.add(recipe.id);
@@ -107,6 +114,7 @@ export function buildBasket(
   plan: PlannedMeal[],
 ): Basket {
   const locationId = kitchen.profile.locationId;
+
   const aggregates = aggregateRequirements(
     kitchen,
     catalog,
@@ -117,15 +125,18 @@ export function buildBasket(
   let requiredValue = 0;
   let coveredValue = 0;
 
-  for (const key of [...aggregates.keys()].sort()) {
-    const aggregate = aggregates.get(key) as Aggregate;
+  const aggregatesByKey = [...aggregates.entries()].sort((a, b) => compareStrings(a[0], b[0]));
+
+  for (const [, aggregate] of aggregatesByKey) {
     const ingredient = ingredientById(catalog, aggregate.ingredientId);
+
     if (!ingredient) continue;
 
     const ownedCanonical = normalizeQuantity(
       pantryQuantity(kitchen, aggregate.ingredientId, aggregate.unit),
       aggregate.unit,
     ).quantity;
+
     const owned = Math.min(ownedCanonical, aggregate.required);
     const missing = Math.max(0, roundQuantity(aggregate.required - ownedCanonical));
     const unitCost = unitCostOrZero(catalog, aggregate.ingredientId, aggregate.unit, locationId);
@@ -136,11 +147,14 @@ export function buildBasket(
       missing > 0
         ? findProductForUnit(catalog, aggregate.ingredientId, locationId, aggregate.unit)
         : undefined;
+
     const packSizeCanonical = product
       ? normalizeQuantity(product.packSize, product.unit).quantity
       : 0;
+
     const packCount =
       product && packSizeCanonical > 0 ? Math.max(0, Math.ceil(missing / packSizeCanonical - 1e-9)) : 0;
+
     const purchasedQuantity = roundQuantity(packCount * packSizeCanonical);
     const lineCost = product ? roundQuantity(packCount * product.price) : 0;
 
@@ -160,7 +174,7 @@ export function buildBasket(
       status,
     });
 
-    items.push({
+    const item: BasketItem = {
       ingredientId: aggregate.ingredientId,
       ingredient,
       required: aggregate.required,
@@ -169,12 +183,17 @@ export function buildBasket(
       unit: aggregate.unit,
       packCount,
       purchasedQuantity,
-      ...(product ? { product } : {}),
       lineCost,
       status,
-      usedInRecipeIds: [...aggregate.usedInRecipeIds].sort(),
+      usedInRecipeIds: [...aggregate.usedInRecipeIds].sort(compareStrings),
       explanation,
-    });
+    };
+
+    if (product) {
+      item.product = product;
+    }
+
+    items.push(item);
   }
 
   const totalCost = roundQuantity(items.reduce((total, item) => total + item.lineCost, 0));

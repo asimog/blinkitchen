@@ -12,7 +12,7 @@ export type CreateKitchenInput = {
 
 /** Create the initial kitchen state for Week 1. Pure; ids/time come from the caller. */
 export function createKitchenState(input: CreateKitchenInput): KitchenState {
-  return {
+  const state: KitchenState = {
     id: input.id,
     profile: input.profile,
     week: WEEK_MIN,
@@ -21,12 +21,17 @@ export function createKitchenState(input: CreateKitchenInput): KitchenState {
     consumptionFacts: [],
     mealFacts: [],
     weeklyChoices: [],
-    ...(input.createdAt ? { createdAt: input.createdAt } : {}),
   };
+
+  if (input.createdAt !== undefined) {
+    state.createdAt = input.createdAt;
+  }
+
+  return state;
 }
 
 /** Empty choices for a week; not inserted into state until a command needs it. */
-export function emptyWeeklyChoices(week: number): WeeklyChoices {
+function emptyWeeklyChoices(week: number): WeeklyChoices {
   return {
     week,
     selectedRecipeIds: [],
@@ -50,17 +55,29 @@ export function isJourneyComplete(state: KitchenState): boolean {
   return state.week === WEEK_MAX && choicesForWeek(state, WEEK_MAX).completed;
 }
 
-/** Total pantry stock for an ingredient, in the requested unit when compatible. */
+/**
+ * Total pantry stock for an ingredient, in the requested unit when compatible.
+ *
+ * Canonical results are rounded to 2 decimals; non-canonical units (kg, l) are
+ * returned unrounded because rounding them would quantize stock to 10 g / 10 ml
+ * of precision for no benefit.
+ */
 export function pantryQuantity(state: KitchenState, ingredientId: string, unit: Unit): number {
   let total = 0;
+
   for (const item of state.pantry) {
     if (item.ingredientId !== ingredientId) continue;
+
     if (!unitsCompatible(item.unit, unit)) continue;
     const normalized = normalizeQuantity(item.quantity, item.unit);
     total += normalized.quantity;
   }
-  const factor = unit === "kg" || unit === "l" ? 1000 : 1;
-  return roundQuantity(total / factor);
+
+  if (unit === "kg" || unit === "l") {
+    return total / 1000;
+  }
+
+  return roundQuantity(total);
 }
 
 /** Pantry rows for an ingredient whose unit is compatible with `unit`, in use order. */
@@ -70,15 +87,18 @@ export function pantryRowsFor(
   unit: Unit,
 ): { item: PantryItem; index: number }[] {
   return pantry
-    .map((item, index) => ({ item, index }))
-    .filter(
-      ({ item }) => item.ingredientId === ingredientId && unitsCompatible(item.unit, unit),
+    .flatMap((item, index) =>
+      item.ingredientId === ingredientId && unitsCompatible(item.unit, unit)
+        ? [{ item, index }]
+        : [],
     )
     .sort((a, b) => {
       if (a.item.useSoon !== b.item.useSoon) return a.item.useSoon ? -1 : 1;
+
       if (a.item.acquiredWeek !== b.item.acquiredWeek) {
         return a.item.acquiredWeek - b.item.acquiredWeek;
       }
+
       return a.index - b.index;
     });
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ingredientById } from "@/catalog/grocery-graph";
+import { compareStrings } from "@/domain/order";
 import type { Catalog } from "@/catalog/types";
 import type { KitchenState } from "@/domain/kitchen/types";
 import type { Unit } from "@/domain/units";
@@ -24,10 +25,12 @@ export function UsageRecorder({
   const [quantities, setQuantities] = useState<Record<string, string>>({});
 
   const rows = [...kitchen.pantry].sort((a, b) =>
-    (ingredientById(catalog, a.ingredientId)?.name ?? a.ingredientId).localeCompare(
-      ingredientById(catalog, b.ingredientId)?.name ?? b.ingredientId,
-    ),
+    compareStrings(ingredientNameOf(a.ingredientId), ingredientNameOf(b.ingredientId)),
   );
+
+  function ingredientNameOf(ingredientId: string): string {
+    return ingredientById(catalog, ingredientId)?.name ?? ingredientId;
+  }
 
   return (
     <section className={styles.panel} aria-label="Record pantry use">
@@ -48,13 +51,16 @@ export function UsageRecorder({
             const quantityValue = quantities[item.ingredientId] ?? "";
             const parsed = Number(quantityValue);
             const valid = Number.isFinite(parsed) && parsed > 0 && parsed <= item.quantity;
+
             const setValue = (value: string) =>
               setQuantities((current) => ({ ...current, [item.ingredientId]: value }));
+
             const record = (kind: "used" | "wasted") => {
               if (!valid) return;
               onRecord(kind, item.ingredientId, parsed, item.unit);
               setValue("");
             };
+
             return (
               <li key={item.ingredientId} className={styles.usageRow}>
                 <span className={styles.usageName}>

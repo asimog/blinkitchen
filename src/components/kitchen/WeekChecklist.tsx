@@ -18,6 +18,7 @@ export function WeekChecklist({
   checklist,
   basketCost,
   toBuyCount,
+  spoilageCandidates,
   onReceiveBasket,
   onCookMeals,
   onWasteLeftovers,
@@ -27,6 +28,8 @@ export function WeekChecklist({
   checklist: WeekChecklistState;
   basketCost: number;
   toBuyCount: number;
+  /** Use-soon items that a spoilage record could cover. */
+  spoilageCandidates: number;
   onReceiveBasket: () => void;
   onCookMeals: () => void;
   onWasteLeftovers: () => void;
@@ -34,6 +37,7 @@ export function WeekChecklist({
 }) {
   const allCooked =
     checklist.plannedMeals === 0 || checklist.mealsCooked >= checklist.plannedMeals;
+
   const rows: { label: string; detail: string; done: boolean; action?: ReactNode }[] = [
     {
       label: "Receive the simulated basket",
@@ -68,12 +72,14 @@ export function WeekChecklist({
       detail:
         checklist.leftoversWasted > 0
           ? `${checklist.leftoversWasted} use-soon items recorded as wasted`
-          : "optional — records use-soon items you could not rescue",
-      done: checklist.leftoversWasted > 0,
+          : spoilageCandidates === 0
+            ? "nothing is at risk this week"
+            : "optional — records use-soon items you could not rescue",
+      done: checklist.leftoversWasted > 0 || spoilageCandidates === 0,
       action:
-        checklist.leftoversWasted === 0 ? (
+        checklist.leftoversWasted === 0 && spoilageCandidates > 0 ? (
           <button type="button" className="btn btn-secondary btn-small" onClick={onWasteLeftovers}>
-            Record spoilage
+            Record spoilage ({spoilageCandidates})
           </button>
         ) : undefined,
     },
@@ -128,6 +134,7 @@ export function buildChecklistState(
   intelligence: WeekIntelligence,
 ): WeekChecklistState {
   const week = kitchen.week;
+
   return {
     basketReceived: kitchen.groceryFacts.some((fact) => fact.week === week),
     mealsCooked: kitchen.mealFacts.filter((fact) => fact.week === week).length,

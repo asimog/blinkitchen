@@ -20,6 +20,7 @@ export const LOCAL_KITCHEN_ID = "local-kitchen";
 
 function defaultStorage(): StorageLike | null {
   if (typeof window === "undefined") return null;
+
   try {
     return window.localStorage;
   } catch {
@@ -29,11 +30,15 @@ function defaultStorage(): StorageLike | null {
 
 export function saveKitchen(kitchen: KitchenState, storage?: StorageLike): boolean {
   const target = storage ?? defaultStorage();
+
   if (!target) return false;
+
   try {
     const parsed = kitchenStateSchema.safeParse(kitchen);
+
     if (!parsed.success) return false;
     target.setItem(KITCHEN_STORAGE_KEY, JSON.stringify(parsed.data));
+
     return true;
   } catch {
     return false;
@@ -43,20 +48,27 @@ export function saveKitchen(kitchen: KitchenState, storage?: StorageLike): boole
 /** Load and validate the stored household; discard anything invalid. */
 export function loadKitchen(storage?: StorageLike): KitchenState | null {
   const target = storage ?? defaultStorage();
+
   if (!target) return null;
   let raw: string | null = null;
+
   try {
     raw = target.getItem(KITCHEN_STORAGE_KEY);
   } catch {
     return null;
   }
+
   if (!raw) return null;
+
   try {
     const parsed = kitchenStateSchema.safeParse(JSON.parse(raw));
+
     if (!parsed.success) {
       target.removeItem(KITCHEN_STORAGE_KEY);
+
       return null;
     }
+
     return parsed.data;
   } catch {
     try {
@@ -64,13 +76,16 @@ export function loadKitchen(storage?: StorageLike): KitchenState | null {
     } catch {
       // Storage may be unavailable; nothing else to do.
     }
+
     return null;
   }
 }
 
 export function clearKitchen(storage?: StorageLike): void {
   const target = storage ?? defaultStorage();
+
   if (!target) return;
+
   try {
     target.removeItem(KITCHEN_STORAGE_KEY);
   } catch {

@@ -24,13 +24,16 @@ import styles from "@/components/explore/explore.module.css";
 export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
   const fixture = fixtureById(fixtureId);
   const catalog = useMemo(() => loadCatalog(), []);
+
   const [states, setStates] = useState<KitchenState[]>(() =>
     fixture ? [buildFixtureKitchen(fixture)] : [],
   );
+
   const [index, setIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   const kitchen = states[Math.min(index, Math.max(0, states.length - 1))];
+
   const intelligence = useMemo(
     () => (kitchen ? buildWeekIntelligence(kitchen, catalog) : null),
     [kitchen, catalog],
@@ -53,16 +56,23 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
 
   const extendTo = (targetWeek: number): KitchenState[] => {
     const next = [...states];
-    let last = next[next.length - 1] as KitchenState;
+    let last = next.at(-1);
+
+    if (!last) return next;
+
     while (last.week < targetWeek && !isJourneyComplete(last)) {
       const result = simulateWeek(last, catalog, householdPolicy);
+
       if (!result.ok) {
         setError(`${result.error.code}: ${result.error.message}`);
+
         return next;
       }
+
       next.push(result.state);
       last = result.state;
     }
+
     return next;
   };
 
@@ -71,10 +81,13 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
     const next = extendTo(week);
     setStates(next);
     let target = 0;
+
     for (let i = 0; i < next.length; i += 1) {
       const candidate = next[i];
+
       if (candidate && candidate.week <= week) target = i;
     }
+
     setIndex(target);
   };
 

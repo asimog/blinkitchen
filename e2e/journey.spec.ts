@@ -20,7 +20,7 @@ test.describe("home to kitchen", () => {
     await page.getByRole("button", { name: /Receive basket/i }).first().click();
     await page.getByRole("button", { name: /Cook \d+ planned meals/i }).click();
     await page.getByRole("button", { name: /Complete week 1/i }).click();
-    await expect(page.getByText("Week 2 of 8")).toBeVisible();
+    await expect(page.getByText("Week 2 of 8", { exact: true })).toBeVisible();
   });
 
   test("reset prototype clears the stored household", async ({ page }) => {
@@ -33,26 +33,39 @@ test.describe("home to kitchen", () => {
     const stored = await page.evaluate(() => window.localStorage.getItem("blinkitchen:v1:kitchen"));
     expect(stored).toBeNull();
   });
+
+  test("warns visibly when the browser refuses to save facts", async ({ page }) => {
+    await completeWizard(page, "E2E Storage");
+    await page.evaluate(() => {
+      window.localStorage.setItem = () => {
+        throw new Error("quota exceeded");
+      };
+    });
+    await page.getByRole("button", { name: /Receive basket/i }).first().click();
+    await expect(page.getByRole("status")).toContainText(/refused to save/i);
+  });
 });
 
 test.describe("explore journeys", () => {
   test("advance one week and jump across the journey", async ({ page }) => {
     await page.goto("/explore");
     await page.getByRole("link", { name: /Open the journey/i }).first().click();
-    await expect(page.getByText("Week 1 of 8")).toBeVisible();
+    await expect(page.getByText("Week 1 of 8", { exact: true })).toBeVisible();
     await expect(page.getByText(/Simulated household/)).toBeVisible();
 
     await page.getByRole("button", { name: /Advance one week/i }).click();
-    await expect(page.getByText("Week 2 of 8")).toBeVisible();
+    await expect(page.getByText("Week 2 of 8", { exact: true })).toBeVisible();
 
     await page.getByRole("button", { name: "W5", exact: true }).click();
-    await expect(page.getByText("Week 5 of 8")).toBeVisible();
+    await expect(page.getByText("Week 5 of 8", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+    await expect(page.locator('dl[aria-label="This week at a glance"] dt')).toHaveCount(4);
   });
 
   test("replay through Week 8 shows the learning summary", async ({ page }) => {
     await page.goto("/explore/cuisine_explorer");
     await page.getByRole("button", { name: /Replay to Week 8/i }).click();
-    await expect(page.getByText("Week 8 of 8")).toBeVisible();
+    await expect(page.getByText("Week 8 of 8", { exact: true })).toBeVisible();
     await expect(page.getByLabel("What Blinkitchen learned")).toBeVisible();
     await expect(page.getByLabel("Ingredient chaining")).toBeVisible();
     await expect(page.getByText(/weeks completed/i)).toBeVisible();
@@ -64,9 +77,11 @@ test.describe("blinkit lens", () => {
     await page.goto("/blinkit");
     await expect(page.getByText(/SIMULATED DATA/)).toBeVisible();
     await expect(page.getByRole("table").first()).toBeVisible();
+
     for (const household of ["The Mehtas", "The Khannas", "The Sharmas", "The Iyers"]) {
       await expect(page.getByText(household)).toBeVisible();
     }
+
     await expect(page.getByLabel("Strategic read-out")).toBeVisible();
   });
 });

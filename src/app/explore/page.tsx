@@ -24,6 +24,7 @@ export default function ExplorePage() {
       <div className={styles.archetypeGrid}>
         {HOUSEHOLD_FIXTURES.map((fixture) => {
           const location = locationById(catalog, fixture.profile.locationId);
+
           return (
             <article key={fixture.id} className={styles.archetypeCard}>
               <p className="eyebrow">{fixture.archetype}</p>

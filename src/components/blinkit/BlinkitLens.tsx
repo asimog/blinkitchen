@@ -10,6 +10,7 @@ import { buildBlinkitInsights } from "@/insights/blinkit";
 import { buildFixtureKitchen, HOUSEHOLD_FIXTURES } from "@/simulation/fixtures";
 import { householdPolicy } from "@/simulation/policies";
 import { simulateJourney } from "@/simulation/simulate";
+import { MetricCard } from "@/components/kitchen/MetricCard";
 import kitchenStyles from "@/components/kitchen/kitchen.module.css";
 import styles from "@/components/blinkit/blinkit.module.css";
 
@@ -19,11 +20,14 @@ import styles from "@/components/blinkit/blinkit.module.css";
  */
 export function BlinkitLens() {
   const catalog = useMemo(() => loadCatalog(), []);
+
   const insights = useMemo(() => {
     const states: KitchenState[] = [];
+
     for (const fixture of HOUSEHOLD_FIXTURES) {
       states.push(...simulateJourney(buildFixtureKitchen(fixture), catalog, householdPolicy));
     }
+
     return buildBlinkitInsights(states, catalog);
   }, [catalog]);
 
@@ -53,33 +57,36 @@ export function BlinkitLens() {
         is an order, a forecast or a business fact.
       </p>
 
-      <div className={kitchenStyles.metrics}>
-        <div className={kitchenStyles.metric}>
-          <p className={kitchenStyles.metricLabel}>Simulated households</p>
-          <p className={kitchenStyles.metricValue}>{insights.households}</p>
-          <p className={kitchenStyles.metricHint}>four archetypes, one engine</p>
-        </div>
-        <div className={kitchenStyles.metric}>
-          <p className={kitchenStyles.metricLabel}>Household-weeks</p>
-          <p className={kitchenStyles.metricValue}>{insights.weekSnapshots}</p>
-          <p className={kitchenStyles.metricHint}>weeks 1–8 per household</p>
-        </div>
-        <div className={kitchenStyles.metric}>
-          <p className={kitchenStyles.metricLabel}>Cumulative simulated basket</p>
-          <p className={kitchenStyles.metricValue}>{formatRupees(insights.cumulativeBasketSpend)}</p>
-          <p className={kitchenStyles.metricHint}>at fictional catalog prices</p>
-        </div>
-        <div className={`${kitchenStyles.metric} ${kitchenStyles.metricAccent}`}>
-          <p className={kitchenStyles.metricLabel}>Demand avoided by pantry</p>
-          <p className={kitchenStyles.metricValue}>{formatRupees(insights.avoidedBasketValue)}</p>
-          <p className={kitchenStyles.metricHint}>needed on paper, already home</p>
-        </div>
-      </div>
+      <dl className={kitchenStyles.metrics} aria-label="Cohort at a glance">
+        <MetricCard
+          label="Simulated households"
+          value={String(insights.households)}
+          hint="four archetypes, one engine"
+        />
+        <MetricCard
+          label="Household-weeks"
+          value={String(insights.weekSnapshots)}
+          hint="weeks 1–8 per household; week 8 is planned, not cooked"
+        />
+        <MetricCard
+          label="Cumulative simulated basket"
+          value={formatRupees(insights.cumulativeBasketSpend)}
+          hint="at fictional catalog prices"
+        />
+        <MetricCard
+          label="Demand avoided by pantry"
+          value={formatRupees(insights.avoidedBasketValue)}
+          hint="needed on paper, already home"
+          accent
+        />
+      </dl>
 
       <section className={kitchenStyles.panel} aria-label="Archetype comparison">
         <div className={kitchenStyles.panelHeader}>
           <h2 className={kitchenStyles.panelTitle}>How the archetypes behave differently</h2>
-          <p className={kitchenStyles.panelHint}>Same engine, different inputs</p>
+          <p className={kitchenStyles.panelHint}>
+            Same engine, different inputs · recorded facts through week 7, week 8 shown as planned
+          </p>
         </div>
         <div className={kitchenStyles.tableWrap}>
           <table className={styles.table}>

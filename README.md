@@ -27,8 +27,17 @@ npm run lint
 npm run typecheck
 npm run test
 npm run build
-npm run test:e2e   # requires: npx playwright install chromium
+npm run test:e2e   # first time only: npx playwright install chromium
 ```
+
+`npm run lint` runs two linters: the vendored
+[anti-slop](https://github.com/dmmulroy/anti-slop) Oxlint rules (boundary
+parsing, no assertion laundering, deterministic spacing) and ESLint.
+`npm run lint:fix` applies the anti-slop whitespace autofix.
+
+`npm run test:e2e` builds and serves a production build on port 3100, so stop
+any running `npm run dev` first (Next.js allows only one dev server per project
+folder).
 
 ## Where to start
 

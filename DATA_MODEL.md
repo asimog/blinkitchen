@@ -131,6 +131,17 @@ type BlinkitInsights = {
 `buildBlinkitInsights` is a read model. It cannot mutate kitchen state and never
 becomes a data authority.
 
+It receives **week snapshots** (the eight weekly states of each journey). Two
+rules keep its numbers honest:
+
+- Per-week projections (basket spend, coverage, missing/reuse/use-soon signals)
+  are summed across snapshots, where each snapshot represents exactly one week.
+- Recorded history (substitution decisions, meals, spoilage) is read from each
+  household's **final snapshot only**, because the same facts appear
+  cumulatively in every later snapshot. Counting them across snapshots would
+  inflate the numbers several-fold; a regression test asserts the totals equal
+  the final-state facts exactly.
+
 ## Units
 
 Supported units: `g`, `kg`, `ml`, `l`, `piece`, `packet`. Normalization converts
@@ -141,13 +152,30 @@ negative — `consume`/`waste` commands fail with a typed error code instead.
 
 ## Command validation scope
 
-`applyKitchenCommand` validates **structure and invariants**: week bounds,
-positive quantities, supported units, sufficient stock, duplicate selections,
-week ordering. It does not look up the catalog: ingredient and recipe ids are
-validated where they enter the system (onboarding against the catalog, and the
-catalog loader itself), and intelligence tolerates unknown references by
-skipping them. This keeps the domain free of catalog dependencies and makes
-restored or hand-authored state impossible to crash on.
+`applyKitchenCommand` validates **structure, invariants and limits**: week
+bounds, positive quantities, supported units, sufficient stock, duplicate
+selections, week ordering, and caps that mirror the Zod schema (quantity
+≤ 1,000,000; ≤ 200 grocery lines; ≤ 5,000 grocery facts; ≤ 5,000 consumption
+facts; ≤ 2,000 meal facts; ≤ 200 pantry rows; ≤ 50 weekly skips and
+substitution decisions). Exceeding a cap returns `limit_reached`, so any state
+reachable through commands is guaranteed to be storable — actions cannot appear
+to succeed and then silently fail to save.
+
+It does not look up the catalog: ingredient and recipe ids are validated where
+they enter the system (onboarding against the catalog, and the catalog loader
+itself), and intelligence tolerates unknown references by skipping them. This
+keeps the domain free of catalog dependencies and makes restored or
+hand-authored state impossible to crash on.
+
+Two behaviours worth knowing:
+
+- **Accepted substitutions apply everywhere.** Meal impact, meal cards, basket
+  lines and the cooking commands all resolve requirements through
+  `effectiveRequirement`, so a swap accepted in a week changes the card, the
+  basket and what gets consumed together.
+- **`optional: true` recipe ingredients are treated as required.** The seed
+  dataset contains none; a future data author adding optional lines should
+  decide how baskets should treat them.
 
 ## Scoring
 

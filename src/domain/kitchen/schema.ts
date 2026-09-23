@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { UNITS } from "@/domain/units";
+import { unitSchema } from "@/domain/units";
 import { MAX_WEEKLY_MEALS, WEEK_MAX, WEEK_MIN } from "@/domain/kitchen/types";
 
-const unitSchema = z.enum(UNITS);
 const weekSchema = z.number().int().min(WEEK_MIN).max(WEEK_MAX);
+
 const preferenceSchema = z.number().min(0).max(1);
 
 export const kitchenProfileSchema = z.strictObject({
@@ -76,8 +76,7 @@ export const weeklyChoicesSchema = z
     message: "Selected recipes must be unique",
   });
 
-export const kitchenStateSchema = z
-  .strictObject({
+export const kitchenStateSchema = z  .strictObject({
     id: z.string().min(1),
     profile: kitchenProfileSchema,
     week: weekSchema,
@@ -100,5 +99,3 @@ export const kitchenStateSchema = z
       !(state.profile.kitchenType === "existing" && state.profile.starterIngredientIds.length > 0),
     { message: "Starter essentials only apply to fresh kitchens" },
   );
-
-export type KitchenStateInput = z.input<typeof kitchenStateSchema>;

@@ -1,17 +1,17 @@
 import type { ReactNode } from "react";
 import { formatRupees } from "@/domain/units";
 import { ingredientById } from "@/catalog/grocery-graph";
-import type { Catalog } from "@/catalog/types";
+import type { Catalog, PreparationComplexity } from "@/catalog/types";
 import type { MealRecommendation } from "@/intelligence";
 import { humanizeId } from "@/intelligence";
 import { percent } from "@/components/kitchen/format";
 import styles from "@/components/kitchen/kitchen.module.css";
 
-const COMPLEXITY_LABEL: Record<string, string> = {
+const COMPLEXITY_LABEL = {
   low: "Easy",
   medium: "Medium effort",
   high: "Project cook",
-};
+} satisfies Record<PreparationComplexity, string>;
 
 export function MealCard({
   recommendation,
@@ -27,8 +27,10 @@ export function MealCard({
 }) {
   const { recipe, impact, factors, explanation, score } = recommendation;
   const fit = Math.max(0, Math.round(score * 100));
+
   const nameOf = (ingredientId: string) =>
     ingredientById(catalog, ingredientId)?.name ?? ingredientId;
+
   const owned = impact.ownedIngredientIds;
   const missing = impact.missingIngredientIds;
 

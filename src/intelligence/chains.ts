@@ -1,4 +1,5 @@
 import { canonicalUnitOf, normalizeQuantity, roundQuantity } from "@/domain/units";
+import { compareStrings } from "@/domain/order";
 import type { Catalog } from "@/catalog/types";
 import { ingredientById, recipeRequirements } from "@/catalog/grocery-graph";
 import type { KitchenState } from "@/domain/kitchen/types";
@@ -21,13 +22,16 @@ export function findIngredientChains(
     recipeNames: Set<string>;
     totalRequired: number;
   };
+
   const drafts = new Map<string, Draft>();
 
   for (const meal of plan) {
     const scale = kitchen.profile.memberCount / meal.recipe.servings;
+
     for (const requirement of recipeRequirements(catalog, meal.recipe)) {
       const required = normalizeQuantity(requirement.quantity * scale, requirement.unit);
       const existing = drafts.get(requirement.ingredient.id);
+
       if (existing) {
         existing.recipeIds.add(meal.recipe.id);
         existing.recipeNames.add(meal.recipe.name);
@@ -44,9 +48,11 @@ export function findIngredientChains(
   }
 
   const chains: IngredientChain[] = [];
+
   for (const draft of drafts.values()) {
     if (draft.recipeIds.size < 2) continue;
     const ingredient = ingredientById(catalog, draft.ingredientId);
+
     if (!ingredient) continue;
     const unit = canonicalUnitOf(ingredient.commonUnits[0] ?? "g");
     const named = [...draft.recipeNames].sort();
@@ -63,6 +69,7 @@ export function findIngredientChains(
 
   const genericThreshold = GENERIC_INGREDIENT_SHARE * catalog.recipes.length;
   const recipeUsage = new Map<string, number>();
+
   for (const recipe of catalog.recipes) {
     for (const ingredientId of new Set(recipe.ingredients.map((line) => line.ingredientId))) {
       recipeUsage.set(ingredientId, (recipeUsage.get(ingredientId) ?? 0) + 1);
@@ -73,7 +80,7 @@ export function findIngredientChains(
     (a, b) =>
       genericRank(a.ingredientId) - genericRank(b.ingredientId) ||
       b.recipeIds.length - a.recipeIds.length ||
-      a.ingredientId.localeCompare(b.ingredientId),
+      compareStrings(a.ingredientId, b.ingredientId),
   );
 
   // Ubiquitous staples (salt, oil) are real chains but make poor headlines:

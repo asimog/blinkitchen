@@ -1,5 +1,4 @@
-import type { Recipe } from "@/catalog/types";
-import type { Ingredient } from "@/catalog/types";
+import type { DietaryAttribute, Ingredient, Recipe } from "@/catalog/types";
 import type { DietPreference } from "@/domain/kitchen/types";
 
 /**
@@ -8,7 +7,8 @@ import type { DietPreference } from "@/domain/kitchen/types";
  */
 
 export function recipeAllowedForDiet(recipe: Recipe, diet: DietPreference): boolean {
-  const has = (attribute: string) => recipe.dietaryAttributes.includes(attribute as never);
+  const has = (attribute: DietaryAttribute) => recipe.dietaryAttributes.includes(attribute);
+
   switch (diet) {
     case "vegan":
       return has("vegan");
@@ -22,7 +22,8 @@ export function recipeAllowedForDiet(recipe: Recipe, diet: DietPreference): bool
 }
 
 export function ingredientAllowedForDiet(ingredient: Ingredient, diet: DietPreference): boolean {
-  const has = (attribute: string) => ingredient.dietaryAttributes.includes(attribute as never);
+  const has = (attribute: DietaryAttribute) => ingredient.dietaryAttributes.includes(attribute);
+
   switch (diet) {
     case "vegan":
       return has("vegan");

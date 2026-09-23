@@ -33,9 +33,11 @@ export function KitchenJourney() {
   const catalog = useMemo(() => loadCatalog(), []);
   const [edited, setEdited] = useState<KitchenState | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [storageWarning, setStorageWarning] = useState<string | null>(null);
   const [confirmReset, setConfirmReset] = useState(false);
 
   const kitchen = edited ?? stored;
+
   const intelligence = useMemo(
     () => (kitchen ? buildWeekIntelligence(kitchen, catalog) : null),
     [kitchen, catalog],
@@ -73,37 +75,51 @@ export function KitchenJourney() {
   const applyAll = (commands: KitchenCommand[]): KitchenState | null => {
     let current = kitchen;
     let failure: KitchenError | null = null;
+
     for (const command of commands) {
       const result = applyKitchenCommand(current, command);
+
       if (!result.ok) {
         failure = result.error;
         break;
       }
+
       current = result.state;
     }
+
     if (failure) {
       setError(
         failure.code === "insufficient_stock"
           ? `${failure.message}. Receive the basket first, or record smaller quantities.`
           : `${failure.code}: ${failure.message}`,
       );
+
       return null;
     }
+
     setError(null);
     setEdited(current);
-    saveKitchen(current);
+    const saved = saveKitchen(current);
+    setStorageWarning(
+      saved ? null : "This browser refused to save the household — facts will be lost on reload.",
+    );
+
     return current;
   };
 
   const toggleMeal = (recipeId: string) => {
     const base = selectedIds.length > 0 ? selectedIds : intelligence.plan.map((meal) => meal.recipeId);
+
     const next = base.includes(recipeId)
       ? base.filter((id) => id !== recipeId)
       : [...base, recipeId];
+
     if (next.length > MAX_WEEKLY_MEALS) {
       setError(`A week holds at most ${MAX_WEEKLY_MEALS} meals.`);
+
       return;
     }
+
     applyAll([{ type: "select_meals", recipeIds: next }]);
   };
 
@@ -115,21 +131,26 @@ export function KitchenJourney() {
         quantity: item.purchasedQuantity,
         unit: item.unit,
       }));
+
     if (lines.length === 0) return;
     applyAll([{ type: "receive_grocery", lines }]);
   };
 
   const cookMeals = () => {
     const commands: KitchenCommand[] = [];
+
     for (const meal of intelligence.plan) {
       const alreadyCooked = kitchen.mealFacts.some(
         (fact) => fact.week === kitchen.week && fact.recipeId === meal.recipeId,
       );
+
       if (alreadyCooked) continue;
       const scale = kitchen.profile.memberCount / meal.recipe.servings;
+
       for (const requirement of recipeRequirements(catalog, meal.recipe)) {
         const effective = effectiveRequirement(kitchen, catalog, requirement);
         const quantity = roundQuantity(effective.quantity * scale);
+
         if (quantity > 0) {
           commands.push({
             type: "consume_ingredient",
@@ -139,14 +160,17 @@ export function KitchenJourney() {
           });
         }
       }
+
       commands.push({ type: "complete_meal", recipeId: meal.recipeId });
     }
+
     if (commands.length === 0) return;
     applyAll(commands);
   };
 
   const wasteLeftovers = () => {
     const usedIngredientIds = new Set<string>();
+
     for (const meal of intelligence.plan) {
       for (const requirement of recipeRequirements(catalog, meal.recipe)) {
         usedIngredientIds.add(
@@ -154,6 +178,7 @@ export function KitchenJourney() {
         );
       }
     }
+
     const commands: KitchenCommand[] = deriveUseSoon(kitchen, catalog)
       .filter((entry) => !usedIngredientIds.has(entry.ingredientId))
       .map((entry) => ({
@@ -162,10 +187,13 @@ export function KitchenJourney() {
         quantity: entry.quantity,
         unit: entry.unit,
       }));
+
     if (commands.length === 0) {
       setError("No unrescued use-soon items to record as spoilage.");
+
       return;
     }
+
     applyAll(commands);
   };
 
@@ -180,8 +208,10 @@ export function KitchenJourney() {
   const resetPrototype = () => {
     if (!confirmReset) {
       setConfirmReset(true);
+
       return;
     }
+
     clearKitchen();
     setEdited(null);
     setConfirmReset(false);
@@ -226,6 +256,12 @@ export function KitchenJourney() {
       {error ? (
         <p role="alert" className={styles.error}>
           {error}
+        </p>
+      ) : null}
+
+      {storageWarning ? (
+        <p role="status" className={styles.error}>
+          {storageWarning}
         </p>
       ) : null}
 
@@ -281,6 +317,7 @@ export function KitchenJourney() {
                   checklist={checklist}
                   basketCost={intelligence.basket.totalCost}
                   toBuyCount={intelligence.basket.items.filter((item) => item.status === "buy").length}
+                  spoilageCandidates={intelligence.useSoon.length}
                   onReceiveBasket={receiveBasket}
                   onCookMeals={cookMeals}
                   onWasteLeftovers={wasteLeftovers}

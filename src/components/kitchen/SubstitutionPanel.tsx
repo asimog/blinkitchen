@@ -30,6 +30,7 @@ export function SubstitutionPanel({
             const decision = decisions?.find(
               (row) => row.substitutionId === suggestion.substitution.id,
             );
+
             return (
               <article key={suggestion.substitution.id} className={styles.suggestionCard}>
                 <div className={styles.suggestionHeading}>

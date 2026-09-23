@@ -5,6 +5,7 @@ import {
   normalizeQuantity,
   roundQuantity,
 } from "@/domain/units";
+import { z } from "zod";
 import type { Unit } from "@/domain/units";
 import { MAX_WEEKLY_MEALS, WEEK_MAX } from "@/domain/kitchen/types";
 import type { KitchenState, PantryItem, WeeklyChoices } from "@/domain/kitchen/types";
@@ -22,11 +23,32 @@ export type KitchenErrorCode =
   | "insufficient_stock"
   | "duplicate_selection"
   | "too_many_meals"
-  | "meal_already_completed";
+  | "meal_already_completed"
+  | "limit_reached";
 
 export type KitchenError = { code: KitchenErrorCode; message: string };
 
 export type CommandResult = { ok: true; state: KitchenState } | { ok: false; error: KitchenError };
+
+/**
+ * Caps that mirror the Zod schema. Anything reachable through commands must be
+ * storable, otherwise actions would appear to work and silently fail to save.
+ */
+const MAX_QUANTITY = 1_000_000;
+
+const MAX_GROCERY_LINES = 200;
+
+const MAX_PANTRY_ROWS = 200;
+
+const MAX_GROCERY_FACTS = 5_000;
+
+const MAX_CONSUMPTION_FACTS = 5_000;
+
+const MAX_MEAL_FACTS = 2_000;
+
+const MAX_SKIPPED_RECIPES = 50;
+
+const MAX_SUBSTITUTION_DECISIONS = 50;
 
 export type GroceryLine = { ingredientId: string; quantity: number; unit: Unit };
 
@@ -46,6 +68,7 @@ function fail(code: KitchenErrorCode, message: string): CommandResult {
 
 function withChoices(state: KitchenState, choices: WeeklyChoices): KitchenState {
   const others = state.weeklyChoices.filter((row) => row.week !== choices.week);
+
   return { ...state, weeklyChoices: [...others, choices].sort((a, b) => a.week - b.week) };
 }
 
@@ -53,9 +76,18 @@ function validateQuantity(quantity: number, unit: Unit): KitchenError | null {
   if (!Number.isFinite(quantity) || quantity <= 0) {
     return { code: "invalid_quantity", message: "Quantity must be a positive finite number" };
   }
+
+  if (quantity > MAX_QUANTITY) {
+    return {
+      code: "invalid_quantity",
+      message: `Quantity must not exceed ${MAX_QUANTITY}`,
+    };
+  }
+
   if (!isUnit(unit)) {
     return { code: "invalid_command", message: `Unsupported unit: ${String(unit)}` };
   }
+
   return null;
 }
 
@@ -68,10 +100,14 @@ function addToPantry(
   week: number,
 ): PantryItem[] {
   const received = normalizeQuantity(quantity, unit);
+
   const existingIndex = pantry.findIndex(
     (item) => item.ingredientId === ingredientId && canonicalUnitOf(item.unit) === received.unit,
   );
-  if (existingIndex === -1) {
+
+  const existing = existingIndex === -1 ? undefined : pantry[existingIndex];
+
+  if (!existing) {
     return [
       ...pantry,
       {
@@ -83,10 +119,11 @@ function addToPantry(
       },
     ];
   }
-  const existing = pantry[existingIndex] as PantryItem;
+
   const existingCanonical = normalizeQuantity(existing.quantity, existing.unit);
   const merged = roundQuantity(existingCanonical.quantity + received.quantity);
   const mergedInExistingUnit = convertQuantity(merged, existingCanonical.unit, existing.unit);
+
   return pantry.map((item, index) =>
     index === existingIndex
       ? { ...item, quantity: mergedInExistingUnit ?? merged, acquiredWeek: week }
@@ -107,14 +144,17 @@ function drainPantry(
   const requested = normalizeQuantity(quantity, unit);
   let remaining = requested.quantity;
   const drained = pantry.map((item) => ({ ...item }));
+
   for (const { index } of pantryRowsFor(pantry, ingredientId, unit)) {
     if (remaining <= 0) break;
     const row = drained[index];
+
     if (!row) continue;
     const rowCanonical = normalizeQuantity(row.quantity, row.unit);
     const take = Math.min(rowCanonical.quantity, remaining);
     remaining = roundQuantity(remaining - take);
     const leftCanonical = roundQuantity(rowCanonical.quantity - take);
+
     if (leftCanonical <= 0) {
       drained[index] = { ...row, quantity: 0 };
     } else {
@@ -122,6 +162,7 @@ function drainPantry(
       drained[index] = { ...row, quantity: leftInRowUnit ?? leftCanonical };
     }
   }
+
   return drained.filter((item) => item.quantity > 0);
 }
 
@@ -131,27 +172,39 @@ function applyConsumption(
   kind: "used" | "wasted",
 ): CommandResult {
   const invalid = validateQuantity(command.quantity, command.unit);
+
   if (invalid) return { ok: false, error: invalid };
+
   if (!command.ingredientId) {
     return fail("invalid_command", "An ingredient id is required");
   }
 
+  if (state.consumptionFacts.length >= MAX_CONSUMPTION_FACTS) {
+    return fail("limit_reached", "This kitchen has reached its consumption history limit");
+  }
+
   const rows = pantryRowsFor(state.pantry, command.ingredientId, command.unit);
+
   if (rows.length === 0) {
     const hasAnyStock = state.pantry.some((item) => item.ingredientId === command.ingredientId);
+
     if (hasAnyStock) {
       return fail(
         "unit_mismatch",
         `Pantry stock for ${command.ingredientId} is not measured in a compatible unit`,
       );
     }
+
     return fail("insufficient_stock", `No ${command.ingredientId} in the pantry`);
   }
+
   const requested = normalizeQuantity(command.quantity, command.unit);
+
   const available = rows.reduce(
     (total, { item }) => total + normalizeQuantity(item.quantity, item.unit).quantity,
     0,
   );
+
   if (available + 1e-9 < requested.quantity) {
     return fail(
       "insufficient_stock",
@@ -167,6 +220,7 @@ function applyConsumption(
     unit: requested.unit,
     kind,
   };
+
   return {
     ok: true,
     state: {
@@ -196,14 +250,27 @@ export function applyKitchenCommand(
       if (!Array.isArray(command.lines) || command.lines.length === 0) {
         return fail("invalid_command", "A grocery receipt needs at least one line");
       }
+
+      if (command.lines.length > MAX_GROCERY_LINES) {
+        return fail("limit_reached", `A grocery receipt holds at most ${MAX_GROCERY_LINES} lines`);
+      }
+
+      if (state.groceryFacts.length + command.lines.length > MAX_GROCERY_FACTS) {
+        return fail("limit_reached", "This kitchen has reached its grocery history limit");
+      }
+
       let pantry = state.pantry;
       const facts = [...state.groceryFacts];
+
       for (const line of command.lines) {
         const invalid = validateQuantity(line.quantity, line.unit);
+
         if (invalid) return { ok: false, error: invalid };
+
         if (!line.ingredientId) {
           return fail("invalid_command", "Every grocery line needs an ingredient id");
         }
+
         const normalized = normalizeQuantity(line.quantity, line.unit);
         pantry = addToPantry(pantry, line.ingredientId, line.quantity, line.unit, state.week);
         facts.push({
@@ -214,6 +281,11 @@ export function applyKitchenCommand(
           unit: normalized.unit,
         });
       }
+
+      if (pantry.length > MAX_PANTRY_ROWS) {
+        return fail("limit_reached", `A pantry holds at most ${MAX_PANTRY_ROWS} rows`);
+      }
+
       return { ok: true, state: { ...state, pantry, groceryFacts: facts } };
     }
 
@@ -224,17 +296,24 @@ export function applyKitchenCommand(
       return applyConsumption(state, command, "wasted");
 
     case "select_meals": {
-      const recipeIds = command.recipeIds;
-      if (!Array.isArray(recipeIds) || recipeIds.some((id) => typeof id !== "string" || !id)) {
+      const parsedIds = z.array(z.string().min(1)).safeParse(command.recipeIds);
+
+      if (!parsedIds.success) {
         return fail("invalid_command", "Meal selection needs recipe ids");
       }
+
+      const recipeIds = parsedIds.data;
+
       if (recipeIds.length > MAX_WEEKLY_MEALS) {
         return fail("too_many_meals", `A week holds at most ${MAX_WEEKLY_MEALS} meals`);
       }
+
       if (new Set(recipeIds).size !== recipeIds.length) {
         return fail("duplicate_selection", "The same recipe cannot be selected twice in a week");
       }
+
       const choices = choicesForWeek(state, state.week);
+
       return {
         ok: true,
         state: withChoices(state, { ...choices, selectedRecipeIds: [...recipeIds] }),
@@ -244,9 +323,18 @@ export function applyKitchenCommand(
     case "skip_recommendation": {
       if (!command.recipeId) return fail("invalid_command", "A recipe id is required");
       const choices = choicesForWeek(state, state.week);
+
+      if (
+        !choices.skippedRecipeIds.includes(command.recipeId) &&
+        choices.skippedRecipeIds.length >= MAX_SKIPPED_RECIPES
+      ) {
+        return fail("limit_reached", `A week holds at most ${MAX_SKIPPED_RECIPES} skips`);
+      }
+
       const skipped = choices.skippedRecipeIds.includes(command.recipeId)
         ? choices.skippedRecipeIds
         : [...choices.skippedRecipeIds, command.recipeId];
+
       return { ok: true, state: withChoices(state, { ...choices, skippedRecipeIds: skipped }) };
     }
 
@@ -254,53 +342,81 @@ export function applyKitchenCommand(
       if (!command.substitutionId) {
         return fail("invalid_command", "A substitution id is required");
       }
+
       const choices = choicesForWeek(state, state.week);
+
       const existing = choices.substitutionDecisions.find(
         (decision) => decision.substitutionId === command.substitutionId,
       );
+
       if (existing && existing.accepted === command.accepted) {
         return { ok: true, state };
       }
+
+      if (!existing && choices.substitutionDecisions.length >= MAX_SUBSTITUTION_DECISIONS) {
+        return fail(
+          "limit_reached",
+          `A week holds at most ${MAX_SUBSTITUTION_DECISIONS} substitution decisions`,
+        );
+      }
+
       const decisions = [
         ...choices.substitutionDecisions.filter(
           (decision) => decision.substitutionId !== command.substitutionId,
         ),
         { substitutionId: command.substitutionId, accepted: command.accepted },
       ];
+
       return { ok: true, state: withChoices(state, { ...choices, substitutionDecisions: decisions }) };
     }
 
     case "complete_meal": {
       if (!command.recipeId) return fail("invalid_command", "A recipe id is required");
+
       const already = state.mealFacts.some(
         (fact) => fact.week === state.week && fact.recipeId === command.recipeId,
       );
+
       if (already) {
         return fail("meal_already_completed", "This meal is already completed for this week");
       }
+
+      if (state.mealFacts.length >= MAX_MEAL_FACTS) {
+        return fail("limit_reached", "This kitchen has reached its meal history limit");
+      }
+
       const fact = {
         id: `meal-${state.week}-${state.mealFacts.length}`,
         week: state.week,
         recipeId: command.recipeId,
       };
+
       return { ok: true, state: { ...state, mealFacts: [...state.mealFacts, fact] } };
     }
 
     case "complete_week": {
       const choices = choicesForWeek(state, state.week);
+
       if (choices.completed) {
         return fail("week_already_completed", `Week ${state.week} is already complete`);
       }
+
       const completedState = withChoices(state, { ...choices, completed: true });
+
       if (state.week >= WEEK_MAX) {
         return { ok: true, state: completedState };
       }
+
       return { ok: true, state: { ...completedState, week: state.week + 1 } };
     }
 
     default: {
-      const unknown = command as { type?: string };
-      return fail("invalid_command", `Unknown command: ${String(unknown.type)}`);
+      // SAFETY: the switch above is exhaustive for KitchenCommand, so this
+      // branch is reachable only when a caller bypasses TypeScript with a
+      // malformed command object; reading only `type` cannot fail.
+      const malformed = command as { type?: string };
+
+      return fail("invalid_command", `Unknown command: ${String(malformed.type)}`);
     }
   }
 }

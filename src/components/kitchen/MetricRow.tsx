@@ -1,5 +1,6 @@
 import { formatRupees } from "@/domain/units";
 import type { WeekIntelligence } from "@/intelligence";
+import { MetricCard } from "@/components/kitchen/MetricCard";
 import styles from "@/components/kitchen/kitchen.module.css";
 
 export function MetricRow({ intelligence }: { intelligence: WeekIntelligence }) {
@@ -7,33 +8,28 @@ export function MetricRow({ intelligence }: { intelligence: WeekIntelligence }) 
   const useSoonCount = intelligence.useSoon.length;
 
   return (
-    <div className={styles.metrics}>
-      <div className={styles.metric}>
-        <p className={styles.metricLabel}>Pantry coverage</p>
-        <p className={styles.metricValue}>{Math.round(intelligence.coverage.percent)}%</p>
-        <p className={styles.metricHint}>
-          of this plan&apos;s value is already home
-        </p>
-      </div>
-      <div className={`${styles.metric} ${styles.metricAccent}`}>
-        <p className={styles.metricLabel}>Simulated basket</p>
-        <p className={styles.metricValue}>{formatRupees(intelligence.basket.totalCost)}</p>
-        <p className={styles.metricHint}>estimated, nothing is ordered</p>
-      </div>
-      <div className={styles.metric}>
-        <p className={styles.metricLabel}>Ingredients to buy</p>
-        <p className={styles.metricValue}>{toBuy}</p>
-        <p className={styles.metricHint}>
-          {intelligence.basket.items.length - toBuy} already covered
-        </p>
-      </div>
-      <div className={styles.metric}>
-        <p className={styles.metricLabel}>Use soon</p>
-        <p className={styles.metricValue}>{useSoonCount}</p>
-        <p className={styles.metricHint}>
-          {useSoonCount === 0 ? "nothing at risk this week" : "items worth cooking first"}
-        </p>
-      </div>
-    </div>
+    <dl className={styles.metrics} aria-label="This week at a glance">
+      <MetricCard
+        label="Pantry coverage"
+        value={`${Math.round(intelligence.coverage.percent)}%`}
+        hint="of this plan's value is already home"
+      />
+      <MetricCard
+        label="Simulated basket"
+        value={formatRupees(intelligence.basket.totalCost)}
+        hint="estimated, nothing is ordered"
+        accent
+      />
+      <MetricCard
+        label="Ingredients to buy"
+        value={String(toBuy)}
+        hint={`${intelligence.basket.items.length - toBuy} already covered`}
+      />
+      <MetricCard
+        label="Use soon"
+        value={String(useSoonCount)}
+        hint={useSoonCount === 0 ? "nothing at risk this week" : "items worth cooking first"}
+      />
+    </dl>
   );
 }

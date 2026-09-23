@@ -27,9 +27,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `npm run dev -- --port ${PORT}`,
+    // Tests run against a production build: it is what ships, it is faster,
+    // and it avoids the dev-server's persistent-cache noise on slow volumes.
+    // Stop any running `npm run dev` first (Next refuses a second dev server).
+    command: `npm run build && npm run start -- --port ${PORT}`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 180_000,
   },
 });

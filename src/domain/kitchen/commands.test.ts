@@ -5,17 +5,20 @@ import { makeKitchen, pantryItem } from "@/test-utils/kitchen";
 
 function expectOk(result: ReturnType<typeof applyKitchenCommand>) {
   if (!result.ok) throw new Error(`Expected ok, got ${result.error.code}: ${result.error.message}`);
+
   return result.state;
 }
 
 function expectErr(result: ReturnType<typeof applyKitchenCommand>) {
   if (result.ok) throw new Error("Expected failure");
+
   return result.error;
 }
 
 describe("receive_grocery", () => {
   it("records facts and merges stock, converting compatible units", () => {
     const state = makeKitchen({}, {}, [pantryItem("onion", 500, "g")]);
+
     const next = expectOk(
       applyKitchenCommand(state, {
         type: "receive_grocery",
@@ -25,6 +28,7 @@ describe("receive_grocery", () => {
         ],
       }),
     );
+
     expect(pantryQuantity(next, "onion", "g")).toBe(1500);
     expect(pantryQuantity(next, "rice", "g")).toBe(500);
     expect(next.groceryFacts).toHaveLength(2);
@@ -35,12 +39,14 @@ describe("receive_grocery", () => {
 
   it("keeps incompatible units as separate rows", () => {
     const state = makeKitchen({}, {}, [pantryItem("lemon", 4, "piece")]);
+
     const next = expectOk(
       applyKitchenCommand(state, {
         type: "receive_grocery",
         lines: [{ ingredientId: "lemon", quantity: 200, unit: "g" }],
       }),
     );
+
     expect(next.pantry.filter((item) => item.ingredientId === "lemon")).toHaveLength(2);
   });
 
@@ -66,6 +72,7 @@ describe("consume and waste", () => {
       pantryItem("onion", 1, "kg"),
       pantryItem("rice", 500, "g"),
     ]);
+
     const next = expectOk(
       applyKitchenCommand(state, {
         type: "consume_ingredient",
@@ -74,6 +81,7 @@ describe("consume and waste", () => {
         unit: "g",
       }),
     );
+
     expect(pantryQuantity(next, "onion", "g")).toBe(750);
     expect(next.consumptionFacts[0]?.kind).toBe("used");
 
@@ -85,6 +93,7 @@ describe("consume and waste", () => {
         unit: "g",
       }),
     );
+
     expect(emptied.pantry.some((item) => item.ingredientId === "rice")).toBe(false);
   });
 
@@ -93,6 +102,7 @@ describe("consume and waste", () => {
       pantryItem("spinach", 200, "g", { acquiredWeek: 2 }),
       pantryItem("spinach", 100, "g", { useSoon: true, acquiredWeek: 1 }),
     ]);
+
     const next = expectOk(
       applyKitchenCommand(state, {
         type: "consume_ingredient",
@@ -101,6 +111,7 @@ describe("consume and waste", () => {
         unit: "g",
       }),
     );
+
     const rows = next.pantry.filter((item) => item.ingredientId === "spinach");
     expect(rows.find((item) => item.useSoon)?.quantity).toBe(20);
     expect(rows.find((item) => !item.useSoon)?.quantity).toBe(200);
@@ -108,6 +119,7 @@ describe("consume and waste", () => {
 
   it("never allows stock to go negative", () => {
     const state = makeKitchen({}, {}, [pantryItem("paneer", 200, "g")]);
+
     const error = expectErr(
       applyKitchenCommand(state, {
         type: "consume_ingredient",
@@ -116,6 +128,7 @@ describe("consume and waste", () => {
         unit: "g",
       }),
     );
+
     expect(error.code).toBe("insufficient_stock");
     expect(pantryQuantity(state, "paneer", "g")).toBe(200);
   });
@@ -148,6 +161,7 @@ describe("consume and waste", () => {
 
   it("records waste separately from use", () => {
     const state = makeKitchen({}, {}, [pantryItem("spinach", 300, "g", { useSoon: true })]);
+
     const next = expectOk(
       applyKitchenCommand(state, {
         type: "waste_ingredient",
@@ -156,6 +170,7 @@ describe("consume and waste", () => {
         unit: "g",
       }),
     );
+
     expect(next.consumptionFacts[0]?.kind).toBe("wasted");
     expect(pantryQuantity(next, "spinach", "g")).toBe(0);
   });
@@ -164,9 +179,11 @@ describe("consume and waste", () => {
 describe("weekly choices", () => {
   it("stores selected meals, rejecting duplicates and oversized plans", () => {
     const state = makeKitchen();
+
     const next = expectOk(
       applyKitchenCommand(state, { type: "select_meals", recipeIds: ["rajma_chawal", "chole"] }),
     );
+
     expect(choicesForWeek(next, 1).selectedRecipeIds).toEqual(["rajma_chawal", "chole"]);
 
     expect(
@@ -187,6 +204,7 @@ describe("weekly choices", () => {
 
   it("records substitution decisions once and allows changing the mind", () => {
     const state = makeKitchen();
+
     const accepted = expectOk(
       applyKitchenCommand(state, {
         type: "decide_substitution",
@@ -194,6 +212,7 @@ describe("weekly choices", () => {
         accepted: true,
       }),
     );
+
     expect(choicesForWeek(accepted, 1).substitutionDecisions).toEqual([
       { substitutionId: "paneer_to_tofu", accepted: true },
     ]);
@@ -205,6 +224,7 @@ describe("weekly choices", () => {
         accepted: true,
       }),
     );
+
     expect(unchanged).toBe(accepted);
 
     const rejected = expectOk(
@@ -214,6 +234,7 @@ describe("weekly choices", () => {
         accepted: false,
       }),
     );
+
     expect(choicesForWeek(rejected, 1).substitutionDecisions).toEqual([
       { substitutionId: "paneer_to_tofu", accepted: false },
     ]);
@@ -221,15 +242,185 @@ describe("weekly choices", () => {
 
   it("completes a meal at most once per week", () => {
     const state = makeKitchen();
+
     const next = expectOk(
       applyKitchenCommand(state, { type: "complete_meal", recipeId: "rajma_chawal" }),
     );
+
     expect(next.mealFacts).toHaveLength(1);
     expect(
       expectErr(
         applyKitchenCommand(next, { type: "complete_meal", recipeId: "rajma_chawal" }),
       ).code,
     ).toBe("meal_already_completed");
+  });
+});
+
+describe("command limits mirror the storage schema", () => {
+  it("rejects quantities beyond the storable range", () => {
+    const state = makeKitchen();
+    expect(
+      expectErr(
+        applyKitchenCommand(state, {
+          type: "receive_grocery",
+          lines: [{ ingredientId: "rice", quantity: 1_000_001, unit: "g" }],
+        }),
+      ).code,
+    ).toBe("invalid_quantity");
+  });
+
+  it("rejects oversized grocery receipts", () => {
+    const state = makeKitchen();
+
+    const lines = Array.from({ length: 201 }, () => ({
+      ingredientId: "rice",
+      quantity: 1,
+      unit: "g" as const,
+    }));
+
+    expect(expectErr(applyKitchenCommand(state, { type: "receive_grocery", lines })).code).toBe(
+      "limit_reached",
+    );
+  });
+
+  it("stops before exceeding the grocery fact history", () => {
+    const state = makeKitchen({
+      groceryFacts: Array.from({ length: 5_000 }, (_, index) => ({
+        id: `grocery-1-${index}`,
+        week: 1 as const,
+        ingredientId: "rice",
+        quantity: 1,
+        unit: "g" as const,
+      })),
+    });
+
+    expect(
+      expectErr(
+        applyKitchenCommand(state, {
+          type: "receive_grocery",
+          lines: [{ ingredientId: "rice", quantity: 1, unit: "g" }],
+        }),
+      ).code,
+    ).toBe("limit_reached");
+  });
+
+  it("stops before exceeding consumption and meal histories", () => {
+    const consumptionHeavy = makeKitchen({
+      consumptionFacts: Array.from({ length: 5_000 }, (_, index) => ({
+        id: `used-1-${index}`,
+        week: 1 as const,
+        ingredientId: "rice",
+        quantity: 1,
+        unit: "g" as const,
+        kind: "used" as const,
+      })),
+      pantry: [pantryItem("rice", 500, "g")],
+    });
+
+    expect(
+      expectErr(
+        applyKitchenCommand(consumptionHeavy, {
+          type: "consume_ingredient",
+          ingredientId: "rice",
+          quantity: 10,
+          unit: "g",
+        }),
+      ).code,
+    ).toBe("limit_reached");
+
+    const mealHeavy = makeKitchen({
+      mealFacts: Array.from({ length: 2_000 }, (_, index) => ({
+        id: `meal-1-${index}`,
+        week: 1 as const,
+        recipeId: `recipe-${index}`,
+      })),
+    });
+
+    expect(
+      expectErr(
+        applyKitchenCommand(mealHeavy, { type: "complete_meal", recipeId: "rajma_chawal" }),
+      ).code,
+    ).toBe("limit_reached");
+  });
+
+  it("caps weekly skips and substitution decisions", () => {
+    const skippedHeavy = makeKitchen({
+      weeklyChoices: [
+        {
+          week: 1,
+          selectedRecipeIds: [],
+          skippedRecipeIds: Array.from({ length: 50 }, (_, index) => `recipe-${index}`),
+          substitutionDecisions: [],
+          completed: false,
+        },
+      ],
+    });
+
+    expect(
+      expectErr(
+        applyKitchenCommand(skippedHeavy, { type: "skip_recommendation", recipeId: "one-more" }),
+      ).code,
+    ).toBe("limit_reached");
+
+    const decisionHeavy = makeKitchen({
+      weeklyChoices: [
+        {
+          week: 1,
+          selectedRecipeIds: [],
+          skippedRecipeIds: [],
+          substitutionDecisions: Array.from({ length: 50 }, (_, index) => ({
+            substitutionId: `swap-${index}`,
+            accepted: true,
+          })),
+          completed: false,
+        },
+      ],
+    });
+
+    expect(
+      expectErr(
+        applyKitchenCommand(decisionHeavy, {
+          type: "decide_substitution",
+          substitutionId: "one-more",
+          accepted: true,
+        }),
+      ).code,
+    ).toBe("limit_reached");
+  });
+
+  it("allows changing an existing decision even at the cap", () => {
+    const atCap = makeKitchen({
+      weeklyChoices: [
+        {
+          week: 1,
+          selectedRecipeIds: [],
+          skippedRecipeIds: [],
+          substitutionDecisions: [
+            { substitutionId: "paneer_to_tofu", accepted: true },
+            ...Array.from({ length: 49 }, (_, index) => ({
+              substitutionId: `swap-${index}`,
+              accepted: true,
+            })),
+          ],
+          completed: false,
+        },
+      ],
+    });
+
+    const flipped = expectOk(
+      applyKitchenCommand(atCap, {
+        type: "decide_substitution",
+        substitutionId: "paneer_to_tofu",
+        accepted: false,
+      }),
+    );
+
+    expect(choicesForWeek(flipped, 1).substitutionDecisions).toHaveLength(50);
+    expect(
+      choicesForWeek(flipped, 1).substitutionDecisions.find(
+        (decision) => decision.substitutionId === "paneer_to_tofu",
+      )?.accepted,
+    ).toBe(false);
   });
 });
 
@@ -253,6 +444,7 @@ describe("week advancement", () => {
         },
       ],
     });
+
     expect(expectErr(applyKitchenCommand(state, { type: "complete_week" })).code).toBe(
       "week_already_completed",
     );
@@ -260,10 +452,12 @@ describe("week advancement", () => {
 
   it("stays within weeks 1..8 and terminates at week 8", () => {
     let state = makeKitchen();
+
     for (let week = 1; week <= 8; week += 1) {
       expect(state.week).toBe(week);
       state = expectOk(applyKitchenCommand(state, { type: "complete_week" }));
     }
+
     expect(state.week).toBe(8);
     expect(isJourneyComplete(state)).toBe(true);
 
@@ -271,6 +465,7 @@ describe("week advancement", () => {
       type: "receive_grocery",
       lines: [{ ingredientId: "rice", quantity: 1, unit: "kg" }],
     });
+
     expect(expectErr(rejected).code).toBe("journey_complete");
   });
 });

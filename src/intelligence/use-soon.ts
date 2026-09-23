@@ -1,4 +1,5 @@
 import type { Unit } from "@/domain/units";
+import { compareStrings } from "@/domain/order";
 import type { Catalog } from "@/catalog/types";
 import type { KitchenState } from "@/domain/kitchen/types";
 import { ingredientById } from "@/catalog/grocery-graph";
@@ -23,11 +24,13 @@ function stalenessWeeks(shelfLifeDays: number): number {
 
 export function deriveUseSoon(kitchen: KitchenState, catalog: Catalog): UseSoonEntry[] {
   const entries: UseSoonEntry[] = [];
+
   for (const item of kitchen.pantry) {
     if (item.quantity <= 0) continue;
     const ingredient = ingredientById(catalog, item.ingredientId);
     const ageWeeks = Math.max(0, kitchen.week - item.acquiredWeek);
     const stale = ingredient ? ageWeeks >= stalenessWeeks(ingredient.shelfLifeDays) : false;
+
     if (!item.useSoon && !stale) continue;
     entries.push({
       ingredientId: item.ingredientId,
@@ -37,7 +40,9 @@ export function deriveUseSoon(kitchen: KitchenState, catalog: Catalog): UseSoonE
       ageWeeks,
     });
   }
+
   return entries.sort(
-    (a, b) => a.ingredientId.localeCompare(b.ingredientId) || a.reason.localeCompare(b.reason),
+    (a, b) =>
+      compareStrings(a.ingredientId, b.ingredientId) || compareStrings(a.reason, b.reason),
   );
 }

@@ -1,4 +1,5 @@
 import { canonicalUnitOf } from "@/domain/units";
+import { compareStrings } from "@/domain/order";
 import type { Catalog, Ingredient, Product, Recipe, RecipeRequirement, Substitution } from "@/catalog/types";
 
 /**
@@ -24,8 +25,10 @@ export function locationById(catalog: Catalog, locationId: string): Catalog["loc
  */
 export function recipeRequirements(catalog: Catalog, recipe: Recipe): RecipeRequirement[] {
   const requirements: RecipeRequirement[] = [];
+
   for (const line of recipe.ingredients) {
     const ingredient = ingredientById(catalog, line.ingredientId);
+
     if (!ingredient) continue;
     requirements.push({
       ingredient,
@@ -34,6 +37,7 @@ export function recipeRequirements(catalog: Catalog, recipe: Recipe): RecipeRequ
       optional: line.optional,
     });
   }
+
   return requirements;
 }
 
@@ -64,7 +68,7 @@ export function resolveProductCandidates(
       (a, b) =>
         STATUS_RANK[a.inventoryStatus] - STATUS_RANK[b.inventoryStatus] ||
         a.price - b.price ||
-        a.skuId.localeCompare(b.skuId),
+        compareStrings(a.skuId, b.skuId),
     );
 }
 
@@ -85,6 +89,7 @@ export function findProductForUnit(
   unit: Catalog["products"][number]["unit"],
 ): Product | undefined {
   const target = canonicalUnitOf(unit);
+
   return resolveProductCandidates(catalog, ingredientId, locationId).find(
     (product) => canonicalUnitOf(product.unit) === target,
   );
@@ -106,10 +111,10 @@ export function listCuisines(catalog: Catalog): string[] {
 export function listStaples(catalog: Catalog): Ingredient[] {
   return catalog.ingredients
     .filter((ingredient) => ingredient.staple)
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => compareStrings(a.name, b.name));
 }
 
 /** All ingredients sorted by name, for pickers and pantry editors. */
 export function listIngredients(catalog: Catalog): Ingredient[] {
-  return [...catalog.ingredients].sort((a, b) => a.name.localeCompare(b.name));
+  return [...catalog.ingredients].sort((a, b) => compareStrings(a.name, b.name));
 }

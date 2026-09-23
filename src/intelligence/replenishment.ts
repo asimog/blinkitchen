@@ -1,4 +1,5 @@
 import { canonicalUnitOf, normalizeQuantity, roundQuantity } from "@/domain/units";
+import { compareStrings } from "@/domain/order";
 import type { Unit } from "@/domain/units";
 import type { Catalog } from "@/catalog/types";
 import { ingredientById } from "@/catalog/grocery-graph";
@@ -14,8 +15,11 @@ import { explainReplenishment } from "@/intelligence/explanations";
  */
 
 const RECENT_WINDOW = 5;
+
 const MIN_RECENT_WEEKS = 2;
+
 const LOW_STOCK_WEEKS = 1.5;
+
 const MAX_SUGGESTIONS = 5;
 
 type Usage = {
@@ -26,12 +30,15 @@ type Usage = {
 
 function usageByIngredient(kitchen: KitchenState, catalog: Catalog): Map<string, Usage> {
   const usage = new Map<string, Usage>();
+
   for (const fact of kitchen.consumptionFacts) {
     if (fact.kind !== "used") continue;
     const ingredient = ingredientById(catalog, fact.ingredientId);
+
     if (!ingredient) continue;
     const normalized = normalizeQuantity(fact.quantity, fact.unit);
     const existing = usage.get(fact.ingredientId);
+
     if (existing) {
       existing.weeks.add(fact.week);
       existing.totalCanonical = roundQuantity(existing.totalCanonical + normalized.quantity);
@@ -43,6 +50,7 @@ function usageByIngredient(kitchen: KitchenState, catalog: Catalog): Map<string,
       });
     }
   }
+
   return usage;
 }
 
@@ -56,13 +64,16 @@ export function recommendReplenishments(
 
   for (const [ingredientId, row] of usage) {
     const ingredient = ingredientById(catalog, ingredientId);
+
     if (!ingredient) continue;
     const usedWeeks = [...row.weeks].sort((a, b) => a - b);
     const recentWeeks = usedWeeks.filter((week) => week > kitchen.week - RECENT_WINDOW);
+
     if (recentWeeks.length < MIN_RECENT_WEEKS) continue;
 
     const windowStart = Math.max(1, kitchen.week - RECENT_WINDOW + 1);
     const weeksElapsed = kitchen.week - windowStart + 1;
+
     const recentQuantity = kitchen.consumptionFacts
       .filter(
         (fact) =>
@@ -71,20 +82,26 @@ export function recommendReplenishments(
           fact.week >= windowStart,
       )
       .reduce((total, fact) => total + normalizeQuantity(fact.quantity, fact.unit).quantity, 0);
+
     const weeklyBurn = recentQuantity / weeksElapsed;
+
     if (weeklyBurn <= 0) continue;
 
     const displayUnit = canonicalUnitOf(ingredient.commonUnits[0] ?? "g");
+
     const remaining = normalizeQuantity(
       pantryQuantity(kitchen, ingredientId, displayUnit),
       displayUnit,
     ).quantity;
+
     const weeksLeft = remaining / weeklyBurn;
+
     if (weeksLeft > LOW_STOCK_WEEKS) continue;
 
     const alreadyInBasket = basket.items.some(
       (item) => item.ingredientId === ingredientId && item.status === "buy",
     );
+
     if (alreadyInBasket) continue;
 
     const score = Math.min(
@@ -114,6 +131,6 @@ export function recommendReplenishments(
   }
 
   return suggestions
-    .sort((a, b) => b.score - a.score || a.ingredientId.localeCompare(b.ingredientId))
+    .sort((a, b) => b.score - a.score || compareStrings(a.ingredientId, b.ingredientId))
     .slice(0, MAX_SUGGESTIONS);
 }

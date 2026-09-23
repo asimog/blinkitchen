@@ -81,6 +81,7 @@ src/
     blinkit/          cohort lens rendering
   domain/
     units.ts          Unit type, dimension rules, normalizeQuantity
+    order.ts          compareStrings: locale-independent ordering for the core
     kitchen/          types.ts, schema.ts (Zod), commands.ts, state.ts
   catalog/            types.ts, schema.ts (Zod), load.ts, grocery-graph.ts
   intelligence/       index.ts (buildWeekIntelligence), meals, basket,
@@ -92,11 +93,17 @@ src/
                       use-stored-kitchen.ts (useSyncExternalStore reader)
   data/               seed JSON: ingredients, recipes, product templates,
                       substitutions, locations
+tools/oxlint/anti-slop  vendored anti-slop lint rules (see its UPSTREAM.md)
+oxlint.config.ts    anti-slop rule policy; .kilo/skills/install-anti-slop keeps
+                    the installer/updater bundle
 ```
 
 Everything under `src/domain`, `src/catalog`, `src/intelligence`, `src/simulation`
 and `src/insights` is verified pure by tests and lint conventions: no React, no
-browser APIs, no clocks, no randomness.
+browser APIs, no clocks, no randomness. Ordering inside the core uses
+`compareStrings` (code-unit comparison) rather than `localeCompare`, because
+collation depends on the runtime's ICU data and would break the determinism
+guarantee across environments.
 
 ## Deliberate deviations from the original specification
 

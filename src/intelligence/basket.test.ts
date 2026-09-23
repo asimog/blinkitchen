@@ -10,14 +10,18 @@ const catalog = loadCatalog();
 function plan(...recipeIds: string[]): PlannedMeal[] {
   return recipeIds.map((recipeId) => {
     const recipe = recipeById(catalog, recipeId);
+
     if (!recipe) throw new Error(`Unknown recipe ${recipeId}`);
+
     return { recipeId, recipe, source: "selected" as const };
   });
 }
 
 function itemFor(basket: ReturnType<typeof buildBasket>, ingredientId: string) {
   const item = basket.items.find((row) => row.ingredientId === ingredientId);
+
   if (!item) throw new Error(`No basket item for ${ingredientId}`);
+
   return item;
 }
 
@@ -47,6 +51,7 @@ describe("pantry-aware missing quantities", () => {
       pantryItem("ghee", 20, "ml"),
       pantryItem("salt", 6, "g"),
     ]);
+
     const basket = buildBasket(kitchen, catalog, plan("jeera_rice"));
     expect(basket.totalCost).toBe(0);
     expect(basket.items.every((item) => item.status === "covered")).toBe(true);
@@ -81,11 +86,13 @@ describe("pack math", () => {
   it("never selects out-of-stock SKUs", () => {
     for (const locationId of catalog.locations.map((location) => location.id)) {
       const kitchen = makeKitchen({}, { locationId, memberCount: 4 });
+
       const basket = buildBasket(
         kitchen,
         catalog,
         plan("rajma_chawal", "palak_paneer", "chole", "poha", "khichdi", "curd_rice"),
       );
+
       for (const item of basket.items) {
         expect(item.product?.inventoryStatus).not.toBe("out_of_stock");
       }
@@ -119,6 +126,7 @@ describe("accepted substitutions change the basket", () => {
       pantryItem("garam_masala", 5, "g"),
       pantryItem("salt", 8, "g"),
     ];
+
     const base = makeKitchen({}, {}, pantry);
     const plain = buildBasket(base, catalog, plan("palak_paneer"));
     expect(itemFor(plain, "paneer").status).toBe("buy");
@@ -138,6 +146,7 @@ describe("accepted substitutions change the basket", () => {
       {},
       pantry,
     );
+
     const swapped = buildBasket(accepted, catalog, plan("palak_paneer"));
     expect(swapped.items.some((item) => item.ingredientId === "paneer")).toBe(false);
     const tofu = itemFor(swapped, "tofu");

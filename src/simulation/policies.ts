@@ -45,11 +45,13 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
 
   const push = (command: KitchenCommand): void => {
     const result = applyKitchenCommand(projected, command);
+
     if (!result.ok) {
       throw new Error(
         `Simulation policy produced an invalid command (${result.error.code}): ${result.error.message}`,
       );
     }
+
     commands.push(command);
     projected = result.state;
   };
@@ -62,6 +64,7 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
   }
 
   const threshold = substitutionAcceptanceThreshold(kitchen);
+
   for (const suggestion of intelligence.substitutions) {
     if (suggestion.score >= threshold) {
       push({
@@ -79,6 +82,7 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
   }
 
   const decided = buildWeekIntelligence(projected, catalog);
+
   const lines = decided.basket.items
     .filter((item) => item.status === "buy" && item.purchasedQuantity > 0)
     .map((item) => ({
@@ -86,17 +90,21 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
       quantity: item.purchasedQuantity,
       unit: item.unit,
     }));
+
   if (lines.length > 0) {
     push({ type: "receive_grocery", lines });
   }
 
   const usedIngredientIds = new Set<string>();
+
   for (const meal of decided.plan) {
     const scale = kitchen.profile.memberCount / meal.recipe.servings;
+
     for (const requirement of recipeRequirements(catalog, meal.recipe)) {
       const effective = effectiveRequirement(projected, catalog, requirement);
       usedIngredientIds.add(effective.ingredientId);
       const quantity = roundQuantity(effective.quantity * scale);
+
       if (quantity > 0) {
         push({
           type: "consume_ingredient",
@@ -106,6 +114,7 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
         });
       }
     }
+
     push({ type: "complete_meal", recipeId: meal.recipeId });
   }
 
@@ -120,5 +129,6 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
   }
 
   push({ type: "complete_week" });
+
   return commands;
 };

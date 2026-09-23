@@ -2,6 +2,7 @@ import type { Unit } from "@/domain/units";
 
 /** Bounded week model: the prototype demonstrates Weeks 1 through 8. */
 export const WEEK_MIN = 1;
+
 export const WEEK_MAX = 8;
 
 /** Maximum number of meals a household can select for one week. */

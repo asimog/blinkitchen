@@ -15,21 +15,27 @@ export function cheapestUnitCost(
   locationId: string,
 ): number | undefined {
   const product = findProduct(catalog, ingredientId, locationId);
+
   if (!product) return undefined;
   const pack = normalizeQuantity(product.packSize, product.unit);
+
   if (pack.quantity <= 0) return undefined;
+
   return product.price / pack.quantity;
 }
 
 /** Simulated cost of a recipe's published quantities at catalog prices. */
-export function estimateRecipeCost(catalog: Catalog, recipe: Recipe, locationId: string): number {
+function estimateRecipeCost(catalog: Catalog, recipe: Recipe, locationId: string): number {
   let total = 0;
+
   for (const requirement of recipeRequirements(catalog, recipe)) {
     const unitCost = cheapestUnitCost(catalog, requirement.ingredient.id, locationId);
+
     if (unitCost === undefined) continue;
     const amount = normalizeQuantity(requirement.quantity, requirement.unit);
     total += amount.quantity * unitCost;
   }
+
   return roundQuantity(total);
 }
 
@@ -51,8 +57,11 @@ export function unitCostOrZero(
 ): number {
   const canonical = canonicalUnitOf(unit);
   const product = findProduct(catalog, ingredientId, locationId);
+
   if (!product || canonicalUnitOf(product.unit) !== canonical) return 0;
   const pack = normalizeQuantity(product.packSize, product.unit);
+
   if (pack.quantity <= 0) return 0;
+
   return product.price / pack.quantity;
 }

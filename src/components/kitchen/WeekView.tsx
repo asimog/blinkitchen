@@ -50,6 +50,9 @@ export function WeekView({
 
   return (
     <div>
+      <h1 className="sr-only">
+        {householdName} — Week {kitchen.week} of 8
+      </h1>
       <WeekHeader
         week={kitchen.week}
         householdName={householdName}

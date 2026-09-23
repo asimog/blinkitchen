@@ -14,6 +14,7 @@ export function DecisionChips({
   label: string;
 }) {
   if (decisions.length === 0) return null;
+
   const nameOf = (ingredientId: string) =>
     ingredientById(catalog, ingredientId)?.name ?? ingredientId;
 
@@ -26,9 +27,11 @@ export function DecisionChips({
         const substitution = catalog.substitutions.find(
           (row) => row.id === decision.substitutionId,
         );
+
         if (!substitution) return null;
         const requested = nameOf(substitution.requestedIngredientId);
         const substitute = nameOf(substitution.substituteIngredientId);
+
         return (
           <span
             key={decision.substitutionId}

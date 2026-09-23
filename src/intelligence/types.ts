@@ -61,6 +61,17 @@ export type PlannedMeal = {
 
 export type BasketItemStatus = "covered" | "buy" | "unavailable";
 
+/**
+ * A recipe requirement after this week's accepted substitutions: what the
+ * kitchen actually needs to buy, cook and consume.
+ */
+export type EffectiveRequirement = {
+  ingredientId: string;
+  quantity: number;
+  unit: Unit;
+  substitution?: Substitution;
+};
+
 export type BasketItem = {
   ingredientId: string;
   ingredient: Ingredient;

@@ -55,7 +55,7 @@ describe("kitchen storage", () => {
 
   it("refuses to save state that would fail validation", () => {
     const storage = new MemoryStorage();
-    const invalid = { ...makeKitchen(), week: 42 } as ReturnType<typeof makeKitchen>;
+    const invalid = { ...makeKitchen(), week: 42 };
     expect(saveKitchen(invalid, storage)).toBe(false);
     expect(storage.raw(KITCHEN_STORAGE_KEY)).toBeUndefined();
   });
@@ -79,6 +79,7 @@ describe("kitchen storage", () => {
         throw new Error("denied");
       },
     };
+
     expect(loadKitchen(hostile)).toBeNull();
     expect(saveKitchen(makeKitchen(), hostile)).toBe(false);
     expect(() => clearKitchen(hostile)).not.toThrow();
@@ -89,6 +90,7 @@ describe("kitchen storage", () => {
     const kitchen = makeKitchen();
     saveKitchen(kitchen, storage);
     const raw = storage.raw(KITCHEN_STORAGE_KEY) ?? "";
+
     for (const forbidden of ["recommend", "basket", "coverage", "score", "learning"]) {
       expect(raw.toLowerCase()).not.toContain(forbidden);
     }

@@ -12,6 +12,8 @@ export default async function ExploreHouseholdPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
   if (!fixtureById(id)) notFound();
+
   return <ExploreJourney fixtureId={id} />;
 }

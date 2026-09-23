@@ -29,6 +29,7 @@ export function makeKitchen(
     profile: { ...testProfile, ...profileOverrides },
     pantry,
   });
+
   return { ...state, ...overrides };
 }
 

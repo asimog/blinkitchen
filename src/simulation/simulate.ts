@@ -24,7 +24,7 @@ export class SimulationError extends Error {
   }
 }
 
-export type WeekResult =
+type WeekResult =
   | { ok: true; state: KitchenState }
   | { ok: false; command: KitchenCommand; error: KitchenError };
 
@@ -37,13 +37,17 @@ export function simulateWeek(
   const intelligence = buildWeekIntelligence(kitchen, catalog);
   const commands = policy(kitchen, catalog, intelligence);
   let state = kitchen;
+
   for (const command of commands) {
     const result = applyKitchenCommand(state, command);
+
     if (!result.ok) {
       return { ok: false, command, error: result.error };
     }
+
     state = result.state;
   }
+
   return { ok: true, state };
 }
 
@@ -65,15 +69,18 @@ export function simulateJourney(
 
   while (state.week < target && !isJourneyComplete(state)) {
     const result = simulateWeek(state, catalog, policy);
+
     if (!result.ok) {
       throw new SimulationError(state.week, result.command, result.error);
     }
+
     if (result.state.week === state.week && !isJourneyComplete(result.state)) {
       throw new SimulationError(state.week, { type: "complete_week" }, {
         code: "invalid_command",
         message: "Policy did not advance the week or complete the journey",
       });
     }
+
     state = result.state;
     states.push(state);
   }

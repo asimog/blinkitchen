@@ -1,4 +1,5 @@
 import { ingredientById } from "@/catalog/grocery-graph";
+import { compareStrings } from "@/domain/order";
 import type { Catalog } from "@/catalog/types";
 import type { KitchenState } from "@/domain/kitchen/types";
 import type { WeekIntelligence } from "@/intelligence";
@@ -15,12 +16,15 @@ export function LearningPanel({
   catalog: Catalog;
 }) {
   const { learning } = intelligence;
+
   const cuisines = Object.entries(learning.cuisineAffinity).sort(
-    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+    (a, b) => b[1] - a[1] || compareStrings(a[0], b[0]),
   );
+
   const substitutionMemory = Object.entries(learning.substitutionAffinity).sort(
-    (a, b) => Math.abs(b[1]) - Math.abs(a[1]) || a[0].localeCompare(b[0]),
+    (a, b) => Math.abs(b[1]) - Math.abs(a[1]) || compareStrings(a[0], b[0]),
   );
+
   const nameOf = (ingredientId: string) =>
     ingredientById(catalog, ingredientId)?.name ?? ingredientId;
 
@@ -66,6 +70,7 @@ export function LearningPanel({
               <ul className={styles.chipList}>
                 {substitutionMemory.map(([key, affinity]) => {
                   const [requested, substitute] = key.split("->");
+
                   return (
                     <li
                       key={key}

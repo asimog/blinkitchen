@@ -14,10 +14,12 @@ import type { KitchenState } from "@/domain/kitchen/types";
  */
 
 let cachedRaw: string | null = null;
+
 let cachedKitchen: KitchenState | null = null;
 
 function browserStorage(): StorageLike | null {
   if (typeof window === "undefined") return null;
+
   try {
     return window.localStorage;
   } catch {
@@ -27,7 +29,9 @@ function browserStorage(): StorageLike | null {
 
 function readRaw(): string | null {
   const storage = browserStorage();
+
   if (!storage) return null;
+
   try {
     return storage.getItem(KITCHEN_STORAGE_KEY);
   } catch {
@@ -37,10 +41,12 @@ function readRaw(): string | null {
 
 function getSnapshot(): KitchenState | null {
   const raw = readRaw();
+
   if (raw !== cachedRaw) {
     cachedRaw = raw;
     cachedKitchen = loadKitchen();
   }
+
   return cachedKitchen;
 }
 

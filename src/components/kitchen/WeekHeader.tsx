@@ -22,12 +22,14 @@ export function WeekHeader({
         <div className={styles.pips} role="img" aria-label={`Week ${week} of ${WEEK_MAX}`}>
           {Array.from({ length: WEEK_MAX }, (_, index) => {
             const weekNumber = index + 1;
+
             const className =
               weekNumber < week
                 ? `${styles.pip} ${styles.pipDone}`
                 : weekNumber === week
                   ? `${styles.pip} ${styles.pipActive}`
                   : styles.pip;
+
             return <span key={weekNumber} className={className} />;
           })}
         </div>

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { loadCatalog } from "@/catalog/load";
+import { compareStrings } from "@/domain/order";
 import {
   findProduct,
   findProductForUnit,
@@ -46,14 +47,17 @@ describe("product candidates", () => {
 
   it("orders deterministically: availability, then price, then sku", () => {
     const candidates = resolveProductCandidates(catalog, "rice", "delhi_south");
+
     const sorted = [...candidates].sort((a, b) => {
       const rank = { in_stock: 0, low_stock: 1, out_of_stock: 2 } as const;
+
       return (
         rank[a.inventoryStatus] - rank[b.inventoryStatus] ||
         a.price - b.price ||
-        a.skuId.localeCompare(b.skuId)
+        compareStrings(a.skuId, b.skuId)
       );
     });
+
     expect(candidates).toEqual(sorted);
   });
 
@@ -86,6 +90,6 @@ describe("substitutions and listings", () => {
     expect(cuisines).toContain("punjabi");
     expect(listStaples(catalog).every((ingredient) => ingredient.staple)).toBe(true);
     const names = listIngredients(catalog).map((ingredient) => ingredient.name);
-    expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)));
+    expect(names).toEqual([...names].sort((a, b) => compareStrings(a, b)));
   });
 });

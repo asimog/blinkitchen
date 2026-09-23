@@ -4,6 +4,7 @@ import type { Unit } from "@/domain/units";
 /** Display a stored pantry quantity in canonical, human-readable form. */
 export function displayQuantity(quantity: number, unit: Unit): string {
   const normalized = normalizeQuantity(quantity, unit);
+
   return formatQuantity(normalized.quantity, normalized.unit);
 }
 

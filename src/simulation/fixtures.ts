@@ -7,7 +7,7 @@ import type { KitchenProfile, KitchenState, PantryItem } from "@/domain/kitchen/
  * driving the same engine. Behaviour differences must emerge, not be coded.
  */
 
-export type ArchetypeId =
+type ArchetypeId =
   | "pantry_planner"
   | "cuisine_explorer"
   | "value_optimizer"

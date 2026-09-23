@@ -18,6 +18,6 @@ export async function completeWizard(page: Page, householdName: string): Promise
   await page.getByRole("button", { name: "Start Week 1" }).click();
 
   await expect(page).toHaveURL(/\/kitchen$/);
-  await expect(page.getByText("Week 1 of 8")).toBeVisible();
-  await expect(page.getByRole("heading", { name: householdName })).toBeVisible();
+  await expect(page.getByText("Week 1 of 8", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: householdName, exact: true })).toBeVisible();
 }

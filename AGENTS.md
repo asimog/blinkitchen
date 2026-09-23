@@ -25,6 +25,12 @@ Rules for coding agents working in this repository.
 
 - Run `npm run lint`, `npm run typecheck`, `npm run test` after changes.
 - Run `npm run build` before handing off; `npm run test:e2e` for browser flows.
+- `npm run lint` includes the vendored anti-slop Oxlint ruleset
+  (`tools/oxlint/anti-slop`, configured in `oxlint.config.ts`, installed and
+  updated via the skill at `.kilo/skills/install-anti-slop`). Do not weaken,
+  disable or launder around those rules to make a change pass: parse at the
+  boundary, keep type evidence, and justify any necessary assertion with a
+  `SAFETY:` comment. `npm run lint:fix` applies the whitespace autofix.
 - Test the domain more heavily than the UI. New intelligence behaviour needs a
   test proving household behaviour changes the output.
 - Update the authoritative docs (`ARCHITECTURE.md`, `DATA_MODEL.md`,

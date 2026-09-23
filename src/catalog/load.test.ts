@@ -1,21 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { buildCatalog, expandProducts, loadCatalog, signatureOf } from "@/catalog/load";
 import type { RawCatalog } from "@/catalog/load";
-import type { Location, ProductTemplate } from "@/catalog/types";
+import {
+  ingredientsFileSchema,
+  locationsFileSchema,
+  productTemplatesFileSchema,
+  recipesFileSchema,
+  substitutionsFileSchema,
+} from "@/catalog/schema";
 import ingredientsJson from "@/data/ingredients.json";
 import recipesJson from "@/data/recipes.json";
 import productTemplatesJson from "@/data/product-templates.json";
 import substitutionsJson from "@/data/substitutions.json";
 import locationsJson from "@/data/locations.json";
 
-const raw = (): RawCatalog =>
-  structuredClone({
-    ingredients: ingredientsJson,
-    recipes: recipesJson,
-    productTemplates: productTemplatesJson,
-    substitutions: substitutionsJson,
-    locations: locationsJson,
-  }) as RawCatalog;
+/** Each fixture file parsed through its own boundary schema. */
+const raw = (): RawCatalog => ({
+  ingredients: ingredientsFileSchema.parse(structuredClone(ingredientsJson)),
+  recipes: recipesFileSchema.parse(structuredClone(recipesJson)),
+  productTemplates: productTemplatesFileSchema.parse(structuredClone(productTemplatesJson)),
+  substitutions: substitutionsFileSchema.parse(structuredClone(substitutionsJson)),
+  locations: locationsFileSchema.parse(structuredClone(locationsJson)),
+});
 
 describe("loadCatalog", () => {
   it("loads a coherent seed dataset", () => {
@@ -37,11 +43,14 @@ describe("loadCatalog", () => {
   it("every recipe ingredient exists and every recipe has a known cuisine", () => {
     const catalog = loadCatalog();
     const ingredientIds = new Set(catalog.ingredients.map((ingredient) => ingredient.id));
+
     for (const recipe of catalog.recipes) {
       expect(recipe.ingredients.length).toBeGreaterThan(0);
+
       for (const line of recipe.ingredients) {
         expect(ingredientIds.has(line.ingredientId)).toBe(true);
       }
+
       expect(recipe.cuisine.length).toBeGreaterThan(0);
     }
   });
@@ -50,6 +59,7 @@ describe("loadCatalog", () => {
     const catalog = loadCatalog();
     const ingredientIds = new Set(catalog.ingredients.map((ingredient) => ingredient.id));
     const locationIds = new Set(catalog.locations.map((location) => location.id));
+
     for (const product of catalog.products) {
       expect(ingredientIds.has(product.ingredientId)).toBe(true);
       expect(locationIds.has(product.locationId)).toBe(true);
@@ -60,6 +70,7 @@ describe("loadCatalog", () => {
   it("every substitution references known, distinct, dimension-compatible ingredients", () => {
     const catalog = loadCatalog();
     const ingredientIds = new Set(catalog.ingredients.map((ingredient) => ingredient.id));
+
     for (const substitution of catalog.substitutions) {
       expect(ingredientIds.has(substitution.requestedIngredientId)).toBe(true);
       expect(ingredientIds.has(substitution.substituteIngredientId)).toBe(true);
@@ -70,6 +81,7 @@ describe("loadCatalog", () => {
 
   it("keeps every ingredient purchasable in every location", () => {
     const catalog = loadCatalog();
+
     for (const location of catalog.locations) {
       for (const ingredient of catalog.ingredients) {
         const available = catalog.products.some(
@@ -78,6 +90,7 @@ describe("loadCatalog", () => {
             product.ingredientId === ingredient.id &&
             product.inventoryStatus !== "out_of_stock",
         );
+
         expect(available, `${ingredient.id} @ ${location.id}`).toBe(true);
       }
     }
@@ -114,8 +127,8 @@ describe("loadCatalog", () => {
 });
 
 describe("expandProducts", () => {
-  const templates = productTemplatesJson as unknown as ProductTemplate[];
-  const locations = locationsJson as unknown as Location[];
+  const templates = productTemplatesFileSchema.parse(productTemplatesJson);
+  const locations = locationsFileSchema.parse(locationsJson);
 
   it("is deterministic: identical inputs produce identical outputs", () => {
     expect(expandProducts(structuredClone(templates), structuredClone(locations))).toEqual(

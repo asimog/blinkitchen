@@ -1,4 +1,5 @@
 import { ingredientById } from "@/catalog/grocery-graph";
+import { compareStrings } from "@/domain/order";
 import type { Catalog } from "@/catalog/types";
 import type { KitchenState } from "@/domain/kitchen/types";
 import { displayQuantity } from "@/components/kitchen/format";
@@ -6,13 +7,19 @@ import styles from "@/components/kitchen/kitchen.module.css";
 
 export function PantrySnapshot({ kitchen, catalog }: { kitchen: KitchenState; catalog: Catalog }) {
   const items = [...kitchen.pantry].sort((a, b) =>
-    (ingredientById(catalog, a.ingredientId)?.name ?? a.ingredientId).localeCompare(
-      ingredientById(catalog, b.ingredientId)?.name ?? b.ingredientId,
+    compareStrings(
+      ingredientNameOf(a.ingredientId),
+      ingredientNameOf(b.ingredientId),
     ),
   );
+
   const starters = kitchen.profile.starterIngredientIds
     .map((id) => ingredientById(catalog, id))
     .filter((ingredient) => Boolean(ingredient));
+
+  function ingredientNameOf(ingredientId: string): string {
+    return ingredientById(catalog, ingredientId)?.name ?? ingredientId;
+  }
 
   return (
     <section className={`${styles.panel}`} aria-label="What you already have">
@@ -30,6 +37,7 @@ export function PantrySnapshot({ kitchen, catalog }: { kitchen: KitchenState; ca
         <ul className={styles.chipRow} aria-label="Pantry items">
           {items.map((item) => {
             const name = ingredientById(catalog, item.ingredientId)?.name ?? item.ingredientId;
+
             return (
               <li key={`${item.ingredientId}-${item.unit}`} className={styles.pantryChip}>
                 <strong>{name}</strong>
