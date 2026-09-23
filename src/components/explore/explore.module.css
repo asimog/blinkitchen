@@ -1,0 +1,113 @@
+.intro {
+  padding: 2.5rem 0 1.5rem;
+  max-width: 720px;
+}
+
+.archetypeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.archetypeCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.archetypeName {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.tagline {
+  margin: 0;
+  font-weight: 600;
+  color: var(--primary-deep);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  margin: 0.4rem 0;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.backLink {
+  margin-bottom: 0.5rem;
+}
+
+.weekSelector {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  align-items: center;
+}
+
+.weekChip {
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.weekChip:hover {
+  border-color: var(--text);
+}
+
+.weekChipActive {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.error {
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.simulatedNote {
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.9rem;
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 760px) {
+  .archetypeGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

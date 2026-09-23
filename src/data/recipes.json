@@ -1,0 +1,302 @@
+[
+  {
+    "id": "rajma_chawal",
+    "name": "Rajma Chawal",
+    "cuisine": "punjabi",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "rajma", "quantity": 300, "unit": "g", "optional": false },
+      { "ingredientId": "rice", "quantity": 400, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "tomato", "quantity": 200, "unit": "g", "optional": false },
+      { "ingredientId": "garlic", "quantity": 20, "unit": "g", "optional": false },
+      { "ingredientId": "ginger", "quantity": 15, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 30, "unit": "ml", "optional": false },
+      { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "garam_masala", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian", "vegan"],
+    "preparationComplexity": "medium",
+    "estimatedPreparationMinutes": 55,
+    "discoveryLevel": "familiar",
+    "tags": ["comfort", "weeknight"]
+  },
+  {
+    "id": "palak_paneer",
+    "name": "Palak Paneer",
+    "cuisine": "punjabi",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "spinach", "quantity": 500, "unit": "g", "optional": false },
+      { "ingredientId": "paneer", "quantity": 300, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "tomato", "quantity": 100, "unit": "g", "optional": false },
+      { "ingredientId": "garlic", "quantity": 15, "unit": "g", "optional": false },
+      { "ingredientId": "ginger", "quantity": 10, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 30, "unit": "ml", "optional": false },
+      { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "garam_masala", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian"],
+    "preparationComplexity": "medium",
+    "estimatedPreparationMinutes": 40,
+    "discoveryLevel": "familiar",
+    "tags": ["protein", "greens"]
+  },
+  {
+    "id": "chole",
+    "name": "Chole",
+    "cuisine": "punjabi",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "chana", "quantity": 300, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "tomato", "quantity": 200, "unit": "g", "optional": false },
+      { "ingredientId": "garlic", "quantity": 20, "unit": "g", "optional": false },
+      { "ingredientId": "ginger", "quantity": 15, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 30, "unit": "ml", "optional": false },
+      { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "garam_masala", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian", "vegan"],
+    "preparationComplexity": "medium",
+    "estimatedPreparationMinutes": 50,
+    "discoveryLevel": "familiar",
+    "tags": ["protein", "comfort"]
+  },
+  {
+    "id": "aloo_paratha",
+    "name": "Aloo Paratha",
+    "cuisine": "punjabi",
+    "mealType": "breakfast",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "potato", "quantity": 500, "unit": "g", "optional": false },
+      { "ingredientId": "atta", "quantity": 600, "unit": "g", "optional": false },
+      { "ingredientId": "ghee", "quantity": 30, "unit": "ml", "optional": false },
+      { "ingredientId": "salt", "quantity": 6, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian"],
+    "preparationComplexity": "medium",
+    "estimatedPreparationMinutes": 35,
+    "discoveryLevel": "familiar",
+    "tags": ["breakfast", "comfort"]
+  },
+  {
+    "id": "dal_tadka",
+    "name": "Dal Tadka",
+    "cuisine": "north_indian",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "toor_dal", "quantity": 250, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 100, "unit": "g", "optional": false },
+      { "ingredientId": "tomato", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "garlic", "quantity": 15, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 25, "unit": "ml", "optional": false },
+      { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 4, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian", "vegan"],
+    "preparationComplexity": "low",
+    "estimatedPreparationMinutes": 35,
+    "discoveryLevel": "familiar",
+    "tags": ["everyday", "comfort"]
+  },
+  {
+    "id": "jeera_rice",
+    "name": "Jeera Rice",
+    "cuisine": "north_indian",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "rice", "quantity": 400, "unit": "g", "optional": false },
+      { "ingredientId": "cumin", "quantity": 8, "unit": "g", "optional": false },
+      { "ingredientId": "ghee", "quantity": 20, "unit": "ml", "optional": false },
+      { "ingredientId": "salt", "quantity": 6, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian"],
+    "preparationComplexity": "low",
+    "estimatedPreparationMinutes": 20,
+    "discoveryLevel": "familiar",
+    "tags": ["side", "quick"]
+  },
+  {
+    "id": "paneer_bhurji",
+    "name": "Paneer Bhurji",
+    "cuisine": "north_indian",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "paneer", "quantity": 300, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "tomato", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "green_chili", "quantity": 10, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 25, "unit": "ml", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 4, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 6, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian"],
+    "preparationComplexity": "low",
+    "estimatedPreparationMinutes": 25,
+    "discoveryLevel": "familiar",
+    "tags": ["protein", "quick"]
+  },
+  {
+    "id": "mixed_veg_sabzi",
+    "name": "Mixed Vegetable Sabzi",
+    "cuisine": "north_indian",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "potato", "quantity": 300, "unit": "g", "optional": false },
+      { "ingredientId": "cauliflower", "quantity": 300, "unit": "g", "optional": false },
+      { "ingredientId": "green_peas", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "carrot", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 100, "unit": "g", "optional": false },
+      { "ingredientId": "tomato", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 30, "unit": "ml", "optional": false },
+      { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian", "vegan"],
+    "preparationComplexity": "medium",
+    "estimatedPreparationMinutes": 40,
+    "discoveryLevel": "familiar",
+    "tags": ["everyday", "vegetables"]
+  },
+  {
+    "id": "poha",
+    "name": "Poha",
+    "cuisine": "north_indian",
+    "mealType": "breakfast",
+    "servings": 2,
+    "ingredients": [
+      { "ingredientId": "poha", "quantity": 200, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 80, "unit": "g", "optional": false },
+      { "ingredientId": "potato", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "coriander", "quantity": 20, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 20, "unit": "ml", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 4, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 5, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian", "vegan"],
+    "preparationComplexity": "low",
+    "estimatedPreparationMinutes": 20,
+    "discoveryLevel": "familiar",
+    "tags": ["breakfast", "quick"]
+  },
+  {
+    "id": "khichdi",
+    "name": "Moong Dal Khichdi",
+    "cuisine": "north_indian",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "moong_dal", "quantity": 200, "unit": "g", "optional": false },
+      { "ingredientId": "rice", "quantity": 300, "unit": "g", "optional": false },
+      { "ingredientId": "ghee", "quantity": 20, "unit": "ml", "optional": false },
+      { "ingredientId": "cumin", "quantity": 6, "unit": "g", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian"],
+    "preparationComplexity": "low",
+    "estimatedPreparationMinutes": 30,
+    "discoveryLevel": "familiar",
+    "tags": ["comfort", "light"]
+  },
+  {
+    "id": "veg_pulao",
+    "name": "Vegetable Pulao",
+    "cuisine": "north_indian",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "rice", "quantity": 400, "unit": "g", "optional": false },
+      { "ingredientId": "green_peas", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "carrot", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 120, "unit": "g", "optional": false },
+      { "ingredientId": "ghee", "quantity": 25, "unit": "ml", "optional": false },
+      { "ingredientId": "cumin", "quantity": 6, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian"],
+    "preparationComplexity": "medium",
+    "estimatedPreparationMinutes": 35,
+    "discoveryLevel": "familiar",
+    "tags": ["festive", "everyday"]
+  },
+  {
+    "id": "curd_rice",
+    "name": "Curd Rice",
+    "cuisine": "north_indian",
+    "mealType": "lunch_dinner",
+    "servings": 2,
+    "ingredients": [
+      { "ingredientId": "rice", "quantity": 200, "unit": "g", "optional": false },
+      { "ingredientId": "yogurt", "quantity": 250, "unit": "g", "optional": false },
+      { "ingredientId": "coriander", "quantity": 15, "unit": "g", "optional": false },
+      { "ingredientId": "cumin", "quantity": 4, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 5, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian"],
+    "preparationComplexity": "low",
+    "estimatedPreparationMinutes": 15,
+    "discoveryLevel": "familiar",
+    "tags": ["quick", "light"]
+  },
+  {
+    "id": "tofu_bhurji",
+    "name": "Tofu Bhurji",
+    "cuisine": "indo_chinese",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "tofu", "quantity": 300, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "tomato", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "green_chili", "quantity": 10, "unit": "g", "optional": false },
+      { "ingredientId": "garlic", "quantity": 15, "unit": "g", "optional": false },
+      { "ingredientId": "ginger", "quantity": 10, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 25, "unit": "ml", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 4, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 6, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian", "vegan"],
+    "preparationComplexity": "low",
+    "estimatedPreparationMinutes": 25,
+    "discoveryLevel": "explore",
+    "tags": ["protein", "quick", "fusion"]
+  },
+  {
+    "id": "mexican_bean_rice",
+    "name": "Mexican Bean Rice",
+    "cuisine": "mexican",
+    "mealType": "lunch_dinner",
+    "servings": 4,
+    "ingredients": [
+      { "ingredientId": "rajma", "quantity": 250, "unit": "g", "optional": false },
+      { "ingredientId": "rice", "quantity": 350, "unit": "g", "optional": false },
+      { "ingredientId": "tomato", "quantity": 200, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 120, "unit": "g", "optional": false },
+      { "ingredientId": "coriander", "quantity": 20, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 25, "unit": "ml", "optional": false },
+      { "ingredientId": "cumin", "quantity": 6, "unit": "g", "optional": false },
+      { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
+    ],
+    "dietaryAttributes": ["vegetarian", "vegan"],
+    "preparationComplexity": "medium",
+    "estimatedPreparationMinutes": 40,
+    "discoveryLevel": "explore",
+    "tags": ["fusion", "protein"]
+  }
+]

@@ -1,0 +1,662 @@
+/* Shared visual language for week views: explore, kitchen. */
+
+.weekHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.weekTitle {
+  margin: 0;
+}
+
+.weekMeta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.35rem;
+}
+
+.pips {
+  display: flex;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+}
+
+.pip {
+  width: 26px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.pipDone {
+  background: var(--primary);
+}
+
+.pipActive {
+  background: var(--accent);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+}
+
+.metricAccent {
+  background: var(--accent-soft);
+  border-color: transparent;
+}
+
+.metricLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0 0 0.15rem;
+}
+
+.metricValue {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.metricHint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0.2rem 0 0;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.panelHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 1.12rem;
+}
+
+.panelHint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.emptyState {
+  color: var(--muted);
+  font-size: 0.92rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Week header actions */
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Pantry snapshot */
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.pantryChip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  border-radius: 999px;
+  padding: 0.28rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.pantryChip strong {
+  font-weight: 600;
+}
+
+.quantity {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+}
+
+.useSoonTag {
+  color: var(--warning);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Meal cards */
+
+.mealGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.mealCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.mealCardPlanned {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary) inset;
+}
+
+.mealTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.mealName {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.mealBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.impactRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.impactCost {
+  font-weight: 700;
+}
+
+.barTrack {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.ingredientColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.ingredientColTitle {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0 0 0.35rem;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.chipOk {
+  background: var(--positive-soft);
+  border-color: transparent;
+  color: var(--primary-deep);
+}
+
+.chipNeed {
+  background: var(--warning-soft);
+  border-color: transparent;
+  color: var(--warning);
+}
+
+.whyList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.whyItem {
+  font-size: 0.84rem;
+  color: var(--muted);
+  padding-left: 0.9rem;
+  position: relative;
+}
+
+.whyItem::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.52em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.cardFooter {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 0.6rem;
+  margin-top: auto;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Chains */
+
+.chainRow {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.chainRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.chainIngredient {
+  min-width: 150px;
+  font-weight: 600;
+}
+
+.chainMeals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.chainNote {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+/* Basket */
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.basketTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.basketTable th {
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding: 0.4rem 0.5rem;
+  white-space: nowrap;
+}
+
+.basketTable td {
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.basketTable tr:last-child td {
+  border-bottom: none;
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.basketTotals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 2px solid var(--border-strong);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.basketTotals strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+
+.rowDetail {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.badgeRow {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.2rem;
+}
+
+/* Substitutions */
+
+.suggestionCard {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--surface-soft);
+}
+
+.suggestionHeading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+
+.arrow {
+  color: var(--muted);
+}
+
+.decisionAccepted {
+  background: var(--positive-soft);
+  color: var(--primary-deep);
+}
+
+.decisionRejected {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.actionRow {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Learning panel */
+
+.learningGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.5rem;
+}
+
+.narrativeList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.narrativeList li {
+  padding-left: 1.1rem;
+  position: relative;
+  font-size: 0.92rem;
+}
+
+.narrativeList li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.signalRow {
+  display: grid;
+  grid-template-columns: 110px 1fr 44px;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.signalLabel {
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.signalValue {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.signalGroupTitle {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0.9rem 0 0.45rem;
+}
+
+.signalGroupTitle:first-child {
+  margin-top: 0;
+}
+
+.error {
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* Weekly checklist */
+
+.checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checklistRow {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  gap: 0.6rem;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+}
+
+.checklistIcon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.checklistText {
+  display: flex;
+  flex-direction: column;
+}
+
+.checklistAction {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Usage recorder */
+
+.usageList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.usageRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.usageName {
+  min-width: 180px;
+}
+
+.usageControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.usageInput {
+  width: 90px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.5rem;
+  font: inherit;
+}
+
+/* Completion panel */
+
+.completePanel {
+  background: var(--positive-soft);
+  border: 1px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.completeStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+
+@media (max-width: 640px) {
+  .checklistRow {
+    grid-template-columns: 26px 1fr;
+  }
+  .checklistAction {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 900px) {
+  .mealGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .learningGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mealGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ingredientColumns {
+    grid-template-columns: 1fr;
+  }
+  .chainRow {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .signalRow {
+    grid-template-columns: 90px 1fr 40px;
+  }
+}

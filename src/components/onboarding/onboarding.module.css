@@ -1,0 +1,212 @@
+.wizard {
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+}
+
+.stepTitle {
+  margin: 0.2rem 0 1.25rem;
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  min-height: 300px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.field input[type="text"],
+.field input[type="number"],
+.field select {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+  background: var(--surface);
+  color: var(--text);
+  max-width: 100%;
+}
+
+.field input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.hint {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.fieldset {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.fieldset legend {
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 0 0.35rem;
+}
+
+.radio,
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.radio span {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox {
+  align-items: center;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: var(--surface);
+  text-transform: capitalize;
+}
+
+.chip input {
+  accent-color: var(--primary);
+}
+
+.chipActive {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary-deep);
+  font-weight: 600;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.pantryList {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.pantryList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.useSoon {
+  color: var(--warning);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.review {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.review dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.review dd {
+  margin: 0.15rem 0 0;
+  font-size: 0.95rem;
+}
+
+.error {
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.88rem;
+}
+
+.warning {
+  background: var(--warning-soft);
+  color: var(--warning);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.88rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 560px) {
+  .wizard {
+    padding: 1.25rem;
+    border-radius: var(--radius);
+  }
+}

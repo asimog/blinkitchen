@@ -1,0 +1,16 @@
+import { expect, test } from "@playwright/test";
+
+test.describe("mobile smoke", () => {
+  test("home, explore and week advance work at 390px", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: /remembers the kitchen/i })).toBeVisible();
+
+    await page.goto("/explore/value_optimizer");
+    await expect(page.getByText("Week 1 of 8")).toBeVisible();
+    await page.getByRole("button", { name: /Advance one week/i }).click();
+    await expect(page.getByText("Week 2 of 8")).toBeVisible();
+
+    await page.goto("/blinkit");
+    await expect(page.getByText(/SIMULATED DATA/)).toBeVisible();
+  });
+});
