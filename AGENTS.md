@@ -2,24 +2,62 @@
 
 Rules for coding agents working in this repository.
 
+## What this project is
+
+Blinkitchen is a product-management prototype of household grocery intelligence
+for Blinkit: a working demonstration of the core mechanics, not a real product.
+Optimise every change for making household intelligence visible, credible and
+simple to understand.
+
 ## Non-negotiables
 
-1. **One household authority.** `KitchenState` is the only household truth.
-   Never add a second household, week, plan or learning model.
-2. **Do not persist projections.** Recommendations, scores, baskets, coverage,
-   chains, substitutions, replenishments, explanations and Blinkit insights are
-   derived on demand. They must never be written to state or localStorage.
-3. **Keep the core pure.** `src/domain`, `src/catalog`, `src/intelligence`,
-   `src/simulation` and `src/insights` must not import React, browser APIs,
-   `fs`, `fetch`, `Date.now()` or `Math.random()`. Pass time/ids explicitly.
-4. **No auth, no database, no ecommerce.** No accounts, sessions, permissions,
-   orders, checkout, payments, providers, inventory management or server APIs.
-5. **One catalog seam.** Fixture JSON becomes a `Catalog` only in
-   `src/catalog/load.ts`. Never load data files from components.
-6. **Prefer deletion.** If a change adds a concept without removing two, stop and
-   reconsider. No speculative abstractions, no repository/service layers.
-7. **Determinism.** Simulation and intelligence must be reproducible: identical
-   inputs, identical outputs. No randomness, no clocks, no locale dependence.
+1. **One household authority.** `KitchenState` is the only household truth. Never
+   add a second household, week, plan or learning model.
+2. **Persist facts, derive intelligence.** Recommendations, scores, baskets,
+   coverage, chains, substitutions, replenishments, explanations, learning and
+   Blinkit insights are recomputed on demand and never written to state or
+   localStorage.
+3. **The catalog is read-only**, and it is the only place recipes and products
+   live. Recipes reference canonical ingredients, never SKUs. Products reference
+   ingredients.
+4. **Keep the core pure.** `src/domain`, `src/catalog`, `src/intelligence`,
+   `src/simulation` and `src/insights` must not import React, browser APIs, `fs`,
+   `fetch`, `Date.now()` or `Math.random()`. Pass time and ids explicitly.
+5. **Simulation uses the production paths.** Simulated weeks run the same domain
+   commands and the same intelligence engine as the UI. No bypassing invariants.
+6. **Never present simulated output as evidence** about real customers, demand or
+   inventory. Keep simulation disclosure clear without repeating the word
+   "simulated" beside every value.
+7. **Prefer deterministic logic** where the answer is calculable. No randomness,
+   clocks or locale dependence.
+8. **No infrastructure without demonstrated product need.** No auth, database,
+   server APIs, queues, event buses, runtime LLMs, embeddings, vector databases,
+   microservices or repository layers.
+9. **Prefer deletion.** If a change adds a concept without removing two, stop and
+   reconsider.
+10. **Keep current and planned behaviour explicit.** Never describe target
+    behaviour as implemented.
+11. **One catalog seam.** Fixture JSON becomes a `Catalog` only in
+    `src/catalog/load.ts`. Never load data files from components.
+
+## Product and UI rules
+
+- Complexity belongs in the engine, not by default in the interface. A rich engine
+  does not justify a dense screen.
+- One primary action per screen. Do not make every intelligence result compete for
+  attention.
+- Do not expose an engine field merely because it exists. Compose the projections
+  the current decision needs.
+- Prefer progressive disclosure: the decision first, a short explanation on
+  expand, scoring and mechanics only on request.
+- Default to less copy. Explainability stays available, not always visible.
+- Customer-facing language describes outcomes ("68% already at home", "buy once,
+  use in 3 meals"), not internal algorithms ("substitution affinity",
+  "chain potential").
+- Avoid adding panels or cards when hierarchy can communicate the same
+  information.
+- Future onboarding must not exceed three primary steps without explicit product
+  justification.
 
 ## Working method
 
@@ -28,14 +66,15 @@ Rules for coding agents working in this repository.
 - `npm run lint` includes the vendored anti-slop Oxlint ruleset
   (`tools/oxlint/anti-slop`, configured in `oxlint.config.ts`, installed and
   updated via the skill at `.kilo/skills/install-anti-slop`). Do not weaken,
-  disable or launder around those rules to make a change pass: parse at the
-  boundary, keep type evidence, and justify any necessary assertion with a
-  `SAFETY:` comment. `npm run lint:fix` applies the whitespace autofix.
+  disable or launder around those rules: parse at the boundary, keep type
+  evidence, and justify any necessary assertion with a `SAFETY:` comment.
+  `npm run lint:fix` applies the whitespace autofix.
 - Test the domain more heavily than the UI. New intelligence behaviour needs a
   test proving household behaviour changes the output.
-- Update the authoritative docs (`ARCHITECTURE.md`, `DATA_MODEL.md`,
-  `SIMULATION.md`, `PRODUCT_SCOPE.md`, `README.md`) when a contract changes.
-  Do not create additional specification documents.
+- Update the authoritative docs when a contract changes: `README.md`,
+  `PRODUCT_SCOPE.md`, `PRODUCT_CASE.md`, `ARCHITECTURE.md`, `DATA_MODEL.md`,
+  `DATA_STRATEGY.md`, `SIMULATION.md`, `IMPLEMENTATION_PLAN.md`. Do not create
+  additional specification documents.
 - Do not add dependencies without a strong reason; the stack is deliberately
   boring (Next.js App Router, React, TypeScript strict, Zod, Vitest, Playwright,
   lucide-react, plain CSS).
@@ -44,22 +83,15 @@ Rules for coding agents working in this repository.
 ## Installed skills
 
 Installed skills provide implementation and review guidance only. They do not
-authorize architectural expansion. Blinkitchen's repository rules, KISS/YAGNI
-constraints, single KitchenState authority, pure core, and
-facts-in/derived-intelligence model remain controlling.
+authorise architectural expansion, dependencies, services, planning documents or
+scope growth. Repository rules always take precedence.
 
-- Use `systematic-debugging` when investigating bugs, failed tests, unexpected
-  behaviour, build failures, or regressions. Establish and reproduce the root
-  cause before changing production code.
-- Use `verification-before-completion` before claiming a task is complete or
-  fixed.
-- For Blinkitchen, completion verification normally means running the
+- Use `systematic-debugging` for bugs, failed tests, unexpected behaviour, build
+  failures and regressions. Reproduce the root cause before changing production
+  code.
+- Use `verification-before-completion` before claiming a task is complete: run the
   applicable tests plus `npm run lint`, `npm run typecheck`, `npm run test`,
   `npm run build`, and `npm run test:e2e` when browser-facing behaviour changed.
-- Installed skills provide workflow guidance only and do not authorize new
-  abstractions, dependencies, services, architectural layers, planning
-  documents, or scope expansion.
-- Repository instructions always take precedence over installed skills.
 
 ## Error handling
 
