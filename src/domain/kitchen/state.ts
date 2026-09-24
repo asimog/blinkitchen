@@ -34,7 +34,7 @@ export function createKitchenState(input: CreateKitchenInput): KitchenState {
 function emptyWeeklyChoices(week: number): WeeklyChoices {
   return {
     week,
-    selectedRecipeIds: [],
+    selectedMeals: [],
     skippedRecipeIds: [],
     substitutionDecisions: [],
     completed: false,

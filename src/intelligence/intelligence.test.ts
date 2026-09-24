@@ -13,10 +13,12 @@ import { makeKitchen, pantryItem } from "@/test-utils/kitchen";
 const catalog = loadCatalog();
 
 function plan(...recipeIds: string[]): PlannedMeal[] {
-  return recipeIds.map((recipeId) => ({
+  return recipeIds.map((recipeId, index) => ({
     recipeId,
     recipe: recipeById(catalog, recipeId)!,
     source: "selected" as const,
+    day: (["monday", "tuesday", "wednesday"] as const)[index] ?? "monday",
+    slot: "dinner",
   }));
 }
 
@@ -26,7 +28,7 @@ function withDecisions(kitchen: KitchenState, decisions: WeeklyChoices["substitu
     weeklyChoices: [
       {
         week: kitchen.week,
-        selectedRecipeIds: [],
+        selectedMeals: [],
         skippedRecipeIds: [],
         substitutionDecisions: decisions,
         completed: false,
@@ -228,7 +230,10 @@ describe("buildWeekIntelligence", () => {
       weeklyChoices: [
         {
           week: 1,
-          selectedRecipeIds: ["chole", "poha"],
+          selectedMeals: [
+            { day: "monday", slot: "dinner", recipeId: "chole" },
+            { day: "tuesday", slot: "breakfast", recipeId: "poha" },
+          ],
           skippedRecipeIds: [],
           substitutionDecisions: [],
           completed: false,
@@ -247,7 +252,11 @@ describe("buildWeekIntelligence", () => {
       weeklyChoices: [
         {
           week: 1,
-          selectedRecipeIds: ["rajma_chawal", "chole", "mixed_veg_sabzi"],
+          selectedMeals: [
+            { day: "monday", slot: "dinner", recipeId: "rajma_chawal" },
+            { day: "tuesday", slot: "dinner", recipeId: "chole" },
+            { day: "wednesday", slot: "dinner", recipeId: "mixed_veg_sabzi" },
+          ],
           skippedRecipeIds: [],
           substitutionDecisions: [],
           completed: false,
@@ -289,7 +298,7 @@ describe("buildWeekIntelligence", () => {
         weeklyChoices: [
           {
             week: 1,
-            selectedRecipeIds: ["tofu_bhurji"],
+            selectedMeals: [{ day: "monday", slot: "dinner", recipeId: "tofu_bhurji" }],
             skippedRecipeIds: [],
             substitutionDecisions: [{ substitutionId: "tofu_to_paneer", accepted: true }],
             completed: false,

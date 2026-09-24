@@ -34,9 +34,9 @@ describe("recipe requirements", () => {
 
 describe("product candidates", () => {
   it("never returns out-of-stock SKUs", () => {
-    for (const ingredient of catalog.ingredients) {
+    for (const ingredientId of new Set(catalog.products.map((product) => product.ingredientId))) {
       for (const location of catalog.locations) {
-        const candidates = resolveProductCandidates(catalog, ingredient.id, location.id);
+        const candidates = resolveProductCandidates(catalog, ingredientId, location.id);
         expect(candidates.length).toBeGreaterThan(0);
         expect(candidates.every((product) => product.inventoryStatus !== "out_of_stock")).toBe(
           true,

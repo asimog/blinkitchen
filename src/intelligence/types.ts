@@ -1,4 +1,5 @@
 import type { CanonicalUnit, Unit } from "@/domain/units";
+import type { MealSlot, WeekDay } from "@/domain/kitchen/types";
 import type {
   Ingredient,
   Product,
@@ -57,6 +58,8 @@ export type PlannedMeal = {
   recipeId: string;
   recipe: Recipe;
   source: "selected" | "suggested";
+  day: WeekDay;
+  slot: MealSlot;
 };
 
 export type BasketItemStatus = "covered" | "buy" | "unavailable";

@@ -14,12 +14,10 @@ export const kitchenProfileSchema = z.strictObject({
   diet: z.enum(["vegetarian", "vegan", "eggetarian", "non_vegetarian", "flexible"]),
   cuisines: z.array(z.string().min(1)).min(1).max(9),
   cookingDaysPerWeek: z.number().int().min(0).max(7),
-  mealsCookedPerDay: z.number().int().min(1).max(3),
   conveniencePreference: preferenceSchema,
   priceSensitivity: preferenceSchema,
   explorationPreference: preferenceSchema,
   planningPreference: preferenceSchema,
-  equipment: z.array(z.string().min(1)).max(12),
   kitchenType: z.enum(["fresh", "existing"]),
   starterIngredientIds: z.array(z.string().min(1)).max(100),
 });
@@ -57,6 +55,14 @@ export const mealFactSchema = z.strictObject({
   id: z.string().min(1),
   week: weekSchema,
   recipeId: z.string().min(1),
+  day: z.enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]),
+  slot: z.enum(["breakfast", "lunch", "dinner"]),
+});
+
+export const mealSelectionSchema = z.strictObject({
+  day: z.enum(["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]),
+  slot: z.enum(["breakfast", "lunch", "dinner"]),
+  recipeId: z.string().min(1),
 });
 
 export const substitutionDecisionSchema = z.strictObject({
@@ -67,16 +73,20 @@ export const substitutionDecisionSchema = z.strictObject({
 export const weeklyChoicesSchema = z
   .strictObject({
     week: weekSchema,
-    selectedRecipeIds: z.array(z.string().min(1)).max(MAX_WEEKLY_MEALS),
+    selectedMeals: z.array(mealSelectionSchema).max(MAX_WEEKLY_MEALS),
     skippedRecipeIds: z.array(z.string().min(1)).max(50),
     substitutionDecisions: z.array(substitutionDecisionSchema).max(50),
     completed: z.boolean(),
   })
-  .refine((choices) => new Set(choices.selectedRecipeIds).size === choices.selectedRecipeIds.length, {
-    message: "Selected recipes must be unique",
+  .refine((choices) => {
+    const slots = choices.selectedMeals.map((meal) => `${meal.day}:${meal.slot}`);
+
+    return new Set(slots).size === slots.length;
+  }, {
+    message: "Each day and meal slot can hold at most one recipe",
   });
 
-export const kitchenStateSchema = z  .strictObject({
+export const kitchenStateSchema = z.strictObject({
     id: z.string().min(1),
     profile: kitchenProfileSchema,
     week: weekSchema,
@@ -98,4 +108,18 @@ export const kitchenStateSchema = z  .strictObject({
     (state) =>
       !(state.profile.kitchenType === "existing" && state.profile.starterIngredientIds.length > 0),
     { message: "Starter essentials only apply to fresh kitchens" },
+  )
+  .refine(
+    (state) => new Set(state.weeklyChoices.map((choices) => choices.week)).size === state.weeklyChoices.length,
+    { message: "Weekly choices must have unique weeks" },
+  )
+  .refine((state) => {
+    const ids = [...state.groceryFacts, ...state.consumptionFacts, ...state.mealFacts].map((fact) => fact.id);
+
+    return new Set(ids).size === ids.length;
+  }, { message: "Fact ids must be unique" })
+  .refine(
+    (state) => state.pantry.every((item) => item.acquiredWeek <= state.week) &&
+      [...state.groceryFacts, ...state.consumptionFacts, ...state.mealFacts].every((fact) => fact.week <= state.week),
+    { message: "Kitchen facts cannot come from a future week" },
   );

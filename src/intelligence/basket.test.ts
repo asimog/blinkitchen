@@ -8,12 +8,18 @@ import { makeKitchen, pantryItem } from "@/test-utils/kitchen";
 const catalog = loadCatalog();
 
 function plan(...recipeIds: string[]): PlannedMeal[] {
-  return recipeIds.map((recipeId) => {
+  return recipeIds.map((recipeId, index) => {
     const recipe = recipeById(catalog, recipeId);
 
     if (!recipe) throw new Error(`Unknown recipe ${recipeId}`);
 
-    return { recipeId, recipe, source: "selected" as const };
+    return {
+      recipeId,
+      recipe,
+      source: "selected" as const,
+      day: (["monday", "tuesday", "wednesday"] as const)[index] ?? "monday",
+      slot: "dinner",
+    };
   });
 }
 
@@ -49,6 +55,8 @@ describe("pantry-aware missing quantities", () => {
       pantryItem("rice", 400, "g"),
       pantryItem("cumin", 8, "g"),
       pantryItem("ghee", 20, "ml"),
+      pantryItem("bay_leaf", 1, "g"),
+      pantryItem("green_chili", 5, "g"),
       pantryItem("salt", 6, "g"),
     ]);
 
@@ -136,7 +144,7 @@ describe("accepted substitutions change the basket", () => {
         weeklyChoices: [
           {
             week: 1,
-            selectedRecipeIds: ["palak_paneer"],
+            selectedMeals: [{ day: "monday", slot: "dinner", recipeId: "palak_paneer" }],
             skippedRecipeIds: [],
             substitutionDecisions: [{ substitutionId: "paneer_to_tofu", accepted: true }],
             completed: false,

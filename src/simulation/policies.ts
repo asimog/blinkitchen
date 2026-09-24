@@ -59,7 +59,7 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
   if (intelligence.plan.length > 0) {
     push({
       type: "select_meals",
-      recipeIds: intelligence.plan.map((meal) => meal.recipeId),
+      meals: intelligence.plan.map(({ day, slot, recipeId }) => ({ day, slot, recipeId })),
     });
   }
 
@@ -115,7 +115,7 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
       }
     }
 
-    push({ type: "complete_meal", recipeId: meal.recipeId });
+    push({ type: "complete_meal", recipeId: meal.recipeId, day: meal.day, slot: meal.slot });
   }
 
   for (const entry of deriveUseSoon(projected, catalog)) {

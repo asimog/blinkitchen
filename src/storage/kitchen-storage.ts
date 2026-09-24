@@ -7,7 +7,7 @@ import type { KitchenState } from "@/domain/kitchen/types";
  * stored. Invalid or outdated values are discarded without crashing.
  */
 
-export const KITCHEN_STORAGE_KEY = "blinkitchen:v1:kitchen";
+export const KITCHEN_STORAGE_KEY = "blinkitchen:v2:kitchen";
 
 export type StorageLike = {
   getItem(key: string): string | null;

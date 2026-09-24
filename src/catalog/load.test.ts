@@ -27,12 +27,12 @@ describe("loadCatalog", () => {
   it("loads a coherent seed dataset", () => {
     const catalog = loadCatalog();
     expect(catalog.ingredients.length).toBeGreaterThanOrEqual(20);
-    expect(catalog.ingredients.length).toBeLessThanOrEqual(30);
+    expect(catalog.ingredients.length).toBeLessThanOrEqual(50);
     expect(catalog.recipes.length).toBeGreaterThanOrEqual(10);
     expect(catalog.recipes.length).toBeLessThanOrEqual(15);
     expect(catalog.locations).toHaveLength(2);
     expect(catalog.products.length).toBeGreaterThanOrEqual(30);
-    expect(catalog.products.length).toBeLessThanOrEqual(60);
+    expect(catalog.products.length).toBeLessThanOrEqual(100);
     expect(catalog.substitutions.length).toBeGreaterThanOrEqual(5);
   });
 
@@ -79,6 +79,13 @@ describe("loadCatalog", () => {
     }
   });
 
+  it("still contains out-of-stock SKUs so selection rules are meaningful", () => {
+    const catalog = loadCatalog();
+    expect(catalog.products.some((product) => product.inventoryStatus === "out_of_stock")).toBe(
+      true,
+    );
+  });
+
   it("keeps every ingredient purchasable in every location", () => {
     const catalog = loadCatalog();
 
@@ -94,13 +101,6 @@ describe("loadCatalog", () => {
         expect(available, `${ingredient.id} @ ${location.id}`).toBe(true);
       }
     }
-  });
-
-  it("still contains out-of-stock SKUs so selection rules are meaningful", () => {
-    const catalog = loadCatalog();
-    expect(catalog.products.some((product) => product.inventoryStatus === "out_of_stock")).toBe(
-      true,
-    );
   });
 
   it("rejects invalid fixture data loudly", () => {
@@ -123,6 +123,16 @@ describe("loadCatalog", () => {
       },
     ];
     expect(() => buildCatalog(selfSwap)).toThrow(/substitutes itself/);
+  });
+
+  it("rejects duplicate ids before collections are indexed", () => {
+    const duplicateRecipe = raw();
+    duplicateRecipe.recipes.push(structuredClone(duplicateRecipe.recipes[0]!));
+    expect(() => buildCatalog(duplicateRecipe)).toThrow(/duplicate recipe ids/);
+
+    const duplicateTemplate = raw();
+    duplicateTemplate.productTemplates.push(structuredClone(duplicateTemplate.productTemplates[0]!));
+    expect(() => buildCatalog(duplicateTemplate)).toThrow(/duplicate product template ids/);
   });
 });
 

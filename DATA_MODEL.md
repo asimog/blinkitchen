@@ -33,7 +33,7 @@ Facts are append-only and week-stamped:
 ```ts
 type GroceryFact = { id; week; ingredientId; quantity; unit };
 type ConsumptionFact = { id; week; ingredientId; quantity; unit; kind: "used" | "wasted" };
-type MealFact = { id; week; recipeId; servings? };
+type MealFact = { id; week; recipeId; day; slot };
 ```
 
 `WeeklyChoices` is the only channel for explicit user decisions:
@@ -41,7 +41,11 @@ type MealFact = { id; week; recipeId; servings? };
 ```ts
 type WeeklyChoices = {
   week: number;
-  selectedRecipeIds: string[];      // this week's plan
+  selectedMeals: {                  // optional breakfast, lunch and dinner slots
+    day: WeekDay;
+    slot: "breakfast" | "lunch" | "dinner";
+    recipeId: string;
+  }[];
   skippedRecipeIds: string[];       // dismissed recommendations
   substitutionDecisions: { substitutionId: string; accepted: boolean }[];
   completed: boolean;
@@ -75,17 +79,19 @@ type Catalog = {
 
 - `Ingredient` carries canonical id, name, category, storage type, shelf life,
   dietary attributes and the units it supports.
-- `Recipe` references canonical ingredients only — never SKUs. It has cuisine,
-  meal type, servings, ingredients, dietary attributes, preparation complexity and
-  minutes, discovery level and tags.
+- `Recipe` references canonical ingredients only — never SKUs. It has a Blinkit
+  Recipes source URL, allowed breakfast/lunch/dinner slots, cuisine,
+  servings, ingredients, dietary attributes, preparation complexity, minutes,
+  discovery level and tags.
 - `Product` references a canonical ingredient and a location; every product carries
   `simulated: true`.
 - `Substitution` is an explicit directed relationship: requested ingredient →
   substitute ingredient, compatibility score, quantity ratio, cuisines, reason.
   Substitutions are never inferred from text similarity.
 
-Seed sizes: ~27 ingredients, 14 recipes, 2 Delhi locations, ~28 product templates
-expanded to ~56 SKUs, 8 substitutions.
+Seed sizes: ~27 ingredients, 14 recipes, 2 Delhi locations, ~28 temporary simulated
+product templates expanded to ~56 SKUs, and 8 substitutions. Live Blinkit SKUs
+and products are intentionally deferred; recipe provenance is captured separately.
 
 ## Derived projections
 
@@ -196,7 +202,7 @@ id, so ordering is total and deterministic.
 
 ## localStorage
 
-Only the user-built household is persisted, under `blinkitchen:v1:kitchen`. The
+Only the user-built household is persisted, under `blinkitchen:v2:kitchen`. The
 stored value is validated with Zod on read; an invalid or outdated value is
 discarded and removed without crashing. Derived intelligence is never stored.
 Simulated households are never stored — they are regenerated deterministically.

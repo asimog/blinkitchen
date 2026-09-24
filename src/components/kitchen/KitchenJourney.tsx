@@ -2,15 +2,13 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { UtensilsCrossed } from "lucide-react";
 import { loadCatalog } from "@/catalog/load";
 import { locationById, recipeRequirements } from "@/catalog/grocery-graph";
 import { roundQuantity } from "@/domain/units";
 import { applyKitchenCommand } from "@/domain/kitchen/commands";
 import type { KitchenCommand, KitchenError } from "@/domain/kitchen/commands";
 import { choicesForWeek, isJourneyComplete } from "@/domain/kitchen/state";
-import { MAX_WEEKLY_MEALS } from "@/domain/kitchen/types";
-import type { KitchenState } from "@/domain/kitchen/types";
+import type { KitchenState, MealSlot, WeekDay } from "@/domain/kitchen/types";
 import type { Unit } from "@/domain/units";
 import { buildWeekIntelligence } from "@/intelligence";
 import { effectiveRequirement } from "@/intelligence/basket";
@@ -21,6 +19,7 @@ import { DecisionChips } from "@/components/kitchen/DecisionChips";
 import { UsageRecorder } from "@/components/kitchen/UsageRecorder";
 import { WeekChecklist, buildChecklistState } from "@/components/kitchen/WeekChecklist";
 import { WeekView } from "@/components/kitchen/WeekView";
+import { WeekMealPlanner } from "@/components/kitchen/WeekMealPlanner";
 import { kitchenErrorCopy } from "@/components/kitchen/error-copy";
 import styles from "@/components/kitchen/kitchen.module.css";
 
@@ -82,7 +81,7 @@ export function KitchenJourney() {
   const complete = isJourneyComplete(kitchen);
   const checklist = buildChecklistState(kitchen, intelligence);
   const decisions = choicesForWeek(kitchen, kitchen.week).substitutionDecisions;
-  const selectedIds = choicesForWeek(kitchen, kitchen.week).selectedRecipeIds;
+  const selectedMeals = choicesForWeek(kitchen, kitchen.week).selectedMeals;
   const location = locationById(catalog, kitchen.profile.locationId);
 
   const applyAll = (commands: KitchenCommand[]): KitchenState | null => {
@@ -116,20 +115,10 @@ export function KitchenJourney() {
     return current;
   };
 
-  const toggleMeal = (recipeId: string) => {
-    const base = selectedIds.length > 0 ? selectedIds : intelligence.plan.map((meal) => meal.recipeId);
-
-    const next = base.includes(recipeId)
-      ? base.filter((id) => id !== recipeId)
-      : [...base, recipeId];
-
-    if (next.length > MAX_WEEKLY_MEALS) {
-      setError(`A week holds at most ${MAX_WEEKLY_MEALS} meals.`);
-
-      return;
-    }
-
-    applyAll([{ type: "select_meals", recipeIds: next }]);
+  const setMealSlot = (day: WeekDay, slot: MealSlot, recipeId: string) => {
+    const remaining = selectedMeals.filter((meal) => meal.day !== day || meal.slot !== slot);
+    const meals = recipeId ? [...remaining, { day, slot, recipeId }] : remaining;
+    applyAll([{ type: "select_meals", meals }]);
   };
 
   const receiveBasket = () => {
@@ -150,7 +139,7 @@ export function KitchenJourney() {
 
     for (const meal of intelligence.plan) {
       const alreadyCooked = kitchen.mealFacts.some(
-        (fact) => fact.week === kitchen.week && fact.recipeId === meal.recipeId,
+        (fact) => fact.week === kitchen.week && fact.day === meal.day && fact.slot === meal.slot,
       );
 
       if (alreadyCooked) continue;
@@ -170,7 +159,12 @@ export function KitchenJourney() {
         }
       }
 
-      commands.push({ type: "complete_meal", recipeId: meal.recipeId });
+      commands.push({
+        type: "complete_meal",
+        recipeId: meal.recipeId,
+        day: meal.day,
+        slot: meal.slot,
+      });
     }
 
     if (commands.length === 0) return;
@@ -298,31 +292,14 @@ export function KitchenJourney() {
           </button>
         }
         mealsHeading="What you could cook"
-        mealsHeaderAction={
-          selectedIds.length > 0 && !complete ? (
-            <button
-              type="button"
-              className="btn btn-ghost btn-small"
-              onClick={() => applyAll([{ type: "select_meals", recipeIds: [] }])}
-            >
-              <UtensilsCrossed size={14} aria-hidden /> Use suggested plan
-            </button>
-          ) : null
-        }
-        renderMealAction={(recipeId, planned) => (
-          <button
-            type="button"
-            className="btn btn-secondary btn-small"
-            onClick={() => toggleMeal(recipeId)}
+        mealPlanner={
+          <WeekMealPlanner
+            catalog={catalog}
+            selections={selectedMeals}
             disabled={complete}
-          >
-            {planned
-              ? intelligence.planSource === "suggested"
-                ? "Swap out"
-                : "Remove from plan"
-              : "Add to plan"}
-          </button>
-        )}
+            onChange={setMealSlot}
+          />
+        }
         substitutionDecisions={decisions}
         onSubstitutionDecision={(substitutionId, accepted) =>
           applyAll([{ type: "decide_substitution", substitutionId, accepted }])

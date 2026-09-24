@@ -1,6 +1,6 @@
 import { formatRupees, formatQuantity } from "@/domain/units";
 import { compareStrings } from "@/domain/order";
-import type { Catalog, Recipe } from "@/catalog/types";
+import type { Catalog } from "@/catalog/types";
 import { ingredientById, recipeById, recipeRequirements } from "@/catalog/grocery-graph";
 import { currentChoices } from "@/domain/kitchen/state";
 import type { KitchenState } from "@/domain/kitchen/types";
@@ -235,16 +235,18 @@ export function buildWeekIntelligence(
   const recommendations = rankRecipes(kitchen, catalog, learning);
   const choices = currentChoices(kitchen);
 
-  const selectedRecipes = choices.selectedRecipeIds
-    .map((recipeId) => recipeById(catalog, recipeId))
-    .filter((recipe): recipe is Recipe => Boolean(recipe));
+  const selectedMeals = choices.selectedMeals.flatMap((selection) => {
+    const recipe = recipeById(catalog, selection.recipeId);
+
+    return recipe ? [{ ...selection, recipe }] : [];
+  });
 
   const suggestedPlan = suggestPlan(recommendations, kitchen);
-  const planSource: "selected" | "suggested" = selectedRecipes.length > 0 ? "selected" : "suggested";
+  const planSource: "selected" | "suggested" = selectedMeals.length > 0 ? "selected" : "suggested";
 
   const plan: PlannedMeal[] =
     planSource === "selected"
-      ? selectedRecipes.map((recipe) => ({ recipeId: recipe.id, recipe, source: "selected" }))
+      ? selectedMeals.map((meal) => ({ ...meal, recipeId: meal.recipe.id, source: "selected" as const }))
       : suggestedPlan;
 
   const basket = buildBasket(kitchen, catalog, plan);

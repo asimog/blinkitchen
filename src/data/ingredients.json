@@ -25,5 +25,21 @@
   { "id": "cumin", "name": "Cumin Seeds", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
   { "id": "turmeric", "name": "Turmeric Powder", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
   { "id": "garam_masala", "name": "Garam Masala", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "salt", "name": "Salt", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 730, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] }
+  { "id": "salt", "name": "Salt", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 730, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "red_chili_powder", "name": "Red Chilli Powder", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "lemon", "name": "Lemon", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 14, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "peanuts", "name": "Peanuts", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "curry_leaves", "name": "Curry Leaves", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 7, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "mustard_seeds", "name": "Mustard Seeds", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "bay_leaf", "name": "Bay Leaf", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "coriander_powder", "name": "Coriander Powder", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "amchur", "name": "Amchur", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "ajwain", "name": "Ajwain", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "bread", "name": "Bread", "category": "pantry", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 5, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "cream", "name": "Dairy Cream", "category": "dairy", "storageType": "perishable", "commonUnits": ["ml"], "shelfLifeDays": 7, "staple": false, "dietaryAttributes": ["vegetarian"] },
+  { "id": "hing", "name": "Hing", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "urad_dal", "name": "Urad Dal", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "chana_dal", "name": "Chana Dal", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "papad", "name": "Papad", "category": "pantry", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
+  { "id": "pickle", "name": "Pickle", "category": "pantry", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] }
 ]

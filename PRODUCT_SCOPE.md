@@ -28,6 +28,10 @@ team *feel* the following ideas:
 - Engineers evaluating the architecture as a portfolio artifact.
 - Anyone who wants to replay the intelligence loop in a browser in under a minute.
 
+Recipe names and ingredient requirements are attributed to Blinkit Recipes.
+Recipe image, product and SKU ingestion remains a later phase; current basket
+products, prices and availability are explicitly simulated.
+
 ## The two audiences in the product
 
 - **Customer experience** (`/build`, `/kitchen`): what the household sees — pantry,

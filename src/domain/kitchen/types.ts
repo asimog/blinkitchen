@@ -6,7 +6,15 @@ export const WEEK_MIN = 1;
 export const WEEK_MAX = 8;
 
 /** Maximum number of meals a household can select for one week. */
-export const MAX_WEEKLY_MEALS = 7;
+export const WEEK_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] as const;
+
+export const MEAL_SLOTS = ["breakfast", "lunch", "dinner"] as const;
+
+export const MAX_WEEKLY_MEALS = WEEK_DAYS.length * MEAL_SLOTS.length;
+
+export type WeekDay = (typeof WEEK_DAYS)[number];
+
+export type MealSlot = (typeof MEAL_SLOTS)[number];
 
 export type DietPreference =
   | "vegetarian"
@@ -30,13 +38,11 @@ export type KitchenProfile = {
   /** Preferred cuisines, canonical cuisine ids from the catalog. */
   cuisines: string[];
   cookingDaysPerWeek: number;
-  mealsCookedPerDay: number;
   /** 0..1 preferences. */
   conveniencePreference: number;
   priceSensitivity: number;
   explorationPreference: number;
   planningPreference: number;
-  equipment: string[];
   kitchenType: KitchenType;
   /**
    * Fresh kitchens may name essentials they expect to stock. Informational:
@@ -80,7 +86,11 @@ export type MealFact = {
   id: string;
   week: number;
   recipeId: string;
+  day: WeekDay;
+  slot: MealSlot;
 };
+
+export type MealSelection = { day: WeekDay; slot: MealSlot; recipeId: string };
 
 /** Explicit household decision about one offered substitution. */
 export type SubstitutionDecision = {
@@ -95,7 +105,7 @@ export type SubstitutionDecision = {
  */
 export type WeeklyChoices = {
   week: number;
-  selectedRecipeIds: string[];
+  selectedMeals: MealSelection[];
   skippedRecipeIds: string[];
   substitutionDecisions: SubstitutionDecision[];
   completed: boolean;

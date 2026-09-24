@@ -7,8 +7,8 @@ import {
 } from "@/domain/units";
 import { z } from "zod";
 import type { Unit } from "@/domain/units";
-import { MAX_WEEKLY_MEALS, WEEK_MAX } from "@/domain/kitchen/types";
-import type { KitchenState, PantryItem, WeeklyChoices } from "@/domain/kitchen/types";
+import { MAX_WEEKLY_MEALS, MEAL_SLOTS, WEEK_DAYS, WEEK_MAX } from "@/domain/kitchen/types";
+import type { KitchenState, MealSelection, PantryItem, WeeklyChoices } from "@/domain/kitchen/types";
 import { choicesForWeek, isJourneyComplete, pantryRowsFor } from "@/domain/kitchen/state";
 
 /**
@@ -56,10 +56,10 @@ export type KitchenCommand =
   | { type: "receive_grocery"; lines: GroceryLine[] }
   | { type: "consume_ingredient"; ingredientId: string; quantity: number; unit: Unit }
   | { type: "waste_ingredient"; ingredientId: string; quantity: number; unit: Unit }
-  | { type: "select_meals"; recipeIds: string[] }
+  | { type: "select_meals"; meals: MealSelection[] }
   | { type: "skip_recommendation"; recipeId: string }
   | { type: "decide_substitution"; substitutionId: string; accepted: boolean }
-  | { type: "complete_meal"; recipeId: string }
+  | { type: "complete_meal"; recipeId: string; day: MealSelection["day"]; slot: MealSelection["slot"] }
   | { type: "complete_week" };
 
 function fail(code: KitchenErrorCode, message: string): CommandResult {
@@ -296,27 +296,33 @@ export function applyKitchenCommand(
       return applyConsumption(state, command, "wasted");
 
     case "select_meals": {
-      const parsedIds = z.array(z.string().min(1)).safeParse(command.recipeIds);
+      const parsedMeals = z.array(z.strictObject({
+        day: z.enum(WEEK_DAYS),
+        slot: z.enum(MEAL_SLOTS),
+        recipeId: z.string().min(1),
+      })).safeParse(command.meals);
 
-      if (!parsedIds.success) {
-        return fail("invalid_command", "Meal selection needs recipe ids");
+      if (!parsedMeals.success) {
+        return fail("invalid_command", "Meal selection needs a day, slot, and recipe id");
       }
 
-      const recipeIds = parsedIds.data;
+      const meals = parsedMeals.data;
 
-      if (recipeIds.length > MAX_WEEKLY_MEALS) {
+      if (meals.length > MAX_WEEKLY_MEALS) {
         return fail("too_many_meals", `A week holds at most ${MAX_WEEKLY_MEALS} meals`);
       }
 
-      if (new Set(recipeIds).size !== recipeIds.length) {
-        return fail("duplicate_selection", "The same recipe cannot be selected twice in a week");
+      const occupiedSlots = meals.map((meal) => `${meal.day}:${meal.slot}`);
+
+      if (new Set(occupiedSlots).size !== occupiedSlots.length) {
+        return fail("duplicate_selection", "Each day and meal slot can hold one recipe");
       }
 
       const choices = choicesForWeek(state, state.week);
 
       return {
         ok: true,
-        state: withChoices(state, { ...choices, selectedRecipeIds: [...recipeIds] }),
+        state: withChoices(state, { ...choices, selectedMeals: meals.map((meal) => ({ ...meal })) }),
       };
     }
 
@@ -373,22 +379,24 @@ export function applyKitchenCommand(
     case "complete_meal": {
       if (!command.recipeId) return fail("invalid_command", "A recipe id is required");
 
+      if (state.mealFacts.length >= MAX_MEAL_FACTS) {
+        return fail("limit_reached", "This kitchen has reached its meal history limit");
+      }
+
       const already = state.mealFacts.some(
-        (fact) => fact.week === state.week && fact.recipeId === command.recipeId,
+        (fact) => fact.week === state.week && fact.day === command.day && fact.slot === command.slot,
       );
 
       if (already) {
         return fail("meal_already_completed", "This meal is already completed for this week");
       }
 
-      if (state.mealFacts.length >= MAX_MEAL_FACTS) {
-        return fail("limit_reached", "This kitchen has reached its meal history limit");
-      }
-
       const fact = {
-        id: `meal-${state.week}-${state.mealFacts.length}`,
+        id: `meal-${state.week}-${command.day}-${command.slot}`,
         week: state.week,
         recipeId: command.recipeId,
+        day: command.day,
+        slot: command.slot,
       };
 
       return { ok: true, state: { ...state, mealFacts: [...state.mealFacts, fact] } };

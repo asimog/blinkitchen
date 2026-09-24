@@ -132,13 +132,12 @@ function assertUnique(ids: string[], label: string): void {
  * condition to recover from.
  */
 export function buildCatalog(raw: RawCatalog): Catalog {
+  assertUnique(raw.ingredients.map((ingredient) => ingredient.id), "ingredient");
+  assertUnique(raw.recipes.map((recipe) => recipe.id), "recipe");
+  assertUnique(raw.locations.map((location) => location.id), "location");
+  assertUnique(raw.productTemplates.map((template) => template.id), "product template");
   const ingredientIds = new Set(raw.ingredients.map((ingredient) => ingredient.id));
-  const recipeIds = new Set(raw.recipes.map((recipe) => recipe.id));
   const locationIds = new Set(raw.locations.map((location) => location.id));
-
-  assertUnique([...ingredientIds], "ingredient");
-  assertUnique([...recipeIds], "recipe");
-  assertUnique([...locationIds], "location");
   assertUnique(
     raw.substitutions.map((substitution) => substitution.id),
     "substitution",

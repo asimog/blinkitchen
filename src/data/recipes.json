@@ -1,13 +1,13 @@
 [
   {
     "id": "rajma_chawal",
-    "name": "Rajma Chawal",
+    "name": "Rajma Masala",
+    "sourceUrl": "https://blinkit.com/recipes",
     "cuisine": "punjabi",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "rajma", "quantity": 300, "unit": "g", "optional": false },
-      { "ingredientId": "rice", "quantity": 400, "unit": "g", "optional": false },
       { "ingredientId": "onion", "quantity": 150, "unit": "g", "optional": false },
       { "ingredientId": "tomato", "quantity": 200, "unit": "g", "optional": false },
       { "ingredientId": "garlic", "quantity": 20, "unit": "g", "optional": false },
@@ -15,6 +15,11 @@
       { "ingredientId": "oil", "quantity": 30, "unit": "ml", "optional": false },
       { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
       { "ingredientId": "garam_masala", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "red_chili_powder", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "coriander_powder", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "amchur", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "coriander", "quantity": 15, "unit": "g", "optional": false },
       { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
     ],
     "dietaryAttributes": ["vegetarian", "vegan"],
@@ -26,8 +31,9 @@
   {
     "id": "palak_paneer",
     "name": "Palak Paneer",
+    "sourceUrl": "https://blinkit.com/recipe/56809",
     "cuisine": "punjabi",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "spinach", "quantity": 500, "unit": "g", "optional": false },
@@ -39,6 +45,10 @@
       { "ingredientId": "oil", "quantity": 30, "unit": "ml", "optional": false },
       { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
       { "ingredientId": "garam_masala", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "green_chili", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "red_chili_powder", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "coriander_powder", "quantity": 5, "unit": "g", "optional": false },
       { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
     ],
     "dietaryAttributes": ["vegetarian"],
@@ -49,9 +59,10 @@
   },
   {
     "id": "chole",
-    "name": "Chole",
+    "name": "Chole Masala",
+    "sourceUrl": "https://blinkit.com/recipe/53565",
     "cuisine": "punjabi",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "chana", "quantity": 300, "unit": "g", "optional": false },
@@ -62,6 +73,11 @@
       { "ingredientId": "oil", "quantity": 30, "unit": "ml", "optional": false },
       { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
       { "ingredientId": "garam_masala", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "turmeric", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "red_chili_powder", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "coriander_powder", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "amchur", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "coriander", "quantity": 15, "unit": "g", "optional": false },
       { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
     ],
     "dietaryAttributes": ["vegetarian", "vegan"],
@@ -73,13 +89,22 @@
   {
     "id": "aloo_paratha",
     "name": "Aloo Paratha",
+    "sourceUrl": "https://blinkit.com/recipe/aloo-paratha/51162",
     "cuisine": "punjabi",
-    "mealType": "breakfast",
+    "mealSlots": ["breakfast", "lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "potato", "quantity": 500, "unit": "g", "optional": false },
       { "ingredientId": "atta", "quantity": 600, "unit": "g", "optional": false },
       { "ingredientId": "ghee", "quantity": 30, "unit": "ml", "optional": false },
+      { "ingredientId": "garam_masala", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "red_chili_powder", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "coriander", "quantity": 15, "unit": "g", "optional": false },
+      { "ingredientId": "cumin", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "ajwain", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "bread", "quantity": 50, "unit": "g", "optional": true },
+      { "ingredientId": "green_chili", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "ginger", "quantity": 3, "unit": "g", "optional": false },
       { "ingredientId": "salt", "quantity": 6, "unit": "g", "optional": false }
     ],
     "dietaryAttributes": ["vegetarian"],
@@ -91,17 +116,23 @@
   {
     "id": "dal_tadka",
     "name": "Dal Tadka",
+    "sourceUrl": "https://blinkit.com/recipe/arhar-dal-tadka/51848",
     "cuisine": "north_indian",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "toor_dal", "quantity": 250, "unit": "g", "optional": false },
       { "ingredientId": "onion", "quantity": 100, "unit": "g", "optional": false },
       { "ingredientId": "tomato", "quantity": 150, "unit": "g", "optional": false },
       { "ingredientId": "garlic", "quantity": 15, "unit": "g", "optional": false },
-      { "ingredientId": "oil", "quantity": 25, "unit": "ml", "optional": false },
+      { "ingredientId": "ghee", "quantity": 30, "unit": "ml", "optional": false },
       { "ingredientId": "cumin", "quantity": 5, "unit": "g", "optional": false },
       { "ingredientId": "turmeric", "quantity": 4, "unit": "g", "optional": false },
+      { "ingredientId": "red_chili_powder", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "garam_masala", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "green_chili", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "hing", "quantity": 1, "unit": "g", "optional": false },
+      { "ingredientId": "coriander", "quantity": 15, "unit": "g", "optional": false },
       { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
     ],
     "dietaryAttributes": ["vegetarian", "vegan"],
@@ -113,13 +144,16 @@
   {
     "id": "jeera_rice",
     "name": "Jeera Rice",
+    "sourceUrl": "https://blinkit.com/recipe/jeera-rice/53737",
     "cuisine": "north_indian",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "rice", "quantity": 400, "unit": "g", "optional": false },
       { "ingredientId": "cumin", "quantity": 8, "unit": "g", "optional": false },
       { "ingredientId": "ghee", "quantity": 20, "unit": "ml", "optional": false },
+      { "ingredientId": "bay_leaf", "quantity": 1, "unit": "g", "optional": false },
+      { "ingredientId": "green_chili", "quantity": 5, "unit": "g", "optional": false },
       { "ingredientId": "salt", "quantity": 6, "unit": "g", "optional": false }
     ],
     "dietaryAttributes": ["vegetarian"],
@@ -130,9 +164,10 @@
   },
   {
     "id": "paneer_bhurji",
-    "name": "Paneer Bhurji",
+    "name": "Scrambled Paneer",
+    "sourceUrl": "https://blinkit.com/recipes",
     "cuisine": "north_indian",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["breakfast", "lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "paneer", "quantity": 300, "unit": "g", "optional": false },
@@ -152,8 +187,9 @@
   {
     "id": "mixed_veg_sabzi",
     "name": "Mixed Vegetable Sabzi",
+    "sourceUrl": "https://blinkit.com/recipes",
     "cuisine": "north_indian",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "potato", "quantity": 300, "unit": "g", "optional": false },
@@ -176,8 +212,9 @@
   {
     "id": "poha",
     "name": "Poha",
+    "sourceUrl": "https://blinkit.com/recipe/poha/53949",
     "cuisine": "north_indian",
-    "mealType": "breakfast",
+    "mealSlots": ["breakfast"],
     "servings": 2,
     "ingredients": [
       { "ingredientId": "poha", "quantity": 200, "unit": "g", "optional": false },
@@ -197,8 +234,9 @@
   {
     "id": "khichdi",
     "name": "Moong Dal Khichdi",
+    "sourceUrl": "https://blinkit.com/recipe/moong-dal-khichdi/52382",
     "cuisine": "north_indian",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "moong_dal", "quantity": 200, "unit": "g", "optional": false },
@@ -206,6 +244,13 @@
       { "ingredientId": "ghee", "quantity": 20, "unit": "ml", "optional": false },
       { "ingredientId": "cumin", "quantity": 6, "unit": "g", "optional": false },
       { "ingredientId": "turmeric", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "onion", "quantity": 150, "unit": "g", "optional": false },
+      { "ingredientId": "red_chili_powder", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "yogurt", "quantity": 200, "unit": "g", "optional": false },
+      { "ingredientId": "papad", "quantity": 40, "unit": "g", "optional": false },
+      { "ingredientId": "pickle", "quantity": 40, "unit": "g", "optional": false },
+      { "ingredientId": "garam_masala", "quantity": 3, "unit": "g", "optional": false },
+      { "ingredientId": "coriander", "quantity": 15, "unit": "g", "optional": false },
       { "ingredientId": "salt", "quantity": 8, "unit": "g", "optional": false }
     ],
     "dietaryAttributes": ["vegetarian"],
@@ -217,8 +262,9 @@
   {
     "id": "veg_pulao",
     "name": "Vegetable Pulao",
+    "sourceUrl": "https://blinkit.com/recipes",
     "cuisine": "north_indian",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "rice", "quantity": 400, "unit": "g", "optional": false },
@@ -238,14 +284,21 @@
   {
     "id": "curd_rice",
     "name": "Curd Rice",
+    "sourceUrl": "https://blinkit.com/recipe/53602",
     "cuisine": "north_indian",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 2,
     "ingredients": [
       { "ingredientId": "rice", "quantity": 200, "unit": "g", "optional": false },
       { "ingredientId": "yogurt", "quantity": 250, "unit": "g", "optional": false },
+      { "ingredientId": "green_chili", "quantity": 5, "unit": "g", "optional": false },
+      { "ingredientId": "hing", "quantity": 2, "unit": "g", "optional": false },
+      { "ingredientId": "mustard_seeds", "quantity": 4, "unit": "g", "optional": false },
+      { "ingredientId": "oil", "quantity": 15, "unit": "ml", "optional": false },
+      { "ingredientId": "urad_dal", "quantity": 10, "unit": "g", "optional": false },
+      { "ingredientId": "chana_dal", "quantity": 10, "unit": "g", "optional": false },
       { "ingredientId": "coriander", "quantity": 15, "unit": "g", "optional": false },
-      { "ingredientId": "cumin", "quantity": 4, "unit": "g", "optional": false },
+      { "ingredientId": "curry_leaves", "quantity": 5, "unit": "g", "optional": false },
       { "ingredientId": "salt", "quantity": 5, "unit": "g", "optional": false }
     ],
     "dietaryAttributes": ["vegetarian"],
@@ -257,8 +310,9 @@
   {
     "id": "tofu_bhurji",
     "name": "Tofu Bhurji",
+    "sourceUrl": "https://blinkit.com/recipes",
     "cuisine": "indo_chinese",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "tofu", "quantity": 300, "unit": "g", "optional": false },
@@ -280,8 +334,9 @@
   {
     "id": "mexican_bean_rice",
     "name": "Mexican Bean Rice",
+    "sourceUrl": "https://blinkit.com/recipes",
     "cuisine": "mexican",
-    "mealType": "lunch_dinner",
+    "mealSlots": ["lunch", "dinner"],
     "servings": 4,
     "ingredients": [
       { "ingredientId": "rajma", "quantity": 250, "unit": "g", "optional": false },

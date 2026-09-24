@@ -34,10 +34,7 @@ export const MEAL_WEIGHTS = {
   useSoonBenefit: 0.1,
 } as const;
 
-/** Minimum plan size so a week always has something to cook. */
-const PLAN_MIN = 2;
-
-const PLAN_MAX = 6;
+const PLAN_MAX = 7;
 
 const RECENT_WEEKS = 2;
 
@@ -301,30 +298,64 @@ export function rankRecipes(
 
 /**
  * Deterministic suggested plan from the ranking: plan size follows cooking
- * days, with at most one breakfast and one snack so the week stays realistic.
+ * days. Suggestions occupy one dinner slot per cooking day.
  */
 export function suggestPlan(ranked: MealRecommendation[], kitchen: KitchenState): PlannedMeal[] {
-  const planSize = Math.min(PLAN_MAX, Math.max(PLAN_MIN, kitchen.profile.cookingDaysPerWeek));
+  const planSize = Math.min(PLAN_MAX, Math.max(0, kitchen.profile.cookingDaysPerWeek));
   const plan: PlannedMeal[] = [];
-  let breakfasts = 0;
-  let snacks = 0;
+  const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] as const;
 
   for (const recommendation of ranked) {
     if (plan.length >= planSize) break;
 
-    if (recommendation.recipe.mealType === "breakfast") {
-      if (breakfasts >= 1) continue;
-      breakfasts += 1;
-    } else if (recommendation.recipe.mealType === "snack") {
-      if (snacks >= 1) continue;
-      snacks += 1;
-    }
+    const day = days[plan.length];
+
+    if (!day) break;
+
+    const slot = recommendation.recipe.mealSlots.includes("dinner")
+      ? "dinner"
+      : recommendation.recipe.mealSlots[0];
+
+    if (!slot) continue;
 
     plan.push({
       recipeId: recommendation.recipe.id,
       recipe: recommendation.recipe,
       source: "suggested",
+      day,
+      slot,
     });
+  }
+
+  const needsDiscoveryMeal =
+    kitchen.profile.explorationPreference >= 0.7 &&
+    plan.length > 0 &&
+    !plan.some((meal) => meal.recipe.discoveryLevel === "explore");
+
+  if (needsDiscoveryMeal) {
+    const discovery = ranked.find(
+      (recommendation) =>
+        recommendation.recipe.discoveryLevel === "explore" &&
+        !plan.some((meal) => meal.recipeId === recommendation.recipe.id),
+    );
+
+    const finalMeal = plan.at(-1);
+
+    if (discovery && finalMeal) {
+      const slot = discovery.recipe.mealSlots.includes(finalMeal.slot)
+        ? finalMeal.slot
+        : discovery.recipe.mealSlots[0];
+
+      if (slot) {
+        plan[plan.length - 1] = {
+          recipeId: discovery.recipe.id,
+          recipe: discovery.recipe,
+          source: "suggested",
+          day: finalMeal.day,
+          slot,
+        };
+      }
+    }
   }
 
   return plan;

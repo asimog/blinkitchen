@@ -48,7 +48,6 @@ describe("ranking behaviour", () => {
 
     const stocked = makeKitchen({}, {}, [
       pantryItem("rajma", 300, "g"),
-      pantryItem("rice", 400, "g"),
       pantryItem("onion", 150, "g"),
       pantryItem("tomato", 200, "g"),
       pantryItem("garlic", 20, "g"),
@@ -56,6 +55,11 @@ describe("ranking behaviour", () => {
       pantryItem("oil", 30, "ml"),
       pantryItem("cumin", 5, "g"),
       pantryItem("garam_masala", 5, "g"),
+      pantryItem("turmeric", 3, "g"),
+      pantryItem("red_chili_powder", 3, "g"),
+      pantryItem("coriander_powder", 5, "g"),
+      pantryItem("amchur", 3, "g"),
+      pantryItem("coriander", 15, "g"),
       pantryItem("salt", 8, "g"),
     ]);
 
@@ -80,7 +84,9 @@ describe("ranking behaviour", () => {
     const before = scoreOf(kitchen, "chole");
 
     for (let week = 0; week < 3; week += 1) {
-      kitchen = expectOk(kitchen, { type: "complete_meal", recipeId: "rajma_chawal" });
+      kitchen = expectOk(kitchen, {
+        type: "complete_meal", recipeId: "rajma_chawal", day: "monday", slot: "dinner",
+      });
       kitchen = expectOk(kitchen, { type: "complete_week" });
     }
 
@@ -100,19 +106,23 @@ describe("ranking behaviour", () => {
 
   it("penalizes meals cooked in the last two weeks", () => {
     const fresh = makeKitchen();
-    const cooked = expectOk(fresh, { type: "complete_meal", recipeId: "rajma_chawal" });
+
+    const cooked = expectOk(fresh, {
+      type: "complete_meal", recipeId: "rajma_chawal", day: "monday", slot: "dinner",
+    });
+
     expect(scoreOf(cooked, "rajma_chawal")).toBeLessThan(scoreOf(fresh, "rajma_chawal"));
 
     const longAgo = {
       ...fresh,
       week: 5,
-      mealFacts: [{ id: "meal-1-0", week: 1, recipeId: "rajma_chawal" }],
+      mealFacts: [{ id: "meal-1-0", week: 1, recipeId: "rajma_chawal", day: "monday" as const, slot: "dinner" as const }],
     };
 
     const recently = {
       ...fresh,
       week: 5,
-      mealFacts: [{ id: "meal-5-0", week: 5, recipeId: "rajma_chawal" }],
+      mealFacts: [{ id: "meal-5-0", week: 5, recipeId: "rajma_chawal", day: "monday" as const, slot: "dinner" as const }],
     };
 
     expect(scoreOf(longAgo, "rajma_chawal")).toBeGreaterThan(
@@ -152,7 +162,7 @@ describe("ranking behaviour", () => {
         weeklyChoices: [
           {
             week: 1,
-            selectedRecipeIds: [],
+            selectedMeals: [],
             skippedRecipeIds: [],
             substitutionDecisions: [{ substitutionId: "paneer_to_tofu", accepted: true }],
             completed: false,
@@ -175,15 +185,14 @@ describe("suggested plan", () => {
     const plan = suggestPlan(rank(kitchen), kitchen);
     expect(plan).toHaveLength(3);
     expect(plan.every((meal) => meal.source === "suggested")).toBe(true);
-    expect(plan.filter((meal) => meal.recipe.mealType === "breakfast").length).toBeLessThanOrEqual(1);
-    expect(plan.filter((meal) => meal.recipe.mealType === "snack").length).toBeLessThanOrEqual(1);
+    expect(plan.every((meal) => meal.recipe.mealSlots.includes(meal.slot))).toBe(true);
   });
 
   it("clamps plan size for extreme cooking days", () => {
     const none = makeKitchen({}, { cookingDaysPerWeek: 0 });
-    expect(suggestPlan(rank(none), none).length).toBe(2);
+    expect(suggestPlan(rank(none), none).length).toBe(0);
     const always = makeKitchen({}, { cookingDaysPerWeek: 7 });
-    expect(suggestPlan(rank(always), always).length).toBe(6);
+    expect(suggestPlan(rank(always), always).length).toBe(7);
   });
 });
 

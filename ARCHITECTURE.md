@@ -62,7 +62,7 @@ buildBlinkitInsights(kitchens, catalog): BlinkitInsights
 The only effectful code is:
 
 - `src/storage/kitchen-storage.ts` (browser localStorage, versioned key
-  `blinkitchen:v1:kitchen`, Zod-validated on read, discarded safely when invalid),
+  `blinkitchen:v2:kitchen`, Zod-validated on read, discarded safely when invalid),
 - React components,
 - the deterministic fixtures and catalog loader (static JSON imports).
 
@@ -119,6 +119,8 @@ harder to create invalid state):
 3. **Simulated SKUs are expanded deterministically at load time** from product
    templates × locations instead of committing generated SKU JSON. No generated
    artifact can drift from its generator; the expansion is tested for determinism.
+4. **Recipe provenance is catalog data.** Recipe source URLs point to Blinkit
+   Recipes; live image, SKU and product ingestion remains outside this prototype.
 
 ## What was deliberately not built
 

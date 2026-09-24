@@ -181,14 +181,26 @@ describe("weekly choices", () => {
     const state = makeKitchen();
 
     const next = expectOk(
-      applyKitchenCommand(state, { type: "select_meals", recipeIds: ["rajma_chawal", "chole"] }),
+      applyKitchenCommand(state, {
+        type: "select_meals",
+        meals: [
+          { day: "monday", slot: "dinner", recipeId: "rajma_chawal" },
+          { day: "tuesday", slot: "dinner", recipeId: "chole" },
+        ],
+      }),
     );
 
-    expect(choicesForWeek(next, 1).selectedRecipeIds).toEqual(["rajma_chawal", "chole"]);
+    expect(choicesForWeek(next, 1).selectedMeals).toHaveLength(2);
 
     expect(
       expectErr(
-        applyKitchenCommand(next, { type: "select_meals", recipeIds: ["dal", "dal"] }),
+        applyKitchenCommand(next, {
+          type: "select_meals",
+          meals: [
+            { day: "monday", slot: "lunch", recipeId: "dal" },
+            { day: "monday", slot: "lunch", recipeId: "chole" },
+          ],
+        }),
       ).code,
     ).toBe("duplicate_selection");
 
@@ -196,10 +208,29 @@ describe("weekly choices", () => {
       expectErr(
         applyKitchenCommand(next, {
           type: "select_meals",
-          recipeIds: ["a", "b", "c", "d", "e", "f", "g", "h"],
+          meals: Array.from({ length: 22 }, (_, index) => ({
+            day: "monday" as const,
+            slot: "dinner" as const,
+            recipeId: `recipe-${index}`,
+          })),
         }),
       ).code,
     ).toBe("too_many_meals");
+  });
+
+  it("allows the same recipe in different day and meal slots", () => {
+    const next = expectOk(
+      applyKitchenCommand(makeKitchen(), {
+        type: "select_meals",
+        meals: [
+          { day: "monday", slot: "breakfast", recipeId: "poha" },
+          { day: "tuesday", slot: "breakfast", recipeId: "poha" },
+          { day: "tuesday", slot: "lunch", recipeId: "poha" },
+        ],
+      }),
+    );
+
+    expect(choicesForWeek(next, 1).selectedMeals).toHaveLength(3);
   });
 
   it("records substitution decisions once and allows changing the mind", () => {
@@ -244,13 +275,17 @@ describe("weekly choices", () => {
     const state = makeKitchen();
 
     const next = expectOk(
-      applyKitchenCommand(state, { type: "complete_meal", recipeId: "rajma_chawal" }),
+      applyKitchenCommand(state, {
+        type: "complete_meal", recipeId: "rajma_chawal", day: "monday", slot: "dinner",
+      }),
     );
 
     expect(next.mealFacts).toHaveLength(1);
     expect(
       expectErr(
-        applyKitchenCommand(next, { type: "complete_meal", recipeId: "rajma_chawal" }),
+        applyKitchenCommand(next, {
+          type: "complete_meal", recipeId: "rajma_chawal", day: "monday", slot: "dinner",
+        }),
       ).code,
     ).toBe("meal_already_completed");
   });
@@ -333,12 +368,16 @@ describe("command limits mirror the storage schema", () => {
         id: `meal-1-${index}`,
         week: 1 as const,
         recipeId: `recipe-${index}`,
+        day: "monday" as const,
+        slot: "dinner" as const,
       })),
     });
 
     expect(
       expectErr(
-        applyKitchenCommand(mealHeavy, { type: "complete_meal", recipeId: "rajma_chawal" }),
+        applyKitchenCommand(mealHeavy, {
+          type: "complete_meal", recipeId: "rajma_chawal", day: "monday", slot: "dinner",
+        }),
       ).code,
     ).toBe("limit_reached");
   });
@@ -348,7 +387,7 @@ describe("command limits mirror the storage schema", () => {
       weeklyChoices: [
         {
           week: 1,
-          selectedRecipeIds: [],
+          selectedMeals: [],
           skippedRecipeIds: Array.from({ length: 50 }, (_, index) => `recipe-${index}`),
           substitutionDecisions: [],
           completed: false,
@@ -366,7 +405,7 @@ describe("command limits mirror the storage schema", () => {
       weeklyChoices: [
         {
           week: 1,
-          selectedRecipeIds: [],
+          selectedMeals: [],
           skippedRecipeIds: [],
           substitutionDecisions: Array.from({ length: 50 }, (_, index) => ({
             substitutionId: `swap-${index}`,
@@ -393,7 +432,7 @@ describe("command limits mirror the storage schema", () => {
       weeklyChoices: [
         {
           week: 1,
-          selectedRecipeIds: [],
+          selectedMeals: [],
           skippedRecipeIds: [],
           substitutionDecisions: [
             { substitutionId: "paneer_to_tofu", accepted: true },
@@ -437,7 +476,7 @@ describe("week advancement", () => {
       weeklyChoices: [
         {
           week: 1,
-          selectedRecipeIds: [],
+          selectedMeals: [],
           skippedRecipeIds: [],
           substitutionDecisions: [],
           completed: true,

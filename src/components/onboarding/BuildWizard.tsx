@@ -13,22 +13,9 @@ import type { Unit } from "@/domain/units";
 import { saveKitchen, LOCAL_KITCHEN_ID } from "@/storage/kitchen-storage";
 import styles from "@/components/onboarding/onboarding.module.css";
 
-const EQUIPMENT_OPTIONS: { id: string; label: string }[] = [
-  { id: "pressure_cooker", label: "Pressure cooker" },
-  { id: "tawa", label: "Tawa / griddle" },
-  { id: "mixer_grinder", label: "Mixer grinder" },
-  { id: "microwave", label: "Microwave" },
-  { id: "wok", label: "Wok" },
-  { id: "kadhai", label: "Kadhai" },
-  { id: "oven", label: "Oven" },
-];
-
 const DIET_OPTIONS: { id: DietPreference; label: string }[] = [
   { id: "vegetarian", label: "Vegetarian" },
   { id: "vegan", label: "Vegan" },
-  { id: "eggetarian", label: "Eggetarian" },
-  { id: "non_vegetarian", label: "Non-vegetarian" },
-  { id: "flexible", label: "Flexible" },
 ];
 
 const STEPS = ["Household", "Food preferences", "Kitchen & pantry", "Cooking routine", "Review"] as const;
@@ -48,9 +35,7 @@ type Draft = {
   kitchenType: KitchenType;
   diet: DietPreference;
   cuisines: string[];
-  equipment: string[];
   cookingDaysPerWeek: number;
-  mealsCookedPerDay: number;
   conveniencePreference: number;
   priceSensitivity: number;
   explorationPreference: number;
@@ -82,9 +67,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
     kitchenType: "existing",
     diet: "vegetarian",
     cuisines: [],
-    equipment: [],
     cookingDaysPerWeek: 5,
-    mealsCookedPerDay: 2,
     conveniencePreference: 0.5,
     priceSensitivity: 0.5,
     explorationPreference: 0.4,
@@ -114,12 +97,10 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
     diet: draft.diet,
     cuisines: draft.cuisines,
     cookingDaysPerWeek: draft.cookingDaysPerWeek,
-    mealsCookedPerDay: draft.mealsCookedPerDay,
     conveniencePreference: draft.conveniencePreference,
     priceSensitivity: draft.priceSensitivity,
     explorationPreference: draft.explorationPreference,
     planningPreference: draft.planningPreference,
-    equipment: draft.equipment,
     kitchenType: draft.kitchenType,
     starterIngredientIds: draft.kitchenType === "fresh" ? draft.starterIngredientIds : [],
   };
@@ -370,29 +351,20 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
 
         {step === 3 ? (
           <>
-            <div className={styles.fieldRow}>
-              <div className={styles.field}>
-                <label htmlFor="cooking-days">Cooking days per week</label>
-                <input
-                  id="cooking-days"
-                  type="number"
-                  min={0}
-                  max={7}
-                  value={draft.cookingDaysPerWeek}
-                  onChange={(event) => update({ cookingDaysPerWeek: Number(event.target.value) })}
-                />
-              </div>
-              <div className={styles.field}>
-                <label htmlFor="meals-per-day">Meals cooked per day</label>
-                <input
-                  id="meals-per-day"
-                  type="number"
-                  min={1}
-                  max={3}
-                  value={draft.mealsCookedPerDay}
-                  onChange={(event) => update({ mealsCookedPerDay: Number(event.target.value) })}
-                />
-              </div>
+            <div className={styles.field}>
+              <label htmlFor="cooking-days">Typical cooking days per week</label>
+              <input
+                id="cooking-days"
+                type="range"
+                min={0}
+                max={7}
+                value={draft.cookingDaysPerWeek}
+                aria-valuetext={`${draft.cookingDaysPerWeek} days`}
+                onChange={(event) => update({ cookingDaysPerWeek: Number(event.target.value) })}
+              />
+              <p className={styles.hint}>
+                {draft.cookingDaysPerWeek} days. You will choose breakfast, lunch and dinner separately each week.
+              </p>
             </div>
 
             {(
@@ -421,24 +393,6 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
               </div>
             ))}
 
-            <fieldset className={styles.fieldset}>
-              <legend>Equipment (optional)</legend>
-              <div className={styles.chipRow}>
-                {EQUIPMENT_OPTIONS.map((option) => (
-                  <label
-                    key={option.id}
-                    className={`${styles.chip} ${draft.equipment.includes(option.id) ? styles.chipActive : ""}`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={draft.equipment.includes(option.id)}
-                      onChange={() => update({ equipment: toggle(draft.equipment, option.id) })}
-                    />
-                    {option.label}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
           </>
         ) : null}
 
@@ -470,8 +424,8 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
             <div>
               <dt>Routine</dt>
               <dd>
-                Cooks {draft.cookingDaysPerWeek} days/week · {draft.mealsCookedPerDay} meals/day ·
-                convenience {level(draft.conveniencePreference).toLowerCase()} · price{" "}
+                Usually cooks {draft.cookingDaysPerWeek} days/week · convenience{" "}
+                {level(draft.conveniencePreference).toLowerCase()} · price{" "}
                 {level(draft.priceSensitivity).toLowerCase()}
               </dd>
             </div>

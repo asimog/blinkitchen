@@ -30,7 +30,7 @@ test.describe("home to kitchen", () => {
     await expect(
       page.getByRole("heading", { name: /No household in this browser yet/i }),
     ).toBeVisible();
-    const stored = await page.evaluate(() => window.localStorage.getItem("blinkitchen:v1:kitchen"));
+    const stored = await page.evaluate(() => window.localStorage.getItem("blinkitchen:v2:kitchen"));
     expect(stored).toBeNull();
   });
 

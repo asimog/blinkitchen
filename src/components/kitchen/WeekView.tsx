@@ -53,6 +53,7 @@ export function WeekView({
   badges,
   headerActions,
   mealsHeaderAction,
+  mealPlanner,
   feedbackSlot,
   substitutionDecisions,
   onSubstitutionDecision,
@@ -66,6 +67,7 @@ export function WeekView({
   badges?: ReactNode;
   headerActions?: ReactNode;
   mealsHeaderAction?: ReactNode;
+  mealPlanner?: ReactNode;
   feedbackSlot?: ReactNode;
   substitutionDecisions?: SubstitutionDecision[];
   onSubstitutionDecision?: (substitutionId: string, accepted: boolean) => void;
@@ -118,6 +120,7 @@ export function WeekView({
       />
       <MetricRow intelligence={intelligence} />
       <PantrySnapshot kitchen={kitchen} catalog={catalog} />
+      {mealPlanner}
 
       <section className={styles.panel} aria-label="Recommended meals">
         <div className={styles.panelHeader}>
@@ -126,7 +129,7 @@ export function WeekView({
             <p className={styles.panelHint}>
               {intelligence.planSource === "selected"
                 ? "Your selected meals are marked in the plan"
-                : `Suggested plan of ${intelligence.plan.length} meals from your cooking routine — edit it any time`}
+                : `Suggested plan of ${intelligence.plan.length} dinners from your cooking routine`}
               {intelligence.recommendations.length > cards.length
                 ? ` · top ${cards.length} of ${intelligence.recommendations.length} ranked`
                 : ""}

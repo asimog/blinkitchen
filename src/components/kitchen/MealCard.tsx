@@ -45,6 +45,9 @@ export function MealCard({
       </div>
 
       <div className={styles.mealBadges}>
+        <a className="pill" href={recipe.sourceUrl} target="_blank" rel="noreferrer">
+          Blinkit recipe
+        </a>
         <span className="pill">{humanizeId(recipe.cuisine)}</span>
         {recipe.discoveryLevel === "explore" ? (
           <span className="pill pill-accent">A little new</span>

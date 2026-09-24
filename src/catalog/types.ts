@@ -12,7 +12,7 @@ export type StorageType = "perishable" | "shelf_stable" | "frozen";
 
 export type DietaryAttribute = "vegetarian" | "vegan";
 
-export type MealType = "breakfast" | "lunch_dinner" | "snack";
+export type MealType = "breakfast" | "lunch" | "dinner";
 
 export type PreparationComplexity = "low" | "medium" | "high";
 
@@ -45,7 +45,8 @@ export type Recipe = {
   id: string;
   name: string;
   cuisine: string;
-  mealType: MealType;
+  mealSlots: MealType[];
+  sourceUrl: string;
   servings: number;
   ingredients: RecipeIngredient[];
   dietaryAttributes: DietaryAttribute[];
