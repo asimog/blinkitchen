@@ -1,91 +1,123 @@
 .intro {
-  padding: 2.5rem 0 1.5rem;
+  padding: 3rem 0 2rem;
   max-width: 720px;
 }
 
-.archetypeGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.archetypeCard {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.archetypeName {
-  margin: 0;
-  font-size: 1.35rem;
-}
-
-.tagline {
-  margin: 0;
-  font-weight: 600;
-  color: var(--primary-deep);
-}
-
-.facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  list-style: none;
-  margin: 0.4rem 0;
-  padding: 0;
-  font-size: 0.85rem;
+.lede {
+  max-width: 62ch;
   color: var(--muted);
 }
 
-.facts li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
+.rail {
+  border-top: 1px solid var(--border);
+  margin-bottom: 1.5rem;
 }
 
-.tags {
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 1.5rem 2rem;
+  padding: 1.75rem 1rem 1.75rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s ease;
+}
+
+.archetype {
+  margin: 0 0 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.rowName {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.rowBody {
+  min-width: 0;
+}
+
+.tagline {
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+  color: var(--primary-deep);
+  font-size: 0.9375rem;
+}
+
+.rowStats {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-bottom: 0.4rem;
+  align-items: center;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+}
+
+.rowStats li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: var(--surface-soft);
+  padding: 0.12rem 0.45rem;
+  font-size: 0.71875rem;
+  font-weight: 600;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.rowStats li svg {
+  color: var(--faint);
+}
+
+.rowAction {
+  padding-top: 0.1rem;
+}
+
+.rowAction .btn {
+  white-space: nowrap;
 }
 
 .backLink {
-  margin-bottom: 0.5rem;
+  padding: 1.75rem 0 0;
+  margin: 0;
+  font-size: 0.875rem;
 }
 
-.weekSelector {
-  display: flex;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.25rem;
+.backLink a {
+  display: inline-flex;
   align-items: center;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-weight: 600;
 }
 
-.weekChip {
-  border: 1px solid var(--border-strong);
-  background: var(--surface);
-  border-radius: 999px;
-  padding: 0.3rem 0.8rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
+.backLink a:hover {
   color: var(--text);
 }
 
-.weekChip:hover {
-  border-color: var(--text);
+.simulatedNote {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent-soft);
+  border: 1px solid rgba(226, 178, 31, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--accent-ink);
+  margin: 1rem 0 1.25rem;
 }
 
-.weekChipActive {
-  background: var(--text);
-  color: var(--bg);
-  border-color: var(--text);
+.simulatedNote svg {
+  flex: none;
 }
 
 .error {
@@ -93,21 +125,45 @@
   border: 1px solid var(--danger);
   color: var(--danger);
   border-radius: var(--radius-sm);
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.875rem;
+  margin: 0 0 1rem;
 }
 
-.simulatedNote {
-  background: var(--accent-soft);
-  border-radius: var(--radius-sm);
-  padding: 0.6rem 0.9rem;
-  font-size: 0.85rem;
-  margin-bottom: 1.25rem;
+@media (max-width: 900px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .rowBody {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .rowAction {
+    grid-row: 1;
+    justify-self: end;
+  }
 }
 
-@media (max-width: 760px) {
-  .archetypeGrid {
+@media (max-width: 560px) {
+  .intro {
+    padding-top: 2rem;
+  }
+
+  .row {
     grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding-right: 0;
+  }
+
+  .rowBody,
+  .rowAction {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .rowAction {
+    justify-self: start;
   }
 }

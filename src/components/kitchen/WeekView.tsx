@@ -9,6 +9,7 @@ import type { WeekIntelligence } from "@/intelligence";
 import { MEAL_WEIGHTS } from "@/intelligence/meals";
 import { BasketPanel } from "@/components/kitchen/BasketPanel";
 import { ChainPanel } from "@/components/kitchen/ChainPanel";
+import { JourneyBar } from "@/components/kitchen/JourneyBar";
 import { LearningPanel } from "@/components/kitchen/LearningPanel";
 import { MealCard } from "@/components/kitchen/MealCard";
 import { MetricRow } from "@/components/kitchen/MetricRow";
@@ -19,7 +20,7 @@ import { WeekHeader } from "@/components/kitchen/WeekHeader";
 import { useWeekScrollAnchor } from "@/components/kitchen/use-week-scroll";
 import styles from "@/components/kitchen/kitchen.module.css";
 
-const VISIBLE_MEAL_CARDS = 4;
+const VISIBLE_MEAL_CARDS = 3;
 
 /** Display order for the scoring breakdown, matching MEAL_WEIGHTS. */
 const FACTOR_ORDER = [
@@ -50,7 +51,9 @@ export function WeekView({
   catalog,
   intelligence,
   householdName,
+  journeyContext,
   badges,
+  weekNav,
   headerActions,
   mealsHeaderAction,
   mealPlanner,
@@ -64,7 +67,10 @@ export function WeekView({
   catalog: Catalog;
   intelligence: WeekIntelligence;
   householdName: string;
+  journeyContext?: string;
   badges?: ReactNode;
+  /** Week navigation rendered inside the sticky journey bar. */
+  weekNav?: ReactNode;
   headerActions?: ReactNode;
   mealsHeaderAction?: ReactNode;
   mealPlanner?: ReactNode;
@@ -82,6 +88,7 @@ export function WeekView({
 
   const cards = intelligence.recommendations.slice(0, VISIBLE_MEAL_CARDS);
   const rest = intelligence.recommendations.slice(VISIBLE_MEAL_CARDS);
+  const toBuyCount = intelligence.basket.items.filter((item) => item.status === "buy").length;
 
   const renderCard = (recommendation: WeekIntelligence["recommendations"][number]) => (
     <MealCard
@@ -112,13 +119,15 @@ export function WeekView({
         {Math.round(intelligence.coverage.percent)} percent.
       </p>
 
-      <WeekHeader
-        week={kitchen.week}
-        householdName={householdName}
-        badges={badges}
-        actions={headerActions}
+      <JourneyBar
+        title={householdName}
+        {...(journeyContext ? { context: journeyContext } : {})}
+        {...(weekNav ? { rail: weekNav } : {})}
+        {...(headerActions ? { actions: headerActions } : {})}
       />
+      <WeekHeader week={kitchen.week} householdName={householdName} {...(badges ? { badges } : {})} />
       <MetricRow intelligence={intelligence} />
+      {feedbackSlot}
       <PantrySnapshot kitchen={kitchen} catalog={catalog} />
       {mealPlanner}
 
@@ -167,8 +176,7 @@ export function WeekView({
       </section>
 
       <ChainPanel chains={intelligence.chains} />
-      {feedbackSlot}
-      <BasketPanel basket={intelligence.basket} />
+      <BasketPanel basket={intelligence.basket} toBuyCount={toBuyCount} />
       <SubstitutionPanel
         suggestions={intelligence.substitutions}
         decisions={substitutionDecisions}

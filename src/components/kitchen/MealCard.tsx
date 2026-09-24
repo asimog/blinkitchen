@@ -41,7 +41,7 @@ export function MealCard({
     <article className={`${styles.mealCard} ${planned ? styles.mealCardPlanned : ""}`}>
       <div className={styles.mealTop}>
         <h4 className={styles.mealName}>{recipe.name}</h4>
-        <span className="pill pill-positive">{fit}% fit</span>
+        <span className={styles.fitChip}>{fit}% fit</span>
       </div>
 
       <div className={styles.mealBadges}>
@@ -111,12 +111,11 @@ export function MealCard({
         <span>{recipe.estimatedPreparationMinutes} min</span>
         <span aria-hidden>·</span>
         <span>{COMPLEXITY_LABEL[recipe.preparationComplexity]}</span>
-        <span aria-hidden>·</span>
-        <span>
-          fit: pantry {Math.round(factors.pantryFit * 100)} · cuisine{" "}
-          {Math.round(factors.cuisineFit * 100)} · reuse {Math.round(factors.ingredientReuse * 100)}
-        </span>
       </div>
+      <p className={styles.mealFactors}>
+        Fit — pantry {Math.round(factors.pantryFit * 100)} · cuisine{" "}
+        {Math.round(factors.cuisineFit * 100)} · reuse {Math.round(factors.ingredientReuse * 100)}
+      </p>
       {action ? <div className={styles.actionRow}>{action}</div> : null}
     </article>
   );

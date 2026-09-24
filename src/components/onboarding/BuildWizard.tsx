@@ -20,6 +20,19 @@ const DIET_OPTIONS: { id: DietPreference; label: string }[] = [
 
 const STEPS = ["Household", "Food preferences", "Kitchen & pantry", "Cooking routine", "Review"] as const;
 
+const KITCHEN_TYPES: { id: KitchenType; label: string; hint: string }[] = [
+  {
+    id: "existing",
+    label: "Existing kitchen",
+    hint: "I'll record useful pantry stock in the next step.",
+  },
+  {
+    id: "fresh",
+    label: "Fresh kitchen",
+    hint: "Starts empty; I can name essentials I plan to stock.",
+  },
+];
+
 /** Numeric 0..1 preference fields, keyed for the routine sliders. */
 type PreferenceKey =
   | "conveniencePreference"
@@ -50,6 +63,15 @@ function level(value: number): string {
   if (value < 0.67) return "Medium";
 
   return "High";
+}
+
+/** Display label for a cuisine id: "indo_chinese" becomes "Indo Chinese". */
+function cuisineLabel(cuisine: string): string {
+  return cuisine
+    .replace(/_/g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 export function BuildWizard({ existingKitchenName }: { existingKitchenName?: string }) {
@@ -172,6 +194,20 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
 
   return (
     <div className={styles.wizard}>
+      <div className={styles.progress} role="img" aria-label={`Step ${step + 1} of ${STEPS.length}`}>
+        {STEPS.map((label, index) => (
+          <span
+            key={label}
+            className={
+              index < step
+                ? `${styles.progressSegment} ${styles.progressSegmentDone}`
+                : index === step
+                  ? `${styles.progressSegment} ${styles.progressSegmentActive}`
+                  : styles.progressSegment
+            }
+          />
+        ))}
+      </div>
       <p className="eyebrow">
         Build your household · Step {step + 1} of {STEPS.length}
       </p>
@@ -245,30 +281,35 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
             </div>
             <fieldset className={styles.fieldset}>
               <legend>What does your kitchen look like right now?</legend>
-              <label className={styles.radio}>
-                <input
-                  type="radio"
-                  name="kitchen-type"
-                  checked={draft.kitchenType === "existing"}
-                  onChange={() => update({ kitchenType: "existing" })}
-                />
-                <span>
-                  <strong>Existing kitchen</strong>
-                  <span className={styles.hint}>I&apos;ll record useful pantry stock in the next step.</span>
-                </span>
-              </label>
-              <label className={styles.radio}>
-                <input
-                  type="radio"
-                  name="kitchen-type"
-                  checked={draft.kitchenType === "fresh"}
-                  onChange={() => update({ kitchenType: "fresh", pantry: [] })}
-                />
-                <span>
-                  <strong>Fresh kitchen</strong>
-                  <span className={styles.hint}>Starts empty; I can name essentials I plan to stock.</span>
-                </span>
-              </label>
+              <div className={styles.optionRow}>
+                {KITCHEN_TYPES.map((option) => (
+                  <label
+                    key={option.id}
+                    className={
+                      draft.kitchenType === option.id
+                        ? `${styles.optionCard} ${styles.optionCardActive}`
+                        : styles.optionCard
+                    }
+                  >
+                    <input
+                      type="radio"
+                      name="kitchen-type"
+                      checked={draft.kitchenType === option.id}
+                      onChange={() =>
+                        update(
+                          option.id === "fresh"
+                            ? { kitchenType: "fresh", pantry: [] }
+                            : { kitchenType: "existing" },
+                        )
+                      }
+                    />
+                    <span>
+                      <strong>{option.label}</strong>
+                      <span className={styles.hint}>{option.hint}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
             </fieldset>
           </>
         ) : null}
@@ -410,15 +451,15 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
               <dt>Preferences</dt>
               <dd>
                 {DIET_OPTIONS.find((option) => option.id === draft.diet)?.label} ·{" "}
-                {draft.cuisines.map((cuisine) => cuisine.replace(/_/g, " ")).join(", ")}
+                {draft.cuisines.map((cuisine) => cuisineLabel(cuisine)).join(", ")}
               </dd>
             </div>
             <div>
               <dt>Kitchen</dt>
               <dd>
                 {draft.kitchenType === "fresh"
-                  ? `Fresh kitchen · ${draft.starterIngredientIds.length} essentials planned`
-                  : `Existing kitchen · ${draft.pantry.length} pantry items`}
+                  ? `Fresh kitchen · ${draft.starterIngredientIds.length} ${draft.starterIngredientIds.length === 1 ? "essential" : "essentials"} planned`
+                  : `Existing kitchen · ${draft.pantry.length} pantry ${draft.pantry.length === 1 ? "item" : "items"}`}
               </dd>
             </div>
             <div>

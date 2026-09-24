@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { ChefHat } from "lucide-react";
 import { loadCatalog } from "@/catalog/load";
 import { locationById, recipeRequirements } from "@/catalog/grocery-graph";
 import { roundQuantity } from "@/domain/units";
@@ -18,6 +19,7 @@ import { useStoredKitchen } from "@/storage/use-stored-kitchen";
 import { DecisionChips } from "@/components/kitchen/DecisionChips";
 import { UsageRecorder } from "@/components/kitchen/UsageRecorder";
 import { WeekChecklist, buildChecklistState } from "@/components/kitchen/WeekChecklist";
+import { WeekStrip } from "@/components/kitchen/WeekStrip";
 import { WeekView } from "@/components/kitchen/WeekView";
 import { WeekMealPlanner } from "@/components/kitchen/WeekMealPlanner";
 import { kitchenErrorCopy } from "@/components/kitchen/error-copy";
@@ -46,9 +48,9 @@ export function KitchenJourney() {
   if (stored.status === "loading") {
     return (
       <div className="container" aria-busy="true">
-        <section style={{ padding: "2.5rem 0", maxWidth: "60ch" }}>
+        <section className="status-page">
           <p className="eyebrow">My kitchen</p>
-          <h1 style={{ fontSize: "1.9rem" }}>Loading your kitchen…</h1>
+          <h1 className="status-title">Loading your kitchen…</h1>
           <p className="muted">Reading the household stored in this browser.</p>
         </section>
       </div>
@@ -58,21 +60,23 @@ export function KitchenJourney() {
   if (!kitchen || !intelligence) {
     return (
       <div className="container">
-        <section style={{ padding: "2.5rem 0", maxWidth: "60ch" }}>
-          <p className="eyebrow">My kitchen</p>
-          <h1 style={{ fontSize: "1.9rem" }}>No household in this browser yet</h1>
-          <p className="muted">
-            Build a household to start Week 1, or explore the four simulated kitchens to see what
-            the eight-week loop looks like.
-          </p>
-          <p>
-            <Link className="btn btn-primary" href="/build">
-              Build your household
-            </Link>{" "}
-            <Link className="btn btn-secondary" href="/explore">
-              Explore households
-            </Link>
-          </p>
+        <section className="status-page">
+          <div className="empty-panel">
+            <ChefHat size={22} aria-hidden className="empty-icon" />
+            <h1 className="status-title">No household in this browser yet</h1>
+            <p className="muted">
+              Build a household to start Week 1, or explore the four simulated kitchens to see what
+              the eight-week loop looks like.
+            </p>
+            <div className={styles.actionRow}>
+              <Link className="btn btn-primary" href="/build">
+                Build your household
+              </Link>
+              <Link className="btn btn-secondary" href="/explore">
+                Explore households
+              </Link>
+            </div>
+          </div>
         </section>
       </div>
     );
@@ -273,6 +277,8 @@ export function KitchenJourney() {
         catalog={catalog}
         intelligence={intelligence}
         householdName={kitchen.profile.displayName}
+        journeyContext="My kitchen"
+        weekNav={<WeekStrip week={kitchen.week} />}
         badges={
           <>
             <span className="pill pill-positive">My kitchen</span>

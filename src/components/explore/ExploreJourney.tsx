@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ChevronsRight, RotateCcw, SkipForward } from "lucide-react";
+import { ArrowLeft, ChevronsRight, Info, RotateCcw, SkipForward } from "lucide-react";
 import { loadCatalog } from "@/catalog/load";
 import { locationById } from "@/catalog/grocery-graph";
 import { choicesForWeek, isJourneyComplete } from "@/domain/kitchen/state";
@@ -13,6 +13,7 @@ import { buildFixtureKitchen, fixtureById } from "@/simulation/fixtures";
 import { householdPolicy } from "@/simulation/policies";
 import { simulateJourney, simulateWeek } from "@/simulation/simulate";
 import { DecisionChips } from "@/components/kitchen/DecisionChips";
+import { WeekRail } from "@/components/kitchen/WeekRail";
 import { WeekView } from "@/components/kitchen/WeekView";
 import styles from "@/components/explore/explore.module.css";
 
@@ -125,8 +126,11 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
       </p>
 
       <p className={styles.simulatedNote}>
-        Simulated household · {completedWeeks} of {WEEK_MAX} weeks completed · replay is
-        deterministic and nothing is stored
+        <Info size={14} aria-hidden />
+        <span>
+          Simulated household · {completedWeeks} of {WEEK_MAX} weeks completed · replay is
+          deterministic and nothing is stored
+        </span>
       </p>
 
       {error ? (
@@ -135,25 +139,12 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
         </p>
       ) : null}
 
-      <div className={styles.weekSelector} role="group" aria-label="Jump to week">
-        {Array.from({ length: WEEK_MAX }, (_, i) => i + 1).map((week) => (
-          <button
-            key={week}
-            type="button"
-            className={`${styles.weekChip} ${kitchen.week === week ? styles.weekChipActive : ""}`}
-            aria-current={kitchen.week === week ? "step" : undefined}
-            onClick={() => goToWeek(week)}
-          >
-            W{week}
-          </button>
-        ))}
-      </div>
-
       <WeekView
         kitchen={kitchen}
         catalog={catalog}
         intelligence={intelligence}
         householdName={fixture.householdName}
+        journeyContext="Simulated replay"
         badges={
           <>
             <span className="pill pill-accent">Simulated</span>
@@ -162,6 +153,7 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
             <span className="pill">{kitchen.profile.memberCount} people</span>
           </>
         }
+        weekNav={<WeekRail week={kitchen.week} onSelect={goToWeek} />}
         headerActions={
           <>
             <button type="button" className="btn btn-primary btn-small" onClick={advance} disabled={isJourneyComplete(kitchen)}>

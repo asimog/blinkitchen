@@ -75,9 +75,10 @@ serves pages; all intelligence executes locally in the browser.
 src/
   app/                routes: /, /build, /kitchen, /explore, /explore/[id], /blinkit
   components/
+    shell/            SiteNav (primary navigation with current-page state)
     onboarding/       BuildWizard (five steps)
-    kitchen/          WeekView and its panels, shared by /explore/[id] and /kitchen
-    explore/          archetype cards and the journey controller
+    kitchen/          WeekView, JourneyBar and its panels, shared by /explore/[id] and /kitchen
+    explore/          household rail and the journey controller
     blinkit/          cohort lens rendering
   domain/
     units.ts          Unit type, dimension rules, normalizeQuantity

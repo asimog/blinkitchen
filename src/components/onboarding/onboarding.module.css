@@ -1,3 +1,14 @@
+.pageIntro {
+  padding: 3rem 0 1.5rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.7rem, 3vw, 2.1rem);
+}
+
 .wizard {
   max-width: 720px;
   margin: 0 auto;
@@ -5,17 +16,40 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.progress {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  margin-bottom: 1.25rem;
+}
+
+.progressSegment {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.progressSegmentDone {
+  background: var(--primary);
+}
+
+.progressSegmentActive {
+  background: var(--primary-ink);
 }
 
 .stepTitle {
-  margin: 0.2rem 0 1.25rem;
+  margin: 0.1rem 0 1.25rem;
+  font-size: clamp(1.4rem, 2.6vw, 1.7rem);
 }
 
 .stepBody {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
-  min-height: 300px;
+  gap: 1.15rem;
+  min-height: 260px;
 }
 
 .field {
@@ -25,8 +59,20 @@
 }
 
 .field label {
-  font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: -0.005em;
+}
+
+.field label strong {
+  display: inline-block;
+  margin-left: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-xs);
+  background: var(--primary-soft);
+  color: var(--primary-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 .field input[type="text"],
@@ -35,14 +81,24 @@
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   padding: 0.55rem 0.7rem;
+  min-height: 44px;
   font: inherit;
+  font-size: 0.9375rem;
   background: var(--surface);
   color: var(--text);
   max-width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field input[type="text"]:hover,
+.field input[type="number"]:hover,
+.field select:hover {
+  border-color: var(--muted);
 }
 
 .field input[type="range"] {
   width: 100%;
+  height: 24px;
   accent-color: var(--primary);
 }
 
@@ -53,43 +109,82 @@
 }
 
 .hint {
-  font-size: 0.82rem;
+  font-size: 0.8125rem;
   color: var(--muted);
   margin: 0;
+  line-height: 1.5;
 }
 
 .fieldset {
-  border: 1px solid var(--border);
+  border: none;
   border-radius: var(--radius-sm);
-  padding: 0.9rem 1rem;
+  padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.7rem;
 }
 
 .fieldset legend {
-  font-weight: 600;
-  font-size: 0.92rem;
-  padding: 0 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  padding: 0;
+  margin-bottom: 0.15rem;
 }
 
-.radio,
-.checkbox {
+.optionRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.optionCard {
   display: flex;
   align-items: flex-start;
-  gap: 0.6rem;
-  font-size: 0.92rem;
+  gap: 0.65rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 0.95rem;
+  cursor: pointer;
+  background: var(--surface);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.optionCard:hover {
+  border-color: var(--muted);
+}
+
+.optionCard > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.optionCard strong {
+  font-size: 0.9375rem;
+  font-weight: 650;
+}
+
+.optionCard input {
+  margin-top: 0.2rem;
+  accent-color: var(--primary);
+}
+
+.optionCardActive {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
   cursor: pointer;
 }
 
-.radio span {
-  display: flex;
-  flex-direction: column;
-}
-
-.checkbox {
-  align-items: center;
+.checkbox input {
+  accent-color: var(--primary);
 }
 
 .chipRow {
@@ -103,12 +198,18 @@
   align-items: center;
   gap: 0.4rem;
   border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 0.3rem 0.8rem;
-  font-size: 0.85rem;
+  border-radius: var(--radius-xs);
+  padding: 0.28rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 550;
   cursor: pointer;
   background: var(--surface);
   text-transform: capitalize;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.chip:hover {
+  border-color: var(--muted);
 }
 
 .chip input {
@@ -118,8 +219,8 @@
 .chipActive {
   background: var(--primary-soft);
   border-color: var(--primary);
-  color: var(--primary-deep);
-  font-weight: 600;
+  color: var(--primary-ink);
+  font-weight: 650;
 }
 
 .nav {
@@ -127,6 +228,8 @@
   justify-content: space-between;
   gap: 0.75rem;
   margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
 }
 
 .pantryList {
@@ -145,34 +248,50 @@
   gap: 0.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 0.45rem 0.8rem;
-  font-size: 0.9rem;
+  background: var(--surface-soft);
+  padding: 0.5rem 0.8rem;
+  font-size: 0.875rem;
 }
 
 .useSoon {
   color: var(--warning);
   font-style: normal;
-  font-weight: 600;
+  font-weight: 650;
 }
 
 .review {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 0;
+}
+
+.review > div {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.review > div:first-child {
+  padding-top: 0;
+}
+
+.review > div:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .review dt {
-  font-size: 0.72rem;
+  font-size: 0.6875rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: var(--tracking-label);
   font-weight: 700;
-  color: var(--muted);
+  color: var(--faint);
 }
 
 .review dd {
-  margin: 0.15rem 0 0;
-  font-size: 0.95rem;
+  margin: 0.25rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
 }
 
 .error {
@@ -180,28 +299,18 @@
   border: 1px solid var(--danger);
   color: var(--danger);
   border-radius: var(--radius-sm);
-  padding: 0.65rem 0.9rem;
-  font-size: 0.88rem;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.875rem;
+  margin: 0;
 }
 
 .warning {
   background: var(--warning-soft);
   color: var(--warning);
   border-radius: var(--radius-sm);
-  padding: 0.65rem 0.9rem;
-  font-size: 0.88rem;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.875rem;
+  margin: 0 0 0.75rem;
 }
 
 @media (max-width: 560px) {

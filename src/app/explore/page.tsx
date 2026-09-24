@@ -21,48 +21,52 @@ export default function ExplorePage() {
       <section className={styles.intro}>
         <p className="eyebrow">Explore · simulated households</p>
         <h1>Four kitchens, eight weeks each</h1>
-        <p className="muted" style={{ maxWidth: "60ch" }}>
+        <p className={styles.lede}>
           Every household below is a deterministic fixture. They run the same intelligence engine
           with different preferences, pantries and budgets — and their journeys replay identically
           every time. Nothing here is real customer data.
         </p>
       </section>
 
-      <div className={styles.archetypeGrid}>
+      <div className={styles.rail}>
         {HOUSEHOLD_FIXTURES.map((fixture) => {
           const location = locationById(catalog, fixture.profile.locationId);
 
           return (
-            <article key={fixture.id} className={styles.archetypeCard}>
-              <p className="eyebrow">{fixture.archetype}</p>
-              <h2 className={styles.archetypeName}>{fixture.householdName}</h2>
-              <p className={styles.tagline}>{fixture.tagline}</p>
-              <p className="small muted">{fixture.description}</p>
-
-              <ul className={styles.facts}>
-                <li>
-                  <Users size={14} aria-hidden /> {fixture.profile.memberCount} people
-                </li>
-                <li>
-                  <MapPin size={14} aria-hidden /> {location?.name ?? fixture.profile.locationId}
-                </li>
-                <li>
-                  <Wallet size={14} aria-hidden /> ₹{fixture.profile.weeklyBudget}/week
-                </li>
-              </ul>
-
-              <div className={styles.tags}>
-                {fixture.profile.cuisines.map((cuisine) => (
-                  <span key={cuisine} className="pill">
-                    {humanizeId(cuisine)}
-                  </span>
-                ))}
-                <span className="pill">{fixture.pantry.length} pantry items</span>
+            <article key={fixture.id} className={styles.row}>
+              <div>
+                <p className={styles.archetype}>{fixture.archetype}</p>
+                <h2 className={styles.rowName}>{fixture.householdName}</h2>
               </div>
 
-              <Link className="btn btn-primary btn-small" href={`/explore/${fixture.id}`}>
-                Open the journey <ArrowRight size={14} aria-hidden />
-              </Link>
+              <div className={styles.rowBody}>
+                <p className={styles.tagline}>{fixture.tagline}</p>
+                <p className="small muted" style={{ marginBottom: 0 }}>
+                  {fixture.description}
+                </p>
+                <ul className={styles.rowStats}>
+                  <li>
+                    <Users size={13} aria-hidden /> {fixture.profile.memberCount} people
+                  </li>
+                  <li>
+                    <MapPin size={13} aria-hidden />{" "}
+                    {location?.name ?? fixture.profile.locationId}
+                  </li>
+                  <li>
+                    <Wallet size={13} aria-hidden /> ₹{fixture.profile.weeklyBudget}/week
+                  </li>
+                  {fixture.profile.cuisines.map((cuisine) => (
+                    <li key={cuisine}>{humanizeId(cuisine)}</li>
+                  ))}
+                  <li>{fixture.pantry.length} pantry items</li>
+                </ul>
+              </div>
+
+              <div className={styles.rowAction}>
+                <Link className="btn btn-secondary btn-small" href={`/explore/${fixture.id}`}>
+                  Open the journey <ArrowRight size={14} aria-hidden />
+                </Link>
+              </div>
             </article>
           );
         })}

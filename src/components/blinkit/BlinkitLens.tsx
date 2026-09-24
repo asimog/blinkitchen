@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import { ShieldAlert } from "lucide-react";
 import { loadCatalog } from "@/catalog/load";
 import { formatRupees } from "@/domain/units";
 import type { KitchenState } from "@/domain/kitchen/types";
@@ -69,7 +70,7 @@ export function BlinkitLens() {
       <section className={styles.intro}>
         <p className="eyebrow">Blinkit lens · weeks 1–8 · simulated</p>
         <h1>What the cohort signal looks like</h1>
-        <p className="muted" style={{ maxWidth: "62ch" }}>
+        <p className={styles.lede}>
           Four deterministic household fixtures, replayed through the same engine. This is a
           product-strategy view of household intelligence — not an operations dashboard, and not
           real Blinkit data.
@@ -77,8 +78,11 @@ export function BlinkitLens() {
       </section>
 
       <p className={styles.simulatedBanner} role="note">
-        SIMULATED DATA — four fixtures, not real Blinkit users, demand or inventory. Nothing here
-        is an order, a forecast or a business fact.
+        <ShieldAlert size={15} aria-hidden />
+        <span>
+          SIMULATED DATA — four fixtures, not real Blinkit users, demand or inventory. Nothing here
+          is an order, a forecast or a business fact.
+        </span>
       </p>
 
       <dl className={kitchenStyles.metrics} aria-label="Cohort at a glance">
