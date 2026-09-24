@@ -373,15 +373,13 @@ regenerated deterministically.
 
 ## FUTURE DATA DIRECTION
 
-Planned. None of this is implemented; it describes the target data foundation.
-See [DATA_STRATEGY.md](DATA_STRATEGY.md) for the ingestion pipeline.
+Planned. None of this is implemented.
 
-- **Ingredient aliases.** Canonical ingredients gain alias lists so recipe text
-  such as "dahi", "curd" and "yogurt" resolves to one canonical ingredient.
-- **Richer provenance.** Recipes carry source, source URL and ingestion
-  provenance rather than a single source URL.
-- **Richer recipe fields.** Yield and serving ranges, cooking time alongside
-  preparation time, region, richer tags, and optional nutrition enrichment.
+Data-foundation work (ingredient aliases, richer provenance, richer recipe
+fields, target dataset scale, diet model completion and the ingestion pipeline)
+belongs to [DATA_STRATEGY.md](DATA_STRATEGY.md). What follows is the part that
+changes the model described on this page.
+
 - **Household staple projection.** A derived, never-persisted view of what this
   household uses, buys and replenishes often, distinct from the catalog-level
   `staple` hint.
@@ -391,10 +389,10 @@ See [DATA_STRATEGY.md](DATA_STRATEGY.md) for the ingestion pipeline.
   belong in the profile, not in a new authority.
 - **Optional ingredient semantics.** Optional lines should not block a recipe or
   become required purchases; required lines continue to affect coverage and the
-  basket.
-- **Target dataset scale.** 300 to 500 canonical ingredients, 300 to 500 validated
-  recipes initially, growing to 800 to 1,500 high-quality recipes, 1,000 to 2,000
-  simulated SKU variants and 50 to 150 substitution relationships.
+  basket. Today the flag is carried but ignored.
+- **Diet model completion.** The five-diet `DietPreference` is only backed by
+  vegetarian and vegan data today; completing it spans the catalog, filtering,
+  substitutions and onboarding.
 - **Lightweight UI to profile mapping.** Simple choices such as "use what I have",
   "save money", "cook quickly" and "try new dishes" would map to the existing
   `planningPreference`, `priceSensitivity`, `conveniencePreference` and
@@ -403,5 +401,3 @@ See [DATA_STRATEGY.md](DATA_STRATEGY.md) for the ingestion pipeline.
 - **Lightweight pantry approximation.** "Low / some / plenty" would be translated
   to canonical quantities at the UI boundary before entering `KitchenState`.
   Approximation is a presentation concern, not a domain concept.
-- **Diet model completion.** End-to-end support across profile, ingredients,
-  recipes, ranking, substitutions and onboarding for all five diet preferences.

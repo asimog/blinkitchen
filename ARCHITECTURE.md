@@ -162,15 +162,13 @@ validated catalog data through `src/catalog/load.ts`. See
 
 ## Known implementation limitations worth knowing
 
-- **Meal ranking is per-recipe.** `ingredientReuse` is a specificity-weighted
-  reuse or chain-potential signal derived from ingredient occurrence across the
-  recipe corpus. The plan takes the highest-ranked meals, and chains are detected
-  afterwards. This is not whole-week optimisation; see PRODUCT_SCOPE.md.
-- **`optional: true` recipe ingredients are treated as required.** The flag is
-  carried through `recipeRequirements`, but meal impact, basket and chains count
-  every requirement. The seed data contains one optional line.
-- **Diet filtering is partial end to end.** The profile supports five diets, while
-  catalog attributes and onboarding cover vegetarian and vegan only.
+Three limits matter architecturally: meal ranking is per-recipe (the reuse factor
+is a corpus signal, not whole-week optimisation), `optional: true` recipe
+ingredients are counted as required, and diet filtering covers only the
+vegetarian and vegan data the catalog actually carries. The full product-level
+list, with the mechanisms behind each, is in [PRODUCT_SCOPE.md](PRODUCT_SCOPE.md).
+The work to remove them is sequenced in
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 ## Deliberate deviations from the original specification
 

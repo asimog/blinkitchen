@@ -63,36 +63,20 @@ Next week's recommendations improve
 The product value is not "Week 1 gives a good recipe". It is that the grocery
 experience becomes increasingly household-specific as facts accumulate.
 
-## Customer value hypotheses
+## Value and business hypotheses
 
-- Fewer unnecessary purchases, because the basket only fills real gaps.
-- Less meal-planning effort, because meals start from what is already home.
-- Better use of food already owned and less waste.
-- More relevant meals as observed behaviour replaces stated preference.
-- Substitutions that reflect this household's past decisions.
-- Replenishment prompts that come from observed usage rather than guesswork.
-- Smaller, more useful baskets.
+Customer value: fewer unnecessary purchases, less planning effort, better use of
+food already owned, less waste, more relevant meals, household-specific swaps,
+usage-based replenishment prompts and smaller but more useful baskets.
 
-## Potential Blinkit value hypotheses
+Blinkit value: more relevant recommendations, stronger recipe-to-basket
+usefulness, context-aware cross-sell, better replenishment timing, better
+substitution ranking, richer recurring-demand understanding and potentially
+stronger retention and trust.
 
-- More relevant recommendations with household context.
-- Stronger recipe-to-basket usefulness.
-- Context-aware cross-sell and household-aware merchandising.
-- Better replenishment timing.
-- Better substitution ranking.
-- Richer understanding of recurring demand.
-- Potentially stronger retention and trust.
-
-None of these are proven by the prototype. They are hypotheses, and
-[PRODUCT_CASE.md](PRODUCT_CASE.md) states how they would be tested.
-
-## The business tension
-
-Pantry awareness can reduce immediate basket value by removing purchases the
-household does not need. That is intentional, and it is the central business
-question of the product case: does improved relevance and trust create enough
-conversion, frequency, retention and attach benefit to offset the removal of
-unnecessary purchases? See [PRODUCT_CASE.md](PRODUCT_CASE.md).
+Both lists are hypotheses, not results. The full treatment, including the basket
+tension where pantry awareness removes spend it does not need, lives in
+[PRODUCT_CASE.md](PRODUCT_CASE.md).
 
 ## Current MVP (implemented)
 
@@ -156,20 +140,10 @@ MAKE BETTER GROCERY DECISIONS
 SHOW ONLY WHAT THE USER NEEDS NOW
 ```
 
-- **Three-step onboarding**: Your Household, How You Eat, Your Kitchen. Then
-  Start Week 1. Roughly one minute, minimal typing, no review screen.
-- **Simpler week view**: one hierarchy (this week's kitchen, this week's plan,
-  the basket, smart extras, what changed) with mechanics behind "Why this?".
-- **Plan-level intelligence**: evaluate each candidate meal against the partial
-  week so reuse becomes real cross-meal reuse, not a corpus signal.
-- **Compact Week 1 to Week 8 comparison** so a reviewer can see what changed
-  without reading eight dense screens.
-- **Honest, outcome-first copy**: "68% already at home", "buy once, use in 3
-  meals", "you've accepted this swap before".
-- **Progressive learning**: pantry, staples, cadence and preferences are
-  corrected and refined over time instead of demanded upfront.
-
-The sequenced work is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+The scope of that direction: three-step onboarding, one clear week hierarchy,
+plan-level reuse, a compact Week 1 to Week 8 comparison, outcome-first copy and
+progressive learning. Each item, with files, acceptance criteria and sequencing,
+is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 ## Experience principles
 

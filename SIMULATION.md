@@ -159,19 +159,7 @@ persisted.
 
 The product thesis is longitudinal, but a reviewer should not have to interpret
 eight dense screens manually. The target experience adds one compact comparison
-surface:
-
-```text
-WHAT CHANGED?
-
-WEEK 1                    WEEK 8
-stated diet               recurring ingredients
-selected cuisines         cuisine behaviour
-starting kitchen          substitution preferences
-                          waste patterns
-                          replenishment signals
-```
-
-The requirement is that longitudinal change becomes visible at a glance, with the
-full weekly detail still available by drill-down. This is planned UI work; see
-[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+surface (what Week 1 knew versus what Week 8 learned) so longitudinal change is
+visible at a glance, with the weekly detail still available by drill-down. The
+diagram, acceptance criteria and sequencing are in
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), Phase 4.

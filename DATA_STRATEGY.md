@@ -159,6 +159,22 @@ and do not reuse copyrighted recipe text. Ingredient lists and quantities needed
 for a shoppable basket are factual structure; expressive instructions are not
 required by this product and should not be copied.
 
+## Target recipe model
+
+The runtime `Recipe` shape stays as documented in [DATA_MODEL.md](DATA_MODEL.md);
+ingestion may populate more of it over time:
+
+| Group | Fields |
+| --- | --- |
+| Identity | id, name, aliases |
+| Classification | cuisine, region, meal slots, dietary attributes, tags |
+| Planning | servings, preparation time, cooking time, complexity |
+| Ingredients | canonical ingredient id, quantity, unit, optional, preparation note |
+| Nutrition | optional enrichment, never required and never used in ranking |
+| Provenance | source, source URL, ingestion provenance |
+
+The rule that never changes: recipes reference canonical ingredients, never SKUs.
+
 ## SKU mapping
 
 Recipes never reference products. The commerce layer maps a canonical requirement
@@ -185,15 +201,12 @@ same `Product` shape.
 Substitutions are an explicit curated relationship, never inferred from text
 similarity or embeddings:
 
-```ts
-type Substitution = {
-  requestedIngredientId; substituteIngredientId;
-  compatibilityScore;  // 0..1 culinary plausibility
-  quantityRatio;       // substitute quantity per unit requested
-  cuisines: string[];  // where the swap is culturally normal
-  explanation: string; // plain-language reason
-};
-```
+The curated shape is the `Substitution` type in [DATA_MODEL.md](DATA_MODEL.md).
+The data rules that matter: every relationship is directed, `compatibilityScore`
+is culinary plausibility on a 0..1 scale, `quantityRatio` states how much
+substitute replaces one unit of the requested ingredient, `cuisines` records
+where the swap is culturally normal, and `explanation` is the plain-language
+reason shown to the household.
 
 Target scale is 50 to 150 directed relationships, prioritising pairs a Delhi/NCR
 household would actually consider (paneer and tofu, rajma and chana, toor and

@@ -63,12 +63,10 @@ replenishment, learning, cohort insights) are never written to state.
 
 The prototype today is a rich deterministic engine in front of a five-step
 onboarding and a dense week view. The target direction simplifies the interface
-sharply while keeping the engine: a three-step onboarding, one primary job per
-screen, insight before mechanics, and progressive disclosure.
-
-- Current capabilities, limitations and the target experience:
-  [PRODUCT_SCOPE.md](PRODUCT_SCOPE.md)
-- Sequenced plan for the simplification work: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
+sharply while keeping the engine: three-step onboarding, insight before
+mechanics, progressive disclosure. Current capabilities and limitations are in
+[PRODUCT_SCOPE.md](PRODUCT_SCOPE.md); the sequenced work is in
+[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 ## Run it
 

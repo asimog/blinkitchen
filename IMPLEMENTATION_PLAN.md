@@ -11,17 +11,15 @@ phase below explicitly says so.
 
 ## Constraints on every phase
 
-- One `KitchenState` authority. Facts in, intelligence out.
-- No persisted projections, at any point.
-- No new infrastructure: no server APIs, database, queues, runtime LLM,
-  embeddings, vector database or repository layers.
-- No new dependencies without a strong reason.
-- Determinism: identical inputs, identical outputs. No clocks, randomness or
-  locale dependence.
-- Engine complexity may grow; interface complexity must not.
-- Every phase ends with `npm run lint`, `npm run typecheck`, `npm run test`,
-  `npm run build`, and `npm run test:e2e` when browser-facing behaviour changed.
-- Authoritative docs are updated in the same change, not afterwards.
+Every phase obeys the repository rules in [AGENTS.md](AGENTS.md): one
+`KitchenState` authority, facts in and intelligence out, no persisted
+projections, no new infrastructure or dependencies without demonstrated product
+need, and deterministic behaviour. Engine complexity may grow; interface
+complexity must not.
+
+Every phase ends with `npm run lint`, `npm run typecheck`, `npm run test`,
+`npm run build`, and `npm run test:e2e` when browser-facing behaviour changed.
+Authoritative docs are updated in the same change, not afterwards.
 
 ## 1. Baseline
 
@@ -331,14 +329,14 @@ land before final copy freezes, because it changes what the plan can claim.
 
 ## 9. Non-goals
 
-- Checkout, ordering, delivery, payments, provider integrations.
-- Accounts, auth, databases, server APIs, queues.
-- Runtime LLMs, embeddings or vector databases.
-- Persisted recommendations, baskets, learning or cohort state.
-- Real Blinkit data, pricing or inventory.
-- Turning the Blinkit Lens into an operations dashboard.
-- Introducing a general optimisation framework. A deterministic greedy planner is
-  the intended ceiling.
+The product-level non-goals in [PRODUCT_SCOPE.md](PRODUCT_SCOPE.md) apply here
+unchanged: no checkout, accounts, databases, queues, runtime LLMs, embeddings,
+vector databases, persisted projections, real Blinkit data or operations
+dashboard. Two are specific to this plan:
+
+- No general optimisation framework. A deterministic greedy planner is the
+  intended ceiling.
+- No new planning or specification documents; this file is the plan.
 
 ## 10. Open questions
 
