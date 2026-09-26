@@ -19,6 +19,7 @@ function plan(...recipeIds: string[]): PlannedMeal[] {
       source: "selected" as const,
       day: (["monday", "tuesday", "wednesday"] as const)[index] ?? "monday",
       slot: "dinner",
+      explanation: [],
     };
   });
 }
@@ -81,14 +82,17 @@ describe("pack math", () => {
     expect(rajma.lineCost).toBe(113.3);
   });
 
-  it("scales quantities with household size", () => {
+  it("scales quantities with household size and picks the cheapest pack combination", () => {
     const large = makeKitchen({}, { memberCount: 8 });
     const basket = buildBasket(large, catalog, plan("rajma_chawal"));
     const rajma = itemFor(basket, "rajma");
     expect(rajma.required).toBe(600);
-    expect(rajma.packCount).toBe(2);
+    // Two 500 g packs would cost more than one 1 kg pack at this location, so
+    // whole-week pack reasoning buys the larger pack once.
+    expect(rajma.product?.skuId).toBe("rajma__rajdhani_rajma_chitra-delhi_south");
+    expect(rajma.packCount).toBe(1);
     expect(rajma.purchasedQuantity).toBe(1000);
-    expect(rajma.lineCost).toBe(226.6);
+    expect(rajma.lineCost).toBe(184.37);
   });
 
   it("never selects out-of-stock SKUs", () => {

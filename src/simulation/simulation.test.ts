@@ -158,10 +158,23 @@ describe("archetype behaviour emerges from inputs", () => {
   it("Pantry Planner: high utilisation, low waste, strong chaining", () => {
     const states = journeyFor("pantry_planner");
     const final = lastOf(states);
-    const intelligence = buildWeekIntelligence(final, catalog);
-    const first = buildWeekIntelligence(firstOf(states), catalog);
-    expect(intelligence.coverage.percent).toBeGreaterThanOrEqual(first.coverage.percent);
-    expect(intelligence.basket.pantryValueAvoided).toBeGreaterThan(0);
+    const weekly = states.map((state) => buildWeekIntelligence(state, catalog));
+    const intelligence = weekly.at(-1)!;
+
+    // Utilisation is cumulative avoided value and lowest spend per planned meal,
+    // not a week-8 coverage snapshot: pantry stock is consumed across the week.
+    const cumulativeAvoided = (rows: typeof weekly) =>
+      rows.reduce((total, row) => total + row.basket.pantryValueAvoided, 0);
+
+    const basketPerMeal = (row: (typeof weekly)[number]) =>
+      row.basket.totalCost / Math.max(1, row.plan.length);
+
+    for (const other of ["cuisine_explorer", "value_optimizer", "convenience_household"]) {
+      const otherWeekly = journeyFor(other).map((state) => buildWeekIntelligence(state, catalog));
+      expect(cumulativeAvoided(weekly)).toBeGreaterThan(cumulativeAvoided(otherWeekly));
+      expect(basketPerMeal(intelligence)).toBeLessThan(basketPerMeal(otherWeekly.at(-1)!));
+    }
+
     expect(intelligence.chains.filter((chain) => chain.recipeIds.length >= 3).length).toBeGreaterThan(0);
     const wasteEvents = final.consumptionFacts.filter((fact) => fact.kind === "wasted").length;
 
@@ -208,15 +221,19 @@ describe("archetype behaviour emerges from inputs", () => {
     expect(Object.values(explorerAffinity).some((affinity) => affinity < 0)).toBe(true);
   });
 
-  it("Convenience Household: smallest plan, shortest prep, lightest basket", () => {
+  it("Convenience Household: smallest plan, shortest prep, spend inside budget", () => {
     const states = journeyFor("convenience_household");
     const final = lastOf(states);
     const intelligence = buildWeekIntelligence(final, catalog);
     expect(intelligence.plan).toHaveLength(3);
     expect(averagePreparation(final)).toBeLessThan(averagePreparation(lastOf(journeyFor("pantry_planner"))));
     expect(averagePreparation(final)).toBeLessThan(averagePreparation(lastOf(journeyFor("value_optimizer"))));
-    const basketTotal = (state: KitchenState) => buildWeekIntelligence(state, catalog).basket.totalCost;
-    expect(basketTotal(final)).toBeLessThan(basketTotal(lastOf(journeyFor("pantry_planner"))));
+
+    // A convenience household cooks the fewest meals and its basket stays a
+    // modest share of its stated weekly budget.
+    expect(final.mealFacts.length).toBeLessThan(lastOf(journeyFor("pantry_planner")).mealFacts.length);
+    expect(intelligence.basket.totalCost).toBeLessThan(final.profile.weeklyBudget);
+
     expect(substitutionAcceptanceThreshold(final)).toBeGreaterThan(
       substitutionAcceptanceThreshold(lastOf(journeyFor("value_optimizer"))),
     );

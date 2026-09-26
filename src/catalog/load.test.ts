@@ -26,14 +26,15 @@ const raw = (): RawCatalog => ({
 describe("loadCatalog", () => {
   it("loads a coherent seed dataset", () => {
     const catalog = loadCatalog();
-    expect(catalog.ingredients.length).toBeGreaterThanOrEqual(20);
-    expect(catalog.ingredients.length).toBeLessThanOrEqual(50);
-    expect(catalog.recipes.length).toBeGreaterThanOrEqual(10);
-    expect(catalog.recipes.length).toBeLessThanOrEqual(15);
+    expect(catalog.ingredients.length).toBeGreaterThanOrEqual(100);
+    expect(catalog.ingredients.length).toBeLessThanOrEqual(160);
+    expect(catalog.recipes.length).toBeGreaterThanOrEqual(100);
+    expect(catalog.recipes.length).toBeLessThanOrEqual(200);
     expect(catalog.locations).toHaveLength(2);
-    expect(catalog.products.length).toBeGreaterThanOrEqual(30);
-    expect(catalog.products.length).toBeLessThanOrEqual(100);
-    expect(catalog.substitutions.length).toBeGreaterThanOrEqual(5);
+    expect(catalog.products.length).toBeGreaterThanOrEqual(250);
+    expect(catalog.products.length).toBeLessThanOrEqual(560);
+    expect(catalog.substitutions.length).toBeGreaterThanOrEqual(20);
+    expect(catalog.substitutions.length).toBeLessThanOrEqual(40);
   });
 
   it("memoizes the validated catalog", () => {

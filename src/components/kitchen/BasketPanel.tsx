@@ -94,10 +94,11 @@ export function BasketPanel({ basket, toBuyCount }: { basket: Basket; toBuyCount
     <section className={styles.panel} aria-label="Pantry-aware basket">
       <div className={styles.panelHeader}>
         <div>
-          <h3 className={styles.panelTitle}>What you need to buy</h3>
+          <h3 className={styles.panelTitle}>Your basket</h3>
           <p className={styles.panelHint}>
-            {toBuyCount} of {basket.items.length} lines to buy — simulated products and prices,
-            nothing is ordered
+            {toBuyCount} {toBuyCount === 1 ? "thing" : "things"} to buy ·{" "}
+            {formatRupees(basket.pantryValueAvoided)} already at home · simulated products, nothing
+            is ordered
           </p>
         </div>
         <p className={styles.panelValue}>{formatRupees(basket.totalCost)}</p>

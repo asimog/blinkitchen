@@ -1,0 +1,74 @@
+[
+  {
+    "id": "paneer_to_tofu",
+    "requestedIngredientId": "paneer",
+    "substituteIngredientId": "tofu",
+    "compatibilityScore": 0.84,
+    "quantityRatio": 1,
+    "cuisines": ["north_indian", "punjabi", "indo_chinese"],
+    "explanation": "Plant protein alternative with a comparable portion"
+  },
+  {
+    "id": "tofu_to_paneer",
+    "requestedIngredientId": "tofu",
+    "substituteIngredientId": "paneer",
+    "compatibilityScore": 0.72,
+    "quantityRatio": 1,
+    "cuisines": ["indo_chinese", "north_indian"],
+    "explanation": "Dairy paneer works where tofu is not available"
+  },
+  {
+    "id": "rajma_to_chana",
+    "requestedIngredientId": "rajma",
+    "substituteIngredientId": "chana",
+    "compatibilityScore": 0.7,
+    "quantityRatio": 1,
+    "cuisines": ["punjabi", "north_indian", "mexican"],
+    "explanation": "Similar legumes; soak and cook the same way"
+  },
+  {
+    "id": "chana_to_rajma",
+    "requestedIngredientId": "chana",
+    "substituteIngredientId": "rajma",
+    "compatibilityScore": 0.7,
+    "quantityRatio": 1,
+    "cuisines": ["punjabi", "north_indian"],
+    "explanation": "Interchangeable legumes for slow-cooked curries"
+  },
+  {
+    "id": "toor_dal_to_moong_dal",
+    "requestedIngredientId": "toor_dal",
+    "substituteIngredientId": "moong_dal",
+    "compatibilityScore": 0.8,
+    "quantityRatio": 1,
+    "cuisines": ["north_indian"],
+    "explanation": "Lighter dal with a similar cook time"
+  },
+  {
+    "id": "moong_dal_to_toor_dal",
+    "requestedIngredientId": "moong_dal",
+    "substituteIngredientId": "toor_dal",
+    "compatibilityScore": 0.75,
+    "quantityRatio": 1,
+    "cuisines": ["north_indian"],
+    "explanation": "Everyday dal swap with a slightly heavier body"
+  },
+  {
+    "id": "ghee_to_oil",
+    "requestedIngredientId": "ghee",
+    "substituteIngredientId": "oil",
+    "compatibilityScore": 0.65,
+    "quantityRatio": 1,
+    "cuisines": ["punjabi", "north_indian"],
+    "explanation": "Neutral oil works for tempering and cooking"
+  },
+  {
+    "id": "oil_to_ghee",
+    "requestedIngredientId": "oil",
+    "substituteIngredientId": "ghee",
+    "compatibilityScore": 0.6,
+    "quantityRatio": 1,
+    "cuisines": ["punjabi", "north_indian"],
+    "explanation": "Richer flavour with the same cooking role"
+  }
+]

@@ -15,6 +15,7 @@ import { simulateJourney, simulateWeek } from "@/simulation/simulate";
 import { DecisionChips } from "@/components/kitchen/DecisionChips";
 import { WeekRail } from "@/components/kitchen/WeekRail";
 import { WeekView } from "@/components/kitchen/WeekView";
+import { JourneyComparisonPanel } from "@/components/explore/JourneyComparisonPanel";
 import styles from "@/components/explore/explore.module.css";
 
 /**
@@ -129,7 +130,10 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
         <Info size={14} aria-hidden />
         <span>
           Simulated household · {completedWeeks} of {WEEK_MAX} weeks completed · replay is
-          deterministic and nothing is stored
+          deterministic and nothing is stored ·{" "}
+          <a className={styles.jumpLink} href="#journey-comparison">
+            Week 1 &rarr; Week 8
+          </a>
         </span>
       </p>
 
@@ -186,6 +190,8 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
         }
         substitutionDecisions={choicesForWeek(kitchen, kitchen.week).substitutionDecisions}
       />
+
+      <JourneyComparisonPanel states={states} />
     </div>
   );
 }

@@ -15,12 +15,15 @@ import { MealCard } from "@/components/kitchen/MealCard";
 import { MetricRow } from "@/components/kitchen/MetricRow";
 import { PantrySnapshot } from "@/components/kitchen/PantrySnapshot";
 import { ReplenishmentPanel } from "@/components/kitchen/ReplenishmentPanel";
+import { SmartExtras } from "@/components/kitchen/SmartExtras";
 import { SubstitutionPanel } from "@/components/kitchen/SubstitutionPanel";
 import { WeekHeader } from "@/components/kitchen/WeekHeader";
 import { useWeekScrollAnchor } from "@/components/kitchen/use-week-scroll";
 import styles from "@/components/kitchen/kitchen.module.css";
 
-const VISIBLE_MEAL_CARDS = 3;
+const VISIBLE_PLAN_MEALS = 5;
+
+const VISIBLE_DISCOVERY_MEALS = 3;
 
 /** Display order for the scoring breakdown, matching MEAL_WEIGHTS. */
 const FACTOR_ORDER = [
@@ -45,6 +48,10 @@ const FACTOR_LABELS = {
  * The shared week projection surface. Both the simulated explore journey and
  * the interactive kitchen render this component; it only consumes derived
  * intelligence and explicit kitchen facts.
+ *
+ * Hierarchy: your kitchen → this week's plan → basket → smart extras → what
+ * changed. Engine depth stays available behind disclosure, never at equal
+ * visual weight.
  */
 export function WeekView({
   kitchen,
@@ -81,32 +88,31 @@ export function WeekView({
   mealsHeading?: string;
 }) {
   const anchorRef = useWeekScrollAnchor(kitchen.week);
+
+  const recommendationByRecipeId = new Map(
+    intelligence.recommendations.map((recommendation) => [recommendation.recipe.id, recommendation]),
+  );
+
   const plannedIds = new Set(intelligence.plan.map((meal) => meal.recipeId));
 
-  const planBadge =
-    intelligence.planSource === "suggested" ? "Suggested for you" : "In this week's plan";
+  const planCards = intelligence.plan.slice(0, VISIBLE_PLAN_MEALS).flatMap((meal) => {
+    const recommendation = recommendationByRecipeId.get(meal.recipeId);
 
-  const cards = intelligence.recommendations.slice(0, VISIBLE_MEAL_CARDS);
-  const rest = intelligence.recommendations.slice(VISIBLE_MEAL_CARDS);
+    return recommendation ? [{ meal, recommendation }] : [];
+  });
+
+  const discoveryCards = intelligence.recommendations
+    .filter((recommendation) => !plannedIds.has(recommendation.recipe.id))
+    .slice(0, VISIBLE_DISCOVERY_MEALS);
+
   const toBuyCount = intelligence.basket.items.filter((item) => item.status === "buy").length;
 
-  const renderCard = (recommendation: WeekIntelligence["recommendations"][number]) => (
-    <MealCard
-      key={recommendation.recipe.id}
-      recommendation={recommendation}
-      planned={plannedIds.has(recommendation.recipe.id)}
-      planBadge={planBadge}
-      catalog={catalog}
-      {...(renderMealAction
-        ? {
-            action: renderMealAction(
-              recommendation.recipe.id,
-              plannedIds.has(recommendation.recipe.id),
-            ),
-          }
-        : {})}
-    />
-  );
+  const useSoonNames = intelligence.useSoon
+    .map((entry) => entry.ingredient.name)
+    .slice(0, 3);
+
+  const extrasCount =
+    intelligence.substitutions.length + intelligence.replenishments.length + intelligence.chains.length;
 
   return (
     <div ref={anchorRef}>
@@ -125,36 +131,78 @@ export function WeekView({
         {...(weekNav ? { rail: weekNav } : {})}
         {...(headerActions ? { actions: headerActions } : {})}
       />
-      <WeekHeader week={kitchen.week} householdName={householdName} {...(badges ? { badges } : {})} />
-      <MetricRow intelligence={intelligence} />
-      {feedbackSlot}
-      <PantrySnapshot kitchen={kitchen} catalog={catalog} />
+
+      <section className={styles.weekBlock} aria-label="Your kitchen this week">
+        <WeekHeader
+          week={kitchen.week}
+          householdName={householdName}
+          {...(badges ? { badges } : {})}
+        />
+        <MetricRow intelligence={intelligence} />
+        <p className={styles.useSoonLine}>
+          {useSoonNames.length > 0
+            ? `Use first: ${useSoonNames.join(", ")}${intelligence.useSoon.length > useSoonNames.length ? ` +${intelligence.useSoon.length - useSoonNames.length} more` : ""}.`
+            : "Nothing needs rescuing this week."}
+        </p>
+        {feedbackSlot}
+        <PantrySnapshot kitchen={kitchen} catalog={catalog} />
+      </section>
+
       {mealPlanner}
 
       <section className={styles.panel} aria-label="Recommended meals">
         <div className={styles.panelHeader}>
           <div>
-            <h3 className={styles.panelTitle}>{mealsHeading}</h3>
+            <h3 className={styles.panelTitle}>This week&apos;s plan</h3>
             <p className={styles.panelHint}>
               {intelligence.planSource === "selected"
-                ? "Your selected meals are marked in the plan"
-                : `Suggested plan of ${intelligence.plan.length} dinners from your cooking routine`}
-              {intelligence.recommendations.length > cards.length
-                ? ` · top ${cards.length} of ${intelligence.recommendations.length} ranked`
-                : ""}
+                ? "Your selected meals, explained against the rest of the week"
+                : `Suggested plan of ${intelligence.plan.length} meals from your cooking routine`}
             </p>
           </div>
           {mealsHeaderAction ? <div className={styles.actionRow}>{mealsHeaderAction}</div> : null}
         </div>
-        <div className={styles.mealGrid}>{cards.map(renderCard)}</div>
-        {rest.length > 0 ? (
-          <details>
+
+        {planCards.length > 0 ? (
+          <div className={styles.mealGrid}>
+            {planCards.map(({ meal, recommendation }) => (
+              <MealCard
+                key={meal.recipeId}
+                recommendation={recommendation}
+                planned
+                planBadge={intelligence.planSource === "selected" ? "In this week's plan" : "Suggested for you"}
+                catalog={catalog}
+                planExplanation={meal.explanation}
+                {...(renderMealAction ? { action: renderMealAction(meal.recipeId, true) } : {})}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className={styles.emptyState}>
+            No meals planned yet. Pick dishes from the list below to build this week.
+          </p>
+        )}
+
+        {discoveryCards.length > 0 ? (
+          <details className={styles.scoreNote}>
             <summary className={styles.detailsToggle}>
-              Show {rest.length} more ranked meals
+              {mealsHeading} · {discoveryCards.length} suggestions
             </summary>
-            <div className={`${styles.mealGrid} ${styles.detailsBody}`}>{rest.map(renderCard)}</div>
+            <div className={`${styles.mealGrid} ${styles.detailsBody}`}>
+              {discoveryCards.map((recommendation) => (
+                <MealCard
+                  key={recommendation.recipe.id}
+                  recommendation={recommendation}
+                  catalog={catalog}
+                  {...(renderMealAction
+                    ? { action: renderMealAction(recommendation.recipe.id, false) }
+                    : {})}
+                />
+              ))}
+            </div>
           </details>
         ) : null}
+
         <details className={styles.scoreNote}>
           <summary className={styles.detailsToggle}>How the fit score is calculated</summary>
           <p>
@@ -169,20 +217,25 @@ export function WeekView({
             ))}
           </ul>
           <p>
-            Skipped meals lose 25 points; meals cooked in the last two weeks lose 8 points each.
-            Everything else you see on this page is derived from the same facts.
+            The plan then chooses meals one slot at a time against the partial week: pantry
+            coverage, shared ingredients, use-soon rescue, variety and incremental cost. Skipped
+            meals lose 25 points; meals cooked in the last two weeks lose 8 points each.
           </p>
         </details>
       </section>
 
-      <ChainPanel chains={intelligence.chains} />
       <BasketPanel basket={intelligence.basket} toBuyCount={toBuyCount} />
-      <SubstitutionPanel
-        suggestions={intelligence.substitutions}
-        decisions={substitutionDecisions}
-        {...(onSubstitutionDecision ? { onDecision: onSubstitutionDecision } : {})}
-      />
-      <ReplenishmentPanel replenishments={intelligence.replenishments} />
+
+      <SmartExtras count={extrasCount}>
+        <ChainPanel chains={intelligence.chains} />
+        <SubstitutionPanel
+          suggestions={intelligence.substitutions}
+          decisions={substitutionDecisions}
+          {...(onSubstitutionDecision ? { onDecision: onSubstitutionDecision } : {})}
+        />
+        <ReplenishmentPanel replenishments={intelligence.replenishments} />
+      </SmartExtras>
+
       <LearningPanel intelligence={intelligence} kitchen={kitchen} catalog={catalog} />
     </div>
   );

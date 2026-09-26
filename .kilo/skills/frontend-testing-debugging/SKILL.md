@@ -133,9 +133,11 @@ Do not write reports, screenshots, traces, or temporary scripts into the repo un
 
 ## Related Skills
 
-- Use `frontend-app-builder` when the task is design creation, redesign, or fidelity to an accepted concept.
-- Use `react-best-practices` after meaningful React/Next.js component edits.
-- Do not invoke Image Gen for ordinary debugging. Use it only when the task requires creating or revising visual assets, or when `frontend-app-builder` is already driving a concept-to-implementation fidelity loop.
+- Use the repository's `nextjs` skill for framework questions and
+  `product-design-audit` when a rendered flow needs a UX/design critique.
+- The upstream related skills (`frontend-app-builder`, `react-best-practices`)
+  are not vendored in this repository; apply their named guidance directly if
+  ever needed.
 
 ## Final Response
 

@@ -32,6 +32,12 @@ export type Ingredient = {
   /** Everyday staple: suggested as a starter essential for fresh kitchens. */
   staple: boolean;
   dietaryAttributes: DietaryAttribute[];
+  /**
+   * Written forms that resolve to this id during offline ingestion
+   * (`dahi`, `curd` -> `yogurt`). Provenance metadata only: never read at
+   * runtime, and canonical ids never change.
+   */
+  aliases: string[];
 };
 
 export type RecipeIngredient = {

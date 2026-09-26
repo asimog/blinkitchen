@@ -9,7 +9,6 @@ import type {
   MealFactors,
   MealImpact,
   MealRecommendation,
-  PlannedMeal,
 } from "@/intelligence/types";
 import { unitCostOrZero } from "@/intelligence/costing";
 import { effectiveRequirement } from "@/intelligence/basket";
@@ -19,7 +18,8 @@ import { deriveUseSoon } from "@/intelligence/use-soon";
 import { humanizeId } from "@/intelligence/labels";
 
 /**
- * Deterministic meal ranking.
+ * Deterministic per-recipe ranking: the discovery list, and the candidate pool
+ * the plan-level planner selects from (see `planner.ts`).
  *
  * Weights are centralized here and intentionally simple. Changing household
  * behaviour changes the factors, which changes the ranking — that is the
@@ -33,8 +33,6 @@ export const MEAL_WEIGHTS = {
   convenience: 0.1,
   useSoonBenefit: 0.1,
 } as const;
-
-const PLAN_MAX = 7;
 
 const RECENT_WEEKS = 2;
 
@@ -73,6 +71,7 @@ export function computeMealImpact(
   let additionalCost = 0;
 
   for (const requirement of recipeRequirements(catalog, recipe)) {
+    if (requirement.optional) continue;
     const effective = effectiveRequirement(kitchen, catalog, requirement);
     const required = normalizeQuantity(effective.quantity * scale, effective.unit);
     const ownedInRequirementUnit = pantryQuantity(kitchen, effective.ingredientId, effective.unit);
@@ -294,69 +293,4 @@ export function rankRecipes(
   return recommendations.sort(
     (a, b) => b.score - a.score || compareStrings(a.recipe.id, b.recipe.id),
   );
-}
-
-/**
- * Deterministic suggested plan from the ranking: plan size follows cooking
- * days. Suggestions occupy one dinner slot per cooking day.
- */
-export function suggestPlan(ranked: MealRecommendation[], kitchen: KitchenState): PlannedMeal[] {
-  const planSize = Math.min(PLAN_MAX, Math.max(0, kitchen.profile.cookingDaysPerWeek));
-  const plan: PlannedMeal[] = [];
-  const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] as const;
-
-  for (const recommendation of ranked) {
-    if (plan.length >= planSize) break;
-
-    const day = days[plan.length];
-
-    if (!day) break;
-
-    const slot = recommendation.recipe.mealSlots.includes("dinner")
-      ? "dinner"
-      : recommendation.recipe.mealSlots[0];
-
-    if (!slot) continue;
-
-    plan.push({
-      recipeId: recommendation.recipe.id,
-      recipe: recommendation.recipe,
-      source: "suggested",
-      day,
-      slot,
-    });
-  }
-
-  const needsDiscoveryMeal =
-    kitchen.profile.explorationPreference >= 0.7 &&
-    plan.length > 0 &&
-    !plan.some((meal) => meal.recipe.discoveryLevel === "explore");
-
-  if (needsDiscoveryMeal) {
-    const discovery = ranked.find(
-      (recommendation) =>
-        recommendation.recipe.discoveryLevel === "explore" &&
-        !plan.some((meal) => meal.recipeId === recommendation.recipe.id),
-    );
-
-    const finalMeal = plan.at(-1);
-
-    if (discovery && finalMeal) {
-      const slot = discovery.recipe.mealSlots.includes(finalMeal.slot)
-        ? finalMeal.slot
-        : discovery.recipe.mealSlots[0];
-
-      if (slot) {
-        plan[plan.length - 1] = {
-          recipeId: discovery.recipe.id,
-          recipe: discovery.recipe,
-          source: "suggested",
-          day: finalMeal.day,
-          slot,
-        };
-      }
-    }
-  }
-
-  return plan;
 }

@@ -126,6 +126,15 @@ export function KitchenJourney() {
   };
 
   const receiveBasket = () => {
+    const commands: KitchenCommand[] = [];
+
+    if (intelligence.planSource === "suggested" && intelligence.plan.length > 0) {
+      commands.push({
+        type: "select_meals",
+        meals: intelligence.plan.map(({ day, slot, recipeId }) => ({ day, slot, recipeId })),
+      });
+    }
+
     const lines = intelligence.basket.items
       .filter((item) => item.status === "buy" && item.purchasedQuantity > 0)
       .map((item) => ({
@@ -134,8 +143,14 @@ export function KitchenJourney() {
         unit: item.unit,
       }));
 
-    if (lines.length === 0) return;
-    applyAll([{ type: "receive_grocery", lines }]);
+    if (lines.length === 0) {
+      applyAll(commands);
+
+      return;
+    }
+
+    commands.push({ type: "receive_grocery", lines });
+    applyAll(commands);
   };
 
   const cookMeals = () => {
@@ -150,6 +165,7 @@ export function KitchenJourney() {
       const scale = kitchen.profile.memberCount / meal.recipe.servings;
 
       for (const requirement of recipeRequirements(catalog, meal.recipe)) {
+        if (requirement.optional) continue;
         const effective = effectiveRequirement(kitchen, catalog, requirement);
         const quantity = roundQuantity(effective.quantity * scale);
 

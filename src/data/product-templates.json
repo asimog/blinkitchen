@@ -1,48 +1,2459 @@
 [
-  { "id": "onion_fresh", "ingredientId": "onion", "name": "Fresh Onion", "brand": "Harvest", "packSize": 1000, "unit": "g", "basePrice": 42 },
-  { "id": "tomato_fresh", "ingredientId": "tomato", "name": "Firm Tomatoes", "brand": "Harvest", "packSize": 500, "unit": "g", "basePrice": 35 },
-  { "id": "potato_fresh", "ingredientId": "potato", "name": "Everyday Potatoes", "brand": "Village Root", "packSize": 1000, "unit": "g", "basePrice": 38 },
-  { "id": "spinach_fresh", "ingredientId": "spinach", "name": "Baby Spinach", "brand": "FreshCo", "packSize": 250, "unit": "g", "basePrice": 38 },
-  { "id": "garlic_fresh", "ingredientId": "garlic", "name": "Garlic Bulbs", "brand": "Harvest", "packSize": 250, "unit": "g", "basePrice": 38 },
-  { "id": "ginger_fresh", "ingredientId": "ginger", "name": "Fresh Ginger", "brand": "Harvest", "packSize": 250, "unit": "g", "basePrice": 45 },
-  { "id": "green_chili_fresh", "ingredientId": "green_chili", "name": "Green Chillies", "brand": "FreshCo", "packSize": 100, "unit": "g", "basePrice": 18 },
-  { "id": "cauliflower_fresh", "ingredientId": "cauliflower", "name": "Cauliflower Florets", "brand": "Village Root", "packSize": 250, "unit": "g", "basePrice": 30 },
-  { "id": "green_peas_frozen", "ingredientId": "green_peas", "name": "Frozen Green Peas", "brand": "FreshCo", "packSize": 500, "unit": "g", "basePrice": 65 },
-  { "id": "carrot_fresh", "ingredientId": "carrot", "name": "Crunchy Carrots", "brand": "Village Root", "packSize": 500, "unit": "g", "basePrice": 35 },
-  { "id": "coriander_fresh", "ingredientId": "coriander", "name": "Coriander Bunch", "brand": "FreshCo", "packSize": 100, "unit": "g", "basePrice": 15 },
-  { "id": "paneer_classic", "ingredientId": "paneer", "name": "Classic Paneer Block", "brand": "Amrit Dairy", "packSize": 200, "unit": "g", "basePrice": 102 },
-  { "id": "yogurt_dahi", "ingredientId": "yogurt", "name": "Dahi (Curd)", "brand": "Amrit Dairy", "packSize": 400, "unit": "g", "basePrice": 62 },
-  { "id": "tofu_firm", "ingredientId": "tofu", "name": "Firm Tofu", "brand": "DailyRoot", "packSize": 100, "unit": "g", "basePrice": 48 },
-  { "id": "rajma_kashmiri", "ingredientId": "rajma", "name": "Kashmiri Rajma", "brand": "Grainly", "packSize": 500, "unit": "g", "basePrice": 110 },
-  { "id": "rajma_regular", "ingredientId": "rajma", "name": "Rajma (Regular)", "brand": "Grainly", "packSize": 1000, "unit": "g", "basePrice": 195 },
-  { "id": "chana_desi", "ingredientId": "chana", "name": "Desi Chana", "brand": "Grainly", "packSize": 500, "unit": "g", "basePrice": 95 },
-  { "id": "moong_dal_yellow", "ingredientId": "moong_dal", "name": "Yellow Moong Dal", "brand": "Grainly", "packSize": 500, "unit": "g", "basePrice": 85 },
-  { "id": "toor_dal_arhar", "ingredientId": "toor_dal", "name": "Arhar (Toor) Dal", "brand": "Grainly", "packSize": 500, "unit": "g", "basePrice": 105 },
-  { "id": "rice_basmati", "ingredientId": "rice", "name": "Basmati Rice", "brand": "Sona", "packSize": 1000, "unit": "g", "basePrice": 165 },
-  { "id": "rice_sona", "ingredientId": "rice", "name": "Sona Masoori Rice", "brand": "Sona", "packSize": 1000, "unit": "g", "basePrice": 120 },
-  { "id": "atta_whole_wheat", "ingredientId": "atta", "name": "Whole Wheat Atta", "brand": "Grainly", "packSize": 1000, "unit": "g", "basePrice": 68 },
-  { "id": "poha_thick", "ingredientId": "poha", "name": "Thick Poha", "brand": "Grainly", "packSize": 500, "unit": "g", "basePrice": 45 },
-  { "id": "oil_sunflower", "ingredientId": "oil", "name": "Sunflower Oil", "brand": "Amrit", "packSize": 1000, "unit": "ml", "basePrice": 158 },
-  { "id": "oil_mustard", "ingredientId": "oil", "name": "Mustard Oil", "brand": "Amrit", "packSize": 1000, "unit": "ml", "basePrice": 145 },
-  { "id": "ghee_pure", "ingredientId": "ghee", "name": "Pure Desi Ghee", "brand": "Amrit Dairy", "packSize": 500, "unit": "ml", "basePrice": 320 },
-  { "id": "cumin_seeds", "ingredientId": "cumin", "name": "Cumin Seeds", "brand": "Spice Route", "packSize": 100, "unit": "g", "basePrice": 60 },
-  { "id": "turmeric_powder", "ingredientId": "turmeric", "name": "Turmeric Powder", "brand": "Spice Route", "packSize": 100, "unit": "g", "basePrice": 35 },
-  { "id": "garam_masala_house", "ingredientId": "garam_masala", "name": "Garam Masala", "brand": "Spice Route", "packSize": 100, "unit": "g", "basePrice": 85 },
-  { "id": "salt_iodized", "ingredientId": "salt", "name": "Iodised Salt", "brand": "DailyRoot", "packSize": 1000, "unit": "g", "basePrice": 28 },
-  { "id": "red_chili_powder_sim", "ingredientId": "red_chili_powder", "name": "Red Chilli Powder", "brand": "Simulated", "packSize": 100, "unit": "g", "basePrice": 55 },
-  { "id": "lemon_sim", "ingredientId": "lemon", "name": "Fresh Lemon", "brand": "Simulated", "packSize": 250, "unit": "g", "basePrice": 45 },
-  { "id": "peanuts_sim", "ingredientId": "peanuts", "name": "Roasted Peanuts", "brand": "Simulated", "packSize": 200, "unit": "g", "basePrice": 60 },
-  { "id": "curry_leaves_sim", "ingredientId": "curry_leaves", "name": "Curry Leaves", "brand": "Simulated", "packSize": 50, "unit": "g", "basePrice": 20 },
-  { "id": "mustard_seeds_sim", "ingredientId": "mustard_seeds", "name": "Mustard Seeds", "brand": "Simulated", "packSize": 100, "unit": "g", "basePrice": 45 },
-  { "id": "bay_leaf_sim", "ingredientId": "bay_leaf", "name": "Bay Leaf", "brand": "Simulated", "packSize": 25, "unit": "g", "basePrice": 35 },
-  { "id": "coriander_powder_sim", "ingredientId": "coriander_powder", "name": "Coriander Powder", "brand": "Simulated", "packSize": 100, "unit": "g", "basePrice": 45 },
-  { "id": "amchur_sim", "ingredientId": "amchur", "name": "Amchur Powder", "brand": "Simulated", "packSize": 100, "unit": "g", "basePrice": 70 },
-  { "id": "ajwain_sim", "ingredientId": "ajwain", "name": "Ajwain", "brand": "Simulated", "packSize": 100, "unit": "g", "basePrice": 60 },
-  { "id": "bread_sim", "ingredientId": "bread", "name": "Whole Wheat Bread", "brand": "Simulated", "packSize": 200, "unit": "g", "basePrice": 32 },
-  { "id": "cream_sim", "ingredientId": "cream", "name": "Dairy Cream", "brand": "Simulated", "packSize": 200, "unit": "ml", "basePrice": 75 },
-  { "id": "hing_sim", "ingredientId": "hing", "name": "Hing", "brand": "Simulated", "packSize": 25, "unit": "g", "basePrice": 70 },
-  { "id": "urad_dal_sim", "ingredientId": "urad_dal", "name": "Urad Dal", "brand": "Simulated", "packSize": 500, "unit": "g", "basePrice": 90 },
-  { "id": "chana_dal_sim", "ingredientId": "chana_dal", "name": "Chana Dal", "brand": "Simulated", "packSize": 500, "unit": "g", "basePrice": 85 },
-  { "id": "papad_sim", "ingredientId": "papad", "name": "Papad", "brand": "Simulated", "packSize": 200, "unit": "g", "basePrice": 65 },
-  { "id": "pickle_sim", "ingredientId": "pickle", "name": "Mixed Pickle", "brand": "Simulated", "packSize": 300, "unit": "g", "basePrice": 95 }
+ {
+  "id": "onion_fresh",
+  "ingredientId": "onion",
+  "name": "Fresh Onion",
+  "brand": "Harvest",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 42
+ },
+ {
+  "id": "tomato_fresh",
+  "ingredientId": "tomato",
+  "name": "Firm Tomatoes",
+  "brand": "Harvest",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 35
+ },
+ {
+  "id": "potato_fresh",
+  "ingredientId": "potato",
+  "name": "Everyday Potatoes",
+  "brand": "Village Root",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 38
+ },
+ {
+  "id": "spinach_fresh",
+  "ingredientId": "spinach",
+  "name": "Baby Spinach",
+  "brand": "FreshCo",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 38
+ },
+ {
+  "id": "garlic_fresh",
+  "ingredientId": "garlic",
+  "name": "Garlic Bulbs",
+  "brand": "Harvest",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 38
+ },
+ {
+  "id": "ginger_fresh",
+  "ingredientId": "ginger",
+  "name": "Fresh Ginger",
+  "brand": "Harvest",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 45
+ },
+ {
+  "id": "green_chili_fresh",
+  "ingredientId": "green_chili",
+  "name": "Green Chillies",
+  "brand": "FreshCo",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 18
+ },
+ {
+  "id": "cauliflower_fresh",
+  "ingredientId": "cauliflower",
+  "name": "Cauliflower Florets",
+  "brand": "Village Root",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 30
+ },
+ {
+  "id": "green_peas_frozen",
+  "ingredientId": "green_peas",
+  "name": "Frozen Green Peas",
+  "brand": "FreshCo",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 65
+ },
+ {
+  "id": "carrot_fresh",
+  "ingredientId": "carrot",
+  "name": "Crunchy Carrots",
+  "brand": "Village Root",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 35
+ },
+ {
+  "id": "coriander_fresh",
+  "ingredientId": "coriander",
+  "name": "Coriander Bunch",
+  "brand": "FreshCo",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 15
+ },
+ {
+  "id": "paneer_classic",
+  "ingredientId": "paneer",
+  "name": "Classic Paneer Block",
+  "brand": "Amrit Dairy",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 102
+ },
+ {
+  "id": "yogurt_dahi",
+  "ingredientId": "yogurt",
+  "name": "Dahi (Curd)",
+  "brand": "Amrit Dairy",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 62
+ },
+ {
+  "id": "tofu_firm",
+  "ingredientId": "tofu",
+  "name": "Firm Tofu",
+  "brand": "DailyRoot",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 48
+ },
+ {
+  "id": "rajma_kashmiri",
+  "ingredientId": "rajma",
+  "name": "Kashmiri Rajma",
+  "brand": "Grainly",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 110
+ },
+ {
+  "id": "rajma_regular",
+  "ingredientId": "rajma",
+  "name": "Rajma (Regular)",
+  "brand": "Grainly",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 195
+ },
+ {
+  "id": "chana_desi",
+  "ingredientId": "chana",
+  "name": "Desi Chana",
+  "brand": "Grainly",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 95
+ },
+ {
+  "id": "moong_dal_yellow",
+  "ingredientId": "moong_dal",
+  "name": "Yellow Moong Dal",
+  "brand": "Grainly",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 85
+ },
+ {
+  "id": "toor_dal_arhar",
+  "ingredientId": "toor_dal",
+  "name": "Arhar (Toor) Dal",
+  "brand": "Grainly",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 105
+ },
+ {
+  "id": "rice_basmati",
+  "ingredientId": "rice",
+  "name": "Basmati Rice",
+  "brand": "Sona",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 165
+ },
+ {
+  "id": "rice_sona",
+  "ingredientId": "rice",
+  "name": "Sona Masoori Rice",
+  "brand": "Sona",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 120
+ },
+ {
+  "id": "atta_whole_wheat",
+  "ingredientId": "atta",
+  "name": "Whole Wheat Atta",
+  "brand": "Grainly",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 68
+ },
+ {
+  "id": "poha_thick",
+  "ingredientId": "poha",
+  "name": "Thick Poha",
+  "brand": "Grainly",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 45
+ },
+ {
+  "id": "oil_sunflower",
+  "ingredientId": "oil",
+  "name": "Sunflower Oil",
+  "brand": "Amrit",
+  "packSize": 1000,
+  "unit": "ml",
+  "basePrice": 158
+ },
+ {
+  "id": "oil_mustard",
+  "ingredientId": "oil",
+  "name": "Mustard Oil",
+  "brand": "Amrit",
+  "packSize": 1000,
+  "unit": "ml",
+  "basePrice": 145
+ },
+ {
+  "id": "ghee_pure",
+  "ingredientId": "ghee",
+  "name": "Pure Desi Ghee",
+  "brand": "Amrit Dairy",
+  "packSize": 500,
+  "unit": "ml",
+  "basePrice": 320
+ },
+ {
+  "id": "cumin_seeds",
+  "ingredientId": "cumin",
+  "name": "Cumin Seeds",
+  "brand": "Spice Route",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "turmeric_powder",
+  "ingredientId": "turmeric",
+  "name": "Turmeric Powder",
+  "brand": "Spice Route",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 35
+ },
+ {
+  "id": "garam_masala_house",
+  "ingredientId": "garam_masala",
+  "name": "Garam Masala",
+  "brand": "Spice Route",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 85
+ },
+ {
+  "id": "salt_iodized",
+  "ingredientId": "salt",
+  "name": "Iodised Salt",
+  "brand": "DailyRoot",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 28
+ },
+ {
+  "id": "red_chili_powder_sim",
+  "ingredientId": "red_chili_powder",
+  "name": "Red Chilli Powder",
+  "brand": "Simulated",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 55
+ },
+ {
+  "id": "lemon_sim",
+  "ingredientId": "lemon",
+  "name": "Fresh Lemon",
+  "brand": "Simulated",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 45
+ },
+ {
+  "id": "peanuts_sim",
+  "ingredientId": "peanuts",
+  "name": "Roasted Peanuts",
+  "brand": "Simulated",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "curry_leaves_sim",
+  "ingredientId": "curry_leaves",
+  "name": "Curry Leaves",
+  "brand": "Simulated",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 20
+ },
+ {
+  "id": "mustard_seeds_sim",
+  "ingredientId": "mustard_seeds",
+  "name": "Mustard Seeds",
+  "brand": "Simulated",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 45
+ },
+ {
+  "id": "bay_leaf_sim",
+  "ingredientId": "bay_leaf",
+  "name": "Bay Leaf",
+  "brand": "Simulated",
+  "packSize": 25,
+  "unit": "g",
+  "basePrice": 35
+ },
+ {
+  "id": "coriander_powder_sim",
+  "ingredientId": "coriander_powder",
+  "name": "Coriander Powder",
+  "brand": "Simulated",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 45
+ },
+ {
+  "id": "amchur_sim",
+  "ingredientId": "amchur",
+  "name": "Amchur Powder",
+  "brand": "Simulated",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 70
+ },
+ {
+  "id": "ajwain_sim",
+  "ingredientId": "ajwain",
+  "name": "Ajwain",
+  "brand": "Simulated",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "bread_sim",
+  "ingredientId": "bread",
+  "name": "Whole Wheat Bread",
+  "brand": "Simulated",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 32
+ },
+ {
+  "id": "cream_sim",
+  "ingredientId": "cream",
+  "name": "Dairy Cream",
+  "brand": "Simulated",
+  "packSize": 200,
+  "unit": "ml",
+  "basePrice": 75
+ },
+ {
+  "id": "hing_sim",
+  "ingredientId": "hing",
+  "name": "Hing",
+  "brand": "Simulated",
+  "packSize": 25,
+  "unit": "g",
+  "basePrice": 70
+ },
+ {
+  "id": "urad_dal_sim",
+  "ingredientId": "urad_dal",
+  "name": "Urad Dal",
+  "brand": "Simulated",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 90
+ },
+ {
+  "id": "chana_dal_sim",
+  "ingredientId": "chana_dal",
+  "name": "Chana Dal",
+  "brand": "Simulated",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 85
+ },
+ {
+  "id": "papad_sim",
+  "ingredientId": "papad",
+  "name": "Papad",
+  "brand": "Simulated",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 65
+ },
+ {
+  "id": "pickle_sim",
+  "ingredientId": "pickle",
+  "name": "Mixed Pickle",
+  "brand": "Simulated",
+  "packSize": 300,
+  "unit": "g",
+  "basePrice": 95
+ },
+ {
+  "id": "onion__onion_pyaz",
+  "ingredientId": "onion",
+  "name": "Onion (Pyaz)",
+  "brand": "Freshbury",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 67
+ },
+ {
+  "id": "onion__peeled_onion",
+  "ingredientId": "onion",
+  "name": "Peeled Onion",
+  "brand": "Freshbury",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 67
+ },
+ {
+  "id": "tomato__hybrid_tomato_tamatar",
+  "ingredientId": "tomato",
+  "name": "Hybrid Tomato (Tamatar)",
+  "brand": "Hybrid",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 30
+ },
+ {
+  "id": "tomato__anjali_olive_tomato_knife_plastic",
+  "ingredientId": "tomato",
+  "name": "Anjali Olive Tomato Knife (Plastic)",
+  "brand": "Anjali",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 89
+ },
+ {
+  "id": "potato__potato_aloo",
+  "ingredientId": "potato",
+  "name": "Potato (Aloo)",
+  "brand": "Potato",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 22
+ },
+ {
+  "id": "potato__being_bania_handmade_sundried_potato_papad",
+  "ingredientId": "potato",
+  "name": "Being Bania Handmade & Sundried Potato Papad",
+  "brand": "Being Bania",
+  "packSize": 450,
+  "unit": "g",
+  "basePrice": 249
+ },
+ {
+  "id": "garlic__wingreens_farms_traditional_recipe_schezwan_chilli",
+  "ingredientId": "garlic",
+  "name": "Wingreens Farms Traditional Recipe Schezwan Chilli Garlic Sauce",
+  "brand": "Wingreens Farms",
+  "packSize": 450,
+  "unit": "g",
+  "basePrice": 148
+ },
+ {
+  "id": "garlic__garlic_chives",
+  "ingredientId": "garlic",
+  "name": "Garlic Chives",
+  "brand": "Freshbury",
+  "packSize": 10,
+  "unit": "g",
+  "basePrice": 42
+ },
+ {
+  "id": "ginger__paper_boat_zero_sugar_ginger_lemon",
+  "ingredientId": "ginger",
+  "name": "Paper Boat Zero Sugar Ginger Lemon Sparkling Drink",
+  "brand": "Paper Boat",
+  "packSize": 600,
+  "unit": "ml",
+  "basePrice": 60
+ },
+ {
+  "id": "ginger__premium_thai_ginger",
+  "ingredientId": "ginger",
+  "name": "Premium Thai Ginger",
+  "brand": "Freshbury",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 159
+ },
+ {
+  "id": "green_chili__tops_green_chilli_sauce",
+  "ingredientId": "green_chili",
+  "name": "Tops Green Chilli Sauce",
+  "brand": "Tops",
+  "packSize": 650,
+  "unit": "g",
+  "basePrice": 74
+ },
+ {
+  "id": "green_chili__mercons_food_chilli_flakes_pizza_seasoning",
+  "ingredientId": "green_chili",
+  "name": "Mercons Food Chilli Flakes & Pizza Seasoning Combo",
+  "brand": "Mercons Food",
+  "packSize": 75,
+  "unit": "g",
+  "basePrice": 199
+ },
+ {
+  "id": "cauliflower__cauliflower_phool_gobhi",
+  "ingredientId": "cauliflower",
+  "name": "Cauliflower (Phool Gobhi)",
+  "brand": "Cauliflower",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 45
+ },
+ {
+  "id": "cauliflower__cauliflower_florets_phool_gobhi",
+  "ingredientId": "cauliflower",
+  "name": "Cauliflower Florets (Phool Gobhi)",
+  "brand": "Freshbury",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 72
+ },
+ {
+  "id": "green_peas__whole_farm_grocery_white_dried_peas",
+  "ingredientId": "green_peas",
+  "name": "Whole Farm Grocery White Dried Peas/Safed Matar",
+  "brand": "Whole Farm Grocery",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 83
+ },
+ {
+  "id": "green_peas__koh_kae_wasabi_flavour_coated_green",
+  "ingredientId": "green_peas",
+  "name": "Koh Kae Wasabi Flavour Coated Green Peas",
+  "brand": "Koh Kae",
+  "packSize": 85,
+  "unit": "g",
+  "basePrice": 90
+ },
+ {
+  "id": "paneer__mother_dairy_paneer_family_pack",
+  "ingredientId": "paneer",
+  "name": "Mother Dairy Paneer Family Pack",
+  "brand": "Mother Dairy",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 190
+ },
+ {
+  "id": "paneer__pride_of_cows_low_fat_high",
+  "ingredientId": "paneer",
+  "name": "Pride of Cows Low Fat High Protein Paneer",
+  "brand": "Pride of Cows",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 195
+ },
+ {
+  "id": "yogurt__amul_pouch_curd",
+  "ingredientId": "yogurt",
+  "name": "Amul Pouch Curd",
+  "brand": "Amul",
+  "packSize": 700,
+  "unit": "g",
+  "basePrice": 50
+ },
+ {
+  "id": "yogurt__epigamia_turbo_protein_yogurt",
+  "ingredientId": "yogurt",
+  "name": "Epigamia Turbo Protein Yogurt",
+  "brand": "Epigamia",
+  "packSize": 140,
+  "unit": "g",
+  "basePrice": 125
+ },
+ {
+  "id": "tofu__now_healthy_tofu_200_g",
+  "ingredientId": "tofu",
+  "name": "Now Healthy Tofu (200 g)",
+  "brand": "Now Healthy",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 41
+ },
+ {
+  "id": "tofu__morinaga_firm_tofu",
+  "ingredientId": "tofu",
+  "name": "Morinaga Firm Tofu",
+  "brand": "Morinaga",
+  "packSize": 307,
+  "unit": "g",
+  "basePrice": 399
+ },
+ {
+  "id": "rajma__rajdhani_rajma_chitra",
+  "ingredientId": "rajma",
+  "name": "Rajdhani Rajma Chitra",
+  "brand": "Rajdhani",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 179
+ },
+ {
+  "id": "rajma__american_garden_dark_red_kidney_beans",
+  "ingredientId": "rajma",
+  "name": "American Garden Dark Red Kidney Beans",
+  "brand": "American Garden",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 185
+ },
+ {
+  "id": "chana__whole_farm_grocery_kabuli_chana_medium",
+  "ingredientId": "chana",
+  "name": "Whole Farm Grocery Kabuli Chana (Medium Size)",
+  "brand": "Whole Farm Grocery",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 117
+ },
+ {
+  "id": "chana__adya_organics_100_pure_chana_sattu",
+  "ingredientId": "chana",
+  "name": "Adya Organics 100% Pure Chana Sattu Powder",
+  "brand": "Adya Organics",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 339
+ },
+ {
+  "id": "moong_dal__basic_moong_dal_dhuli",
+  "ingredientId": "moong_dal",
+  "name": "Basic Moong Dal (Dhuli)",
+  "brand": "Basic",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 119
+ },
+ {
+  "id": "moong_dal__lijjat_moong_dal_papad",
+  "ingredientId": "moong_dal",
+  "name": "Lijjat Moong Dal Papad",
+  "brand": "Lijjat",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 100
+ },
+ {
+  "id": "toor_dal__basic_arhar_toor_dal_toor_dal",
+  "ingredientId": "toor_dal",
+  "name": "Basic ARHAR/ TOOR DAL Toor Dal",
+  "brand": "Basic",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 131
+ },
+ {
+  "id": "toor_dal__tata_sampann_organic_arhar_dal_unpolished",
+  "ingredientId": "toor_dal",
+  "name": "Tata Sampann Organic Arhar Dal Unpolished",
+  "brand": "Tata Sampann",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 130
+ },
+ {
+  "id": "rice__daawat_rozana_super_basmati_rice_medium",
+  "ingredientId": "rice",
+  "name": "Daawat Rozana Super Basmati Rice (Medium Grain)",
+  "brand": "Daawat",
+  "packSize": 10000,
+  "unit": "g",
+  "basePrice": 715
+ },
+ {
+  "id": "rice__irida_naturals_rice_husk_mixing_bowl",
+  "ingredientId": "rice",
+  "name": "Irida Naturals Rice Husk Mixing Bowl (Soft Beige)",
+  "brand": "Irida Naturals",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 299
+ },
+ {
+  "id": "atta__fortune_fresh_100_atta_0_maida",
+  "ingredientId": "atta",
+  "name": "Fortune Fresh (100% Atta, 0% Maida) Chakki Atta",
+  "brand": "Fortune",
+  "packSize": 10000,
+  "unit": "g",
+  "basePrice": 434
+ },
+ {
+  "id": "atta__aravi_atta_chalni_flour_sieve_steel",
+  "ingredientId": "atta",
+  "name": "Aravi Atta Chalni / Flour Sieve (Steel)",
+  "brand": "Aravi",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 229
+ },
+ {
+  "id": "poha__whole_farm_premium_fiber_rich_thick",
+  "ingredientId": "poha",
+  "name": "Whole Farm Premium Fiber Rich Thick Poha",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 38
+ },
+ {
+  "id": "poha__24_mantra_organic_red_poha",
+  "ingredientId": "poha",
+  "name": "24 Mantra Organic Red Poha",
+  "brand": "24 Mantra Organic",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 90
+ },
+ {
+  "id": "oil__saffola_active_rice_bran_soyabean_blended",
+  "ingredientId": "oil",
+  "name": "Saffola Active Rice Bran & Soyabean Blended Cooking Oil",
+  "brand": "Saffola",
+  "packSize": 930,
+  "unit": "ml",
+  "basePrice": 163
+ },
+ {
+  "id": "oil__bertolli_indian_cooking_extra_light_olive",
+  "ingredientId": "oil",
+  "name": "Bertolli Indian Cooking Extra Light Olive Oil",
+  "brand": "Bertolli",
+  "packSize": 1000,
+  "unit": "ml",
+  "basePrice": 1100
+ },
+ {
+  "id": "ghee__mother_dairy_buffalo_ghee",
+  "ingredientId": "ghee",
+  "name": "Mother Dairy Buffalo Ghee",
+  "brand": "Mother Dairy",
+  "packSize": 1000,
+  "unit": "ml",
+  "basePrice": 627
+ },
+ {
+  "id": "ghee__barosi_desi_cow_a2_ghee_500",
+  "ingredientId": "ghee",
+  "name": "Barosi Desi Cow A2 Ghee (500 ml)",
+  "brand": "Barosi",
+  "packSize": 500,
+  "unit": "ml",
+  "basePrice": 887
+ },
+ {
+  "id": "cumin__whole_farm_premium_cumin_seeds_jeera",
+  "ingredientId": "cumin",
+  "name": "Whole Farm Premium Cumin Seeds / Jeera Seeds",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 167
+ },
+ {
+  "id": "cumin__organic_tattva_organic_cumin_seeds_jeera",
+  "ingredientId": "cumin",
+  "name": "Organic Tattva Organic Cumin Seeds / Jeera Seeds",
+  "brand": "Organic Tattva",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 81
+ },
+ {
+  "id": "turmeric__aashirvaad_haldi_turmeric_powder",
+  "ingredientId": "turmeric",
+  "name": "Aashirvaad Haldi/ Turmeric Powder",
+  "brand": "Aashirvaad",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 52
+ },
+ {
+  "id": "turmeric__organic_tattva_organic_turmeric_powder",
+  "ingredientId": "turmeric",
+  "name": "Organic Tattva - Organic Turmeric Powder",
+  "brand": "Organic Tattva",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 57
+ },
+ {
+  "id": "garam_masala__catch_super_garam_masala",
+  "ingredientId": "garam_masala",
+  "name": "Catch Super Garam Masala",
+  "brand": "Catch",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 90
+ },
+ {
+  "id": "garam_masala__zoff_whole_garam_masala",
+  "ingredientId": "garam_masala",
+  "name": "Zoff Whole Garam Masala",
+  "brand": "Zoff",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 79
+ },
+ {
+  "id": "salt__aashirvaad_iodized_natural_salt_1_kg",
+  "ingredientId": "salt",
+  "name": "Aashirvaad Iodized Natural Salt 1 kg",
+  "brand": "Aashirvaad",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 26
+ },
+ {
+  "id": "salt__house_of_himalayas_timur_flavoured_himalayan",
+  "ingredientId": "salt",
+  "name": "House of Himalayas Timur Flavoured Himalayan Salt",
+  "brand": "House of Himalayas",
+  "packSize": 75,
+  "unit": "g",
+  "basePrice": 157
+ },
+ {
+  "id": "red_chili_powder__aashirvaad_chilli_powder",
+  "ingredientId": "red_chili_powder",
+  "name": "Aashirvaad Chilli Powder",
+  "brand": "Aashirvaad",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 81
+ },
+ {
+  "id": "red_chili_powder__aashirvaad_kashmiri_chilli_powder",
+  "ingredientId": "red_chili_powder",
+  "name": "Aashirvaad Kashmiri Chilli Powder",
+  "brand": "Aashirvaad",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 133
+ },
+ {
+  "id": "lemon__7up_nimbooz_with_lemon_juice",
+  "ingredientId": "lemon",
+  "name": "7UP Nimbooz with Lemon Juice",
+  "brand": "7UP",
+  "packSize": 350,
+  "unit": "ml",
+  "basePrice": 25
+ },
+ {
+  "id": "lemon__organically_grown_lemon",
+  "ingredientId": "lemon",
+  "name": "Organically Grown Lemon",
+  "brand": "Freshbury",
+  "packSize": 220,
+  "unit": "g",
+  "basePrice": 121
+ },
+ {
+  "id": "peanuts__whole_farm_premium_raw_peanuts",
+  "ingredientId": "peanuts",
+  "name": "Whole Farm Premium Raw Peanuts",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 99
+ },
+ {
+  "id": "peanuts__tong_garden_salted_peanuts",
+  "ingredientId": "peanuts",
+  "name": "Tong Garden Salted Peanuts",
+  "brand": "Tong Garden",
+  "packSize": 150,
+  "unit": "g",
+  "basePrice": 128
+ },
+ {
+  "id": "curry_leaves__curry_leaves_kadi_patta",
+  "ingredientId": "curry_leaves",
+  "name": "Curry Leaves (Kadi Patta)",
+  "brand": "Curry",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 14
+ },
+ {
+  "id": "curry_leaves__curry_leaves_by_bettergreens",
+  "ingredientId": "curry_leaves",
+  "name": "Curry Leaves by BetterGreens",
+  "brand": "BetterGreens",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 79
+ },
+ {
+  "id": "mustard_seeds__whole_farm_premium_yellow_small_mustard",
+  "ingredientId": "mustard_seeds",
+  "name": "Whole Farm Premium Yellow Small Mustard Seeds (Saraso)",
+  "brand": "Whole Farm",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 25
+ },
+ {
+  "id": "mustard_seeds__house_of_himalayas_wild_mustard_seeds",
+  "ingredientId": "mustard_seeds",
+  "name": "House of Himalayas Wild Mustard Seeds (Pahadi Jakhiya)",
+  "brand": "House of Himalayas",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 113
+ },
+ {
+  "id": "bay_leaf__whole_farm_premium_bay_leaf_tej",
+  "ingredientId": "bay_leaf",
+  "name": "Whole Farm Premium Bay Leaf / Tej Patta",
+  "brand": "Whole Farm",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 27
+ },
+ {
+  "id": "bay_leaf__organic_tattva_organic_bay_leaf_tej",
+  "ingredientId": "bay_leaf",
+  "name": "Organic Tattva Organic Bay Leaf/Tej Patta",
+  "brand": "Organic Tattva",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 63
+ },
+ {
+  "id": "coriander_powder__aashirvaad_coriander_powder_dhaniya_powder",
+  "ingredientId": "coriander_powder",
+  "name": "Aashirvaad Coriander Powder /Dhaniya Powder",
+  "brand": "Aashirvaad",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 26
+ },
+ {
+  "id": "coriander_powder__pro_nature_coriander_seeds",
+  "ingredientId": "coriander_powder",
+  "name": "Pro Nature Coriander Seeds",
+  "brand": "Pro Nature",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 166
+ },
+ {
+  "id": "amchur__shasha_amchur_powder",
+  "ingredientId": "amchur",
+  "name": "Shasha Amchur Powder",
+  "brand": "Shasha",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 68
+ },
+ {
+  "id": "amchur__everest_amchur_powder",
+  "ingredientId": "amchur",
+  "name": "Everest Amchur Powder",
+  "brand": "Everest",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 96
+ },
+ {
+  "id": "ajwain__whole_farm_premium_ajwain_seeds",
+  "ingredientId": "ajwain",
+  "name": "Whole Farm Premium Ajwain Seeds",
+  "brand": "Whole Farm",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 41
+ },
+ {
+  "id": "ajwain__hamdard_khaalis_ajwain_seeds",
+  "ingredientId": "ajwain",
+  "name": "Hamdard Khaalis Ajwain Seeds",
+  "brand": "Hamdard Khaalis",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 49
+ },
+ {
+  "id": "bread__english_oven_premium_white_bread",
+  "ingredientId": "bread",
+  "name": "English Oven Premium White Bread",
+  "brand": "English Oven",
+  "packSize": 700,
+  "unit": "g",
+  "basePrice": 70
+ },
+ {
+  "id": "bread__japanese_choice_crispy_bread_crumbs",
+  "ingredientId": "bread",
+  "name": "Japanese Choice Crispy Bread Crumbs",
+  "brand": "Japanese Choice",
+  "packSize": 60,
+  "unit": "g",
+  "basePrice": 170
+ },
+ {
+  "id": "cream__kwality_wall_s_vanilla_ice_cream",
+  "ingredientId": "cream",
+  "name": "Kwality Wall's Vanilla Ice Cream Tub",
+  "brand": "Kwality Wall's",
+  "packSize": 700,
+  "unit": "ml",
+  "basePrice": 128
+ },
+ {
+  "id": "cream__birch_co_scallop_ice_cream_glass",
+  "ingredientId": "cream",
+  "name": "Birch & Co. Scallop Ice Cream Glass Bowl",
+  "brand": "Birch & Co.",
+  "packSize": 6,
+  "unit": "piece",
+  "basePrice": 599
+ },
+ {
+  "id": "urad_dal__whole_farm_premium_urad_dal_chilka",
+  "ingredientId": "urad_dal",
+  "name": "Whole Farm Premium Urad Dal (Chilka)",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 79
+ },
+ {
+  "id": "urad_dal__lijjat_urad_dal_papad",
+  "ingredientId": "urad_dal",
+  "name": "Lijjat Urad Dal Papad",
+  "brand": "Lijjat",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 100
+ },
+ {
+  "id": "chana_dal__nafed_chana_dal",
+  "ingredientId": "chana_dal",
+  "name": "NAFED Chana Dal",
+  "brand": "NAFED",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 95
+ },
+ {
+  "id": "chana_dal__two_brothers_roasted_bengal_gram_sattu",
+  "ingredientId": "chana_dal",
+  "name": "Two Brothers Roasted Bengal Gram Sattu Atta",
+  "brand": "Two Brothers",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 195
+ },
+ {
+  "id": "papad__haldiram_s_medium_masala_papad",
+  "ingredientId": "papad",
+  "name": "Haldiram's Medium Masala Papad",
+  "brand": "Haldiram's",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 70
+ },
+ {
+  "id": "papad__lijjat_punjabi_masala_papad",
+  "ingredientId": "papad",
+  "name": "Lijjat Punjabi Masala Papad",
+  "brand": "Lijjat",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 115
+ },
+ {
+  "id": "pickle__gongloo_khata_meetha_lemon_pickle",
+  "ingredientId": "pickle",
+  "name": "Gongloo Khata Meetha Lemon Pickle",
+  "brand": "Gongloo",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 199
+ },
+ {
+  "id": "pickle__pickle_fresh_peri_peri_chicken_pickle",
+  "ingredientId": "pickle",
+  "name": "Pickle Fresh Peri-Peri Chicken Pickle",
+  "brand": "Pickle Fresh",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 299
+ },
+ {
+  "id": "cabbage__cabbage_shredded",
+  "ingredientId": "cabbage",
+  "name": "Cabbage - Shredded",
+  "brand": "Cabbage",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 25
+ },
+ {
+  "id": "cabbage__cabbage_patta_gobhi",
+  "ingredientId": "cabbage",
+  "name": "Cabbage (Patta Gobhi)",
+  "brand": "Cabbage",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 42
+ },
+ {
+  "id": "capsicum__green_capsicum_shimla_mirch",
+  "ingredientId": "capsicum",
+  "name": "Green Capsicum (Shimla Mirch)",
+  "brand": "Freshbury",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 42
+ },
+ {
+  "id": "capsicum__assorted_capsicum_red_yellow_green",
+  "ingredientId": "capsicum",
+  "name": "Assorted Capsicum - (Red, Yellow, Green)",
+  "brand": "Freshbury",
+  "packSize": 3,
+  "unit": "piece",
+  "basePrice": 134
+ },
+ {
+  "id": "brinjal__brinjal_bharta_baingan",
+  "ingredientId": "brinjal",
+  "name": "Brinjal - Bharta (Baingan)",
+  "brand": "Brinjal",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 24
+ },
+ {
+  "id": "brinjal__organically_grown_nagpur_brinjal",
+  "ingredientId": "brinjal",
+  "name": "Organically Grown Nagpur Brinjal",
+  "brand": "Freshbury",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 33
+ },
+ {
+  "id": "okra__lady_finger_bhindi",
+  "ingredientId": "okra",
+  "name": "Lady Finger (Bhindi)",
+  "brand": "Lady",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 15
+ },
+ {
+  "id": "okra__organically_grown_lady_finger_bhindi",
+  "ingredientId": "okra",
+  "name": "Organically Grown- Lady Finger (Bhindi)",
+  "brand": "Freshbury",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 30
+ },
+ {
+  "id": "bottle_gourd__bottle_gourd_lauki",
+  "ingredientId": "bottle_gourd",
+  "name": "Bottle Gourd (Lauki)",
+  "brand": "Freshbury",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 19
+ },
+ {
+  "id": "bottle_gourd__round_bottle_gourd_gol_lauki",
+  "ingredientId": "bottle_gourd",
+  "name": "Round Bottle Gourd (Gol Lauki)",
+  "brand": "Round",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 19
+ },
+ {
+  "id": "bitter_gourd__bitter_gourd_karela",
+  "ingredientId": "bitter_gourd",
+  "name": "Bitter Gourd (Karela)",
+  "brand": "Freshbury",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 20
+ },
+ {
+  "id": "bitter_gourd__organically_grown_bitter_gourd_karela",
+  "ingredientId": "bitter_gourd",
+  "name": "Organically Grown Bitter Gourd (Karela)",
+  "brand": "Green Earth",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 26
+ },
+ {
+  "id": "beetroot__beetroot_chukandar",
+  "ingredientId": "beetroot",
+  "name": "Beetroot (Chukandar)",
+  "brand": "Beetroot",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 37
+ },
+ {
+  "id": "beetroot__mystiq_living_beetroot_powder",
+  "ingredientId": "beetroot",
+  "name": "Mystiq Living Beetroot Powder",
+  "brand": "Mystiq Living",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 199
+ },
+ {
+  "id": "radish__radish_mooli",
+  "ingredientId": "radish",
+  "name": "Radish (Mooli)",
+  "brand": "Radish",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 59
+ },
+ {
+  "id": "cucumber__english_cucumber_kheera",
+  "ingredientId": "cucumber",
+  "name": "English Cucumber (Kheera)",
+  "brand": "English",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 41
+ },
+ {
+  "id": "cucumber__snack_cucumber",
+  "ingredientId": "cucumber",
+  "name": "Snack Cucumber",
+  "brand": "Nature's Miracle",
+  "packSize": 750,
+  "unit": "g",
+  "basePrice": 275
+ },
+ {
+  "id": "broccoli__broccoli",
+  "ingredientId": "broccoli",
+  "name": "Broccoli",
+  "brand": "Freshbury",
+  "packSize": 300,
+  "unit": "g",
+  "basePrice": 140
+ },
+ {
+  "id": "broccoli__broccoli_florets",
+  "ingredientId": "broccoli",
+  "name": "Broccoli Florets",
+  "brand": "Freshbury",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 84
+ },
+ {
+  "id": "mushroom__button_mushroom",
+  "ingredientId": "mushroom",
+  "name": "Button Mushroom",
+  "brand": "Button",
+  "packSize": 180,
+  "unit": "g",
+  "basePrice": 48
+ },
+ {
+  "id": "mushroom__urban_platter_dried_shiitake_mushroom",
+  "ingredientId": "mushroom",
+  "name": "Urban Platter Dried Shiitake Mushroom",
+  "brand": "Urban Platter",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 404
+ },
+ {
+  "id": "corn__whole_farm_premium_corn_flour_starch",
+  "ingredientId": "corn",
+  "name": "Whole Farm Premium Corn Flour (Starch)",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 62
+ },
+ {
+  "id": "corn__weikfield_corn_flour_starch_gluten_free",
+  "ingredientId": "corn",
+  "name": "Weikfield Corn Flour (Starch) -Gluten Free",
+  "brand": "Weikfield",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 32
+ },
+ {
+  "id": "french_beans__organically_grown_french_beans",
+  "ingredientId": "french_beans",
+  "name": "Organically Grown French Beans",
+  "brand": "Organically",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 44
+ },
+ {
+  "id": "french_beans__himalayan_beans_by_bettergreens",
+  "ingredientId": "french_beans",
+  "name": "Himalayan Beans by BetterGreens",
+  "brand": "BetterGreens",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 209
+ },
+ {
+  "id": "spring_onion__spring_onion_hari_pyaz",
+  "ingredientId": "spring_onion",
+  "name": "Spring Onion (Hari Pyaz)",
+  "brand": "Freshbury",
+  "packSize": 150,
+  "unit": "g",
+  "basePrice": 37
+ },
+ {
+  "id": "spring_onion__spring_onion_by_bettergreens",
+  "ingredientId": "spring_onion",
+  "name": "Spring Onion by BetterGreens",
+  "brand": "BetterGreens",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 139
+ },
+ {
+  "id": "mint__mint_leaves_pudina",
+  "ingredientId": "mint",
+  "name": "Mint Leaves (Pudina)",
+  "brand": "Mint",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 27
+ },
+ {
+  "id": "mint__tea_culture_of_the_world_moroccan",
+  "ingredientId": "mint",
+  "name": "Tea Culture of the World Moroccan Mint Tea Bags",
+  "brand": "Tea Culture of the World",
+  "packSize": 16,
+  "unit": "piece",
+  "basePrice": 225
+ },
+ {
+  "id": "raw_mango__paper_boat_mango_passion_sparkling_drink",
+  "ingredientId": "raw_mango",
+  "name": "Paper Boat Mango Passion Sparkling Drink",
+  "brand": "Paper Boat",
+  "packSize": 600,
+  "unit": "ml",
+  "basePrice": 59
+ },
+ {
+  "id": "raw_mango__khari_foods_dried_mango_slices",
+  "ingredientId": "raw_mango",
+  "name": "Khari Foods Dried Mango Slices",
+  "brand": "Khari Foods",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 159
+ },
+ {
+  "id": "tamarind__mother_s_recipe_tamarind_paste",
+  "ingredientId": "tamarind",
+  "name": "Mother's Recipe Tamarind Paste",
+  "brand": "Mother's Recipe",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 58
+ },
+ {
+  "id": "tamarind__curryit_tamarind_paste",
+  "ingredientId": "tamarind",
+  "name": "Curryit Tamarind Paste",
+  "brand": "Curryit",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 49
+ },
+ {
+  "id": "milk__amul_taaza_toned_milk",
+  "ingredientId": "milk",
+  "name": "Amul Taaza Toned Milk",
+  "brand": "Amul",
+  "packSize": 1000,
+  "unit": "ml",
+  "basePrice": 59
+ },
+ {
+  "id": "milk__cuttales_tea_milk_pan_sauce_pan",
+  "ingredientId": "milk",
+  "name": "CutTales Tea & Milk Pan/ Sauce Pan (Stainless Steel)",
+  "brand": "CutTales",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 478
+ },
+ {
+  "id": "butter__nutralite_doodhshakti_probiotic_salted_butter_500",
+  "ingredientId": "butter",
+  "name": "Nutralite DoodhShakti Probiotic Salted Butter (500 g)",
+  "brand": "Nutralite",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 290
+ },
+ {
+  "id": "butter__house_wrap_butter_paper",
+  "ingredientId": "butter",
+  "name": "House Wrap Butter Paper",
+  "brand": "House Wrap",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 189
+ },
+ {
+  "id": "cheese__go_mozzarella_cheese_block",
+  "ingredientId": "cheese",
+  "name": "Go Mozzarella Cheese Block",
+  "brand": "Go",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 105
+ },
+ {
+  "id": "cheese__tiara_express_multipurpose_cheese_grater_stainless",
+  "ingredientId": "cheese",
+  "name": "Tiara Express Multipurpose Cheese Grater (Stainless Steel)",
+  "brand": "Tiara",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 179
+ },
+ {
+  "id": "sprouts__mixed_sprouts",
+  "ingredientId": "sprouts",
+  "name": "Mixed Sprouts",
+  "brand": "Freshbury",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 42
+ },
+ {
+  "id": "sattu__let_s_try_0_mixed_sattu",
+  "ingredientId": "sattu",
+  "name": "Let's Try 0% Mixed Sattu",
+  "brand": "Let's Try",
+  "packSize": 450,
+  "unit": "g",
+  "basePrice": 88
+ },
+ {
+  "id": "sattu__urban_organic_moringa_masala_sattu",
+  "ingredientId": "sattu",
+  "name": "Urban Organic Moringa Masala Sattu",
+  "brand": "Urban Organic",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 279
+ },
+ {
+  "id": "sooji__whole_farm_premium_sooji",
+  "ingredientId": "sooji",
+  "name": "Whole Farm Premium Sooji",
+  "brand": "Whole Farm",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 57
+ },
+ {
+  "id": "sooji__organic_wisdom_gluten_free_jowar_rava",
+  "ingredientId": "sooji",
+  "name": "Organic Wisdom Gluten Free Jowar Rava Sooji",
+  "brand": "Organic Wisdom",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 199
+ },
+ {
+  "id": "besan__rajdhani_besan_1_kg",
+  "ingredientId": "besan",
+  "name": "Rajdhani Besan (1 kg)",
+  "brand": "Rajdhani",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 112
+ },
+ {
+  "id": "besan__24_mantra_organic_besan",
+  "ingredientId": "besan",
+  "name": "24 Mantra Organic Besan",
+  "brand": "24 Mantra Organic",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 120
+ },
+ {
+  "id": "maida__whole_farm_premium_maida_refined_wheat",
+  "ingredientId": "maida",
+  "name": "Whole Farm Premium Maida/Refined Wheat Flour",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 25
+ },
+ {
+  "id": "maida__tiara_4in1_multipurpose_strainer_chalni_atta",
+  "ingredientId": "maida",
+  "name": "Tiara 4in1 Multipurpose Strainer Chalni Atta Maida Channi (Stainless Steel)",
+  "brand": "Tiara",
+  "packSize": 5,
+  "unit": "piece",
+  "basePrice": 325
+ },
+ {
+  "id": "rice_flour__whole_farm_premium_rice_flour_rice",
+  "ingredientId": "rice_flour",
+  "name": "Whole Farm Premium Rice Flour/Rice Atta",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 29
+ },
+ {
+  "id": "rice_flour__japanese_choice_gluten_free_tempura_rice",
+  "ingredientId": "rice_flour",
+  "name": "Japanese Choice Gluten Free Tempura Rice Flour",
+  "brand": "Japanese Choice",
+  "packSize": 150,
+  "unit": "g",
+  "basePrice": 234
+ },
+ {
+  "id": "sabudana__whole_farm_premium_sabudana_sago",
+  "ingredientId": "sabudana",
+  "name": "Whole Farm Premium Sabudana Sago",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 50
+ },
+ {
+  "id": "sabudana__pro_nature_classic_sabudana",
+  "ingredientId": "sabudana",
+  "name": "Pro Nature Classic Sabudana",
+  "brand": "Pro Nature",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 78
+ },
+ {
+  "id": "noodles__moi_soi_veg_hakka_noodles_not",
+  "ingredientId": "noodles",
+  "name": "Moi Soi Veg Hakka Noodles - Not Fried",
+  "brand": "Moi Soi",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 84
+ },
+ {
+  "id": "noodles__samyang_ramen_instant_noodles_carbo_hot",
+  "ingredientId": "noodles",
+  "name": "Samyang Ramen Instant Noodles - Carbo Hot Chicken Flavour",
+  "brand": "Samyang",
+  "packSize": 130,
+  "unit": "g",
+  "basePrice": 150
+ },
+ {
+  "id": "pasta__chef_s_basket_macaroni_pasta",
+  "ingredientId": "pasta",
+  "name": "Chef's Basket Macaroni Pasta",
+  "brand": "Chef's Basket",
+  "packSize": 850,
+  "unit": "g",
+  "basePrice": 99
+ },
+ {
+  "id": "pasta__homeessentials_pasta_noodle_serving_ladle_silicone",
+  "ingredientId": "pasta",
+  "name": "HomeEssentials Pasta & Noodle Serving Ladle (Silicone)",
+  "brand": "HomeEssentials",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 289
+ },
+ {
+  "id": "jaggery__tmi_colman_jaggery",
+  "ingredientId": "jaggery",
+  "name": "TMI Colman Jaggery",
+  "brand": "TMI Colman",
+  "packSize": 450,
+  "unit": "g",
+  "basePrice": 53
+ },
+ {
+  "id": "jaggery__ragi_jaggery_bites_by_anand",
+  "ingredientId": "jaggery",
+  "name": "Ragi Jaggery Bites by Anand",
+  "brand": "Anand",
+  "packSize": 150,
+  "unit": "g",
+  "basePrice": 171
+ },
+ {
+  "id": "sugar__whole_farm_grocery_sugar_5_kg",
+  "ingredientId": "sugar",
+  "name": "Whole Farm Grocery Sugar (5 kg)",
+  "brand": "Whole Farm Grocery",
+  "packSize": 5000,
+  "unit": "g",
+  "basePrice": 319
+ },
+ {
+  "id": "sugar__pro_organic_life_white_sugar_sachets",
+  "ingredientId": "sugar",
+  "name": "Pro Organic Life White Sugar Sachets Combo",
+  "brand": "Pro Organic Life",
+  "packSize": 5,
+  "unit": "g",
+  "basePrice": 258
+ },
+ {
+  "id": "coconut__jimmy_s_pineapple_coconut_zero_sugar",
+  "ingredientId": "coconut",
+  "name": "Jimmy's Pineapple Coconut Zero Sugar Sparkling Drink",
+  "brand": "Jimmy's",
+  "packSize": 600,
+  "unit": "ml",
+  "basePrice": 60
+ },
+ {
+  "id": "coconut__tender_coconut_nariyal",
+  "ingredientId": "coconut",
+  "name": "Tender Coconut (Nariyal)",
+  "brand": "Freshbury",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 94
+ },
+ {
+  "id": "cashew__whole_farm_premium_cashew_broken",
+  "ingredientId": "cashew",
+  "name": "Whole Farm Premium Cashew - Broken",
+  "brand": "Whole Farm",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 224
+ },
+ {
+  "id": "cashew__nutty_gritties_lightly_salted_roasted_jumbo",
+  "ingredientId": "cashew",
+  "name": "Nutty Gritties Lightly Salted & Roasted Jumbo Flavoured Cashew",
+  "brand": "Nutty Gritties",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 397
+ },
+ {
+  "id": "almonds__nutraj_california_almonds",
+  "ingredientId": "almonds",
+  "name": "Nutraj California Almonds",
+  "brand": "Nutraj",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 540
+ },
+ {
+  "id": "almonds__tata_sampann_mamra_almonds_whole",
+  "ingredientId": "almonds",
+  "name": "Tata Sampann Mamra Almonds Whole",
+  "brand": "Tata Sampann",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 903
+ },
+ {
+  "id": "pistachio__nutraj_calfornia_roasted_salted_pistachios",
+  "ingredientId": "pistachio",
+  "name": "Nutraj Calfornia Roasted & Salted Pistachios",
+  "brand": "Nutraj",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 430
+ },
+ {
+  "id": "pistachio__whole_farm_premium_plain_pistachios",
+  "ingredientId": "pistachio",
+  "name": "Whole Farm Premium Plain Pistachios",
+  "brand": "Whole Farm",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 393
+ },
+ {
+  "id": "raisins__whole_farm_grocery_raisins_500_g",
+  "ingredientId": "raisins",
+  "name": "Whole Farm Grocery Raisins 500 g",
+  "brand": "Whole Farm Grocery",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 275
+ },
+ {
+  "id": "raisins__tata_sampann_premium_seedless_raisins",
+  "ingredientId": "raisins",
+  "name": "Tata Sampann Premium Seedless Raisins",
+  "brand": "Tata Sampann",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 189
+ },
+ {
+  "id": "cornflour__puramate_corn_starch",
+  "ingredientId": "cornflour",
+  "name": "Puramate Corn Starch",
+  "brand": "Puramate",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 31
+ },
+ {
+  "id": "baking_powder__puramate_baking_powder",
+  "ingredientId": "baking_powder",
+  "name": "Puramate Baking Powder",
+  "brand": "Puramate",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 34
+ },
+ {
+  "id": "baking_powder__urban_platter_aluminum_free_baking_powder",
+  "ingredientId": "baking_powder",
+  "name": "Urban Platter Aluminum-Free Baking Powder",
+  "brand": "Urban Platter",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 235
+ },
+ {
+  "id": "vinegar__double_horse_vinegar",
+  "ingredientId": "vinegar",
+  "name": "Double Horse Vinegar",
+  "brand": "Double Horse",
+  "packSize": 500,
+  "unit": "ml",
+  "basePrice": 45
+ },
+ {
+  "id": "vinegar__japanese_choice_sushi_vinegar_seasoning",
+  "ingredientId": "vinegar",
+  "name": "Japanese Choice Sushi Vinegar Seasoning",
+  "brand": "Japanese Choice",
+  "packSize": 200,
+  "unit": "ml",
+  "basePrice": 255
+ },
+ {
+  "id": "soy_sauce__ching_s_secret_dark_soy_sauce",
+  "ingredientId": "soy_sauce",
+  "name": "Ching's Secret Dark Soy Sauce Rich, Brown and Zesty",
+  "brand": "Ching's Secret",
+  "packSize": 750,
+  "unit": "g",
+  "basePrice": 81
+ },
+ {
+  "id": "soy_sauce__brown_koji_boy_gluten_free_soy",
+  "ingredientId": "soy_sauce",
+  "name": "Brown Koji Boy Gluten Free Soy Sauce",
+  "brand": "Brown Koji Boy",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 550
+ },
+ {
+  "id": "tomato_puree__del_monte_tomato_ketchup",
+  "ingredientId": "tomato_puree",
+  "name": "Del Monte Tomato Ketchup",
+  "brand": "Del Monte",
+  "packSize": 850,
+  "unit": "g",
+  "basePrice": 68
+ },
+ {
+  "id": "tomato_puree__curryit_amma_style_tomato_rasam_masala",
+  "ingredientId": "tomato_puree",
+  "name": "Curryit Amma Style Tomato Rasam Masala Paste (No Preservative)",
+  "brand": "Curryit",
+  "packSize": 60,
+  "unit": "g",
+  "basePrice": 69
+ },
+ {
+  "id": "sev__bikaji_ratlami_chatpata_sev_bhujia",
+  "ingredientId": "sev",
+  "name": "Bikaji Ratlami Chatpata Sev Bhujia",
+  "brand": "Bikaji",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 91
+ },
+ {
+  "id": "sev__mom_poha_with_bhujia",
+  "ingredientId": "sev",
+  "name": "MOM Poha with Bhujia",
+  "brand": "MOM",
+  "packSize": 80,
+  "unit": "g",
+  "basePrice": 62
+ },
+ {
+  "id": "mustard_oil__pansari_kacchi_ghani_mustard_oil",
+  "ingredientId": "mustard_oil",
+  "name": "Pansari Kacchi Ghani Mustard Oil",
+  "brand": "Pansari",
+  "packSize": 1000,
+  "unit": "ml",
+  "basePrice": 196
+ },
+ {
+  "id": "mustard_oil__anveshan_yellow_cold_pressed_mustard_oil",
+  "ingredientId": "mustard_oil",
+  "name": "Anveshan Yellow Cold Pressed Mustard Oil",
+  "brand": "Anveshan",
+  "packSize": 1000,
+  "unit": "ml",
+  "basePrice": 450
+ },
+ {
+  "id": "olive_oil__del_monte_extra_virgin_olive_oil",
+  "ingredientId": "olive_oil",
+  "name": "Del Monte Extra Virgin Olive Oil",
+  "brand": "Del Monte",
+  "packSize": 1000,
+  "unit": "ml",
+  "basePrice": 1020
+ },
+ {
+  "id": "olive_oil__figaro_pure_olive_oil",
+  "ingredientId": "olive_oil",
+  "name": "Figaro Pure Olive Oil",
+  "brand": "Figaro",
+  "packSize": 100,
+  "unit": "ml",
+  "basePrice": 206
+ },
+ {
+  "id": "black_pepper__orika_black_pepper_powder_kali_mirch",
+  "ingredientId": "black_pepper",
+  "name": "Orika Black Pepper Powder / Kali Mirch",
+  "brand": "Orika",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 131
+ },
+ {
+  "id": "black_pepper__on1y_black_peppercorns_with_grinder",
+  "ingredientId": "black_pepper",
+  "name": "On1y Black Peppercorns With Grinder",
+  "brand": "On1y",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 144
+ },
+ {
+  "id": "cinnamon__catch_cinnamon_whole_dalchini",
+  "ingredientId": "cinnamon",
+  "name": "Catch Cinnamon Whole (Dalchini)",
+  "brand": "Catch",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 49
+ },
+ {
+  "id": "cinnamon__snowpeak_ceylon_cinnamon_powder",
+  "ingredientId": "cinnamon",
+  "name": "Snowpeak Ceylon Cinnamon Powder",
+  "brand": "Snowpeak",
+  "packSize": 40,
+  "unit": "g",
+  "basePrice": 180
+ },
+ {
+  "id": "cardamom__safe_harvest_black_cardamom_whole",
+  "ingredientId": "cardamom",
+  "name": "Safe Harvest Black Cardamom Whole",
+  "brand": "Safe Harvest",
+  "packSize": 30,
+  "unit": "g",
+  "basePrice": 102
+ },
+ {
+  "id": "cardamom__whole_farm_premium_choti_elachi_green",
+  "ingredientId": "cardamom",
+  "name": "Whole Farm Premium Choti Elachi/ Green Cardamom Whole",
+  "brand": "Whole Farm",
+  "packSize": 20,
+  "unit": "g",
+  "basePrice": 177
+ },
+ {
+  "id": "clove__whole_farm_premium_clove_whole_laung",
+  "ingredientId": "clove",
+  "name": "Whole Farm Premium Clove Whole (Laung)",
+  "brand": "Whole Farm",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 81
+ },
+ {
+  "id": "clove__organic_tattva_organic_clove_whole",
+  "ingredientId": "clove",
+  "name": "Organic Tattva Organic Clove Whole",
+  "brand": "Organic Tattva",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 145
+ },
+ {
+  "id": "fenugreek_seeds__aashirvaad_pure_whole_fenugreek_methi_seeds",
+  "ingredientId": "fenugreek_seeds",
+  "name": "Aashirvaad Pure Whole Fenugreek/ Methi Seeds",
+  "brand": "Aashirvaad",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 50
+ },
+ {
+  "id": "fenugreek_seeds__pure_organio_organic_fenugreek_seeds",
+  "ingredientId": "fenugreek_seeds",
+  "name": "Pure Organio Organic Fenugreek Seeds",
+  "brand": "Pure Organio",
+  "packSize": 350,
+  "unit": "g",
+  "basePrice": 265
+ },
+ {
+  "id": "kasuri_methi__whole_farm_premium_kasuri_methi",
+  "ingredientId": "kasuri_methi",
+  "name": "Whole Farm Premium Kasuri Methi",
+  "brand": "Whole Farm",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 28
+ },
+ {
+  "id": "kasuri_methi__tata_sampann_kasuri_methi_with_natural",
+  "ingredientId": "kasuri_methi",
+  "name": "Tata Sampann Kasuri Methi with Natural Oils (Kasuri Methi)",
+  "brand": "Tata Sampann",
+  "packSize": 25,
+  "unit": "g",
+  "basePrice": 32
+ },
+ {
+  "id": "cumin_powder__zoff_jeera_powder_cumin_powder",
+  "ingredientId": "cumin_powder",
+  "name": "Zoff Jeera Powder / Cumin Powder",
+  "brand": "Zoff",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 62
+ },
+ {
+  "id": "cumin_powder__organic_tattva_organic_cumin_powder_jeera",
+  "ingredientId": "cumin_powder",
+  "name": "Organic Tattva Organic Cumin Powder / Jeera Powder",
+  "brand": "Organic Tattva",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 100
+ },
+ {
+  "id": "rasam_powder__mtr_rasam_masala",
+  "ingredientId": "rasam_powder",
+  "name": "MTR Rasam Masala",
+  "brand": "MTR",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 179
+ },
+ {
+  "id": "rasam_powder__mtr_rasam_masala_2",
+  "ingredientId": "rasam_powder",
+  "name": "MTR Rasam Masala",
+  "brand": "MTR",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 91
+ },
+ {
+  "id": "chaat_masala__emami_healthy_tasty_mantra_chatpata_chaat",
+  "ingredientId": "chaat_masala",
+  "name": "Emami Healthy & Tasty Mantra Chatpata Chaat Masala",
+  "brand": "Emami Healthy & Tasty",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 49
+ },
+ {
+  "id": "chaat_masala__organic_chakki_chaat_masala",
+  "ingredientId": "chaat_masala",
+  "name": "Organic Chakki Chaat Masala",
+  "brand": "Organic Chakki",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 292
+ },
+ {
+  "id": "black_salt__whole_farm_premium_rock_salt_crystal",
+  "ingredientId": "black_salt",
+  "name": "Whole Farm Premium Rock Salt (Crystal) (Sendha Namak)",
+  "brand": "Whole Farm",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 19
+ },
+ {
+  "id": "black_salt__on1y_grinder_black_salt_kala_namak",
+  "ingredientId": "black_salt",
+  "name": "On1y Grinder Black Salt (Kala Namak)",
+  "brand": "On1y",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 97
+ },
+ {
+  "id": "dried_red_chili__tops_red_chilli_sauce",
+  "ingredientId": "dried_red_chili",
+  "name": "Tops Red Chilli Sauce",
+  "brand": "Tops",
+  "packSize": 220,
+  "unit": "g",
+  "basePrice": 50
+ },
+ {
+  "id": "dried_red_chili__keya_red_chilli_flakes",
+  "ingredientId": "dried_red_chili",
+  "name": "Keya Red Chilli Flakes",
+  "brand": "Keya",
+  "packSize": 40,
+  "unit": "g",
+  "basePrice": 90
+ },
+ {
+  "id": "saffron__bikaneri_kesar_bati_by_heeralal_s",
+  "ingredientId": "saffron",
+  "name": "Bikaneri Kesar Bati by Heeralal's",
+  "brand": "Heeralal's",
+  "packSize": 1000,
+  "unit": "g",
+  "basePrice": 180
+ },
+ {
+  "id": "saffron__two_brothers_kashmiri_mongra_saffron",
+  "ingredientId": "saffron",
+  "name": "Two Brothers Kashmiri Mongra Saffron",
+  "brand": "Two Brothers",
+  "packSize": 1,
+  "unit": "g",
+  "basePrice": 646
+ },
+ {
+  "id": "baking_soda__weikfield_pure_multi_purpose_baking_soda",
+  "ingredientId": "baking_soda",
+  "name": "Weikfield Pure Multi-Purpose Baking Soda",
+  "brand": "Weikfield",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 36
+ },
+ {
+  "id": "baking_soda__urban_platter_baking_soda",
+  "ingredientId": "baking_soda",
+  "name": "Urban Platter Baking Soda",
+  "brand": "Urban Platter",
+  "packSize": 250,
+  "unit": "g",
+  "basePrice": 175
+ },
+ {
+  "id": "mixed_vegetables__spt_frozen_mixed_vegetables",
+  "ingredientId": "mixed_vegetables",
+  "name": "SPT Frozen Mixed Vegetables",
+  "brand": "SPT",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 63
+ },
+ {
+  "id": "mixed_vegetables__safal_frozen_mixed_vegetables",
+  "ingredientId": "mixed_vegetables",
+  "name": "Safal Frozen Mixed Vegetables",
+  "brand": "Safal",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 77
+ },
+ {
+  "id": "pomegranate__pomegranate_2_pieces_350_450_g",
+  "ingredientId": "pomegranate",
+  "name": "Pomegranate - 2 pieces (350-450 g)",
+  "brand": "Pomegranate",
+  "packSize": 350,
+  "unit": "g",
+  "basePrice": 125
+ },
+ {
+  "id": "pomegranate__organically_grown_pomegranate_anaar",
+  "ingredientId": "pomegranate",
+  "name": "Organically Grown Pomegranate (Anaar)",
+  "brand": "Siya Fruits And Vegetables",
+  "packSize": 350,
+  "unit": "g",
+  "basePrice": 180
+ },
+ {
+  "id": "plum__plum_imported",
+  "ingredientId": "plum",
+  "name": "Plum Imported",
+  "brand": "Freshbury",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 76
+ },
+ {
+  "id": "kuttu_flour__deepak_kuttu_flour",
+  "ingredientId": "kuttu_flour",
+  "name": "Deepak Kuttu Flour",
+  "brand": "Deepak",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 79
+ },
+ {
+  "id": "kuttu_flour__sambhojanam_singhara_flour_and_kuttu_flour",
+  "ingredientId": "kuttu_flour",
+  "name": "Sambhojanam Singhara Flour and Kuttu Flour Combo",
+  "brand": "Sambhojanam",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 355
+ },
+ {
+  "id": "bun__harvest_gold_bunjoy_tutti_frutti_sweet",
+  "ingredientId": "bun",
+  "name": "Harvest Gold Bunjoy Tutti Frutti Sweet Bun",
+  "brand": "Harvest Gold",
+  "packSize": 140,
+  "unit": "g",
+  "basePrice": 20
+ },
+ {
+  "id": "bun__harvest_gold_atta_burger_bun",
+  "ingredientId": "bun",
+  "name": "Harvest Gold Atta Burger Bun",
+  "brand": "Harvest Gold",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 45
+ },
+ {
+  "id": "pizza_sauce__wingreens_farms_original_recipe_pizza_pasta",
+  "ingredientId": "pizza_sauce",
+  "name": "Wingreens Farms Original Recipe Pizza & Pasta Sauce",
+  "brand": "Wingreens Farms",
+  "packSize": 600,
+  "unit": "g",
+  "basePrice": 159
+ },
+ {
+  "id": "pizza_sauce__barilla_napoletana_pizza_pasta_sauce",
+  "ingredientId": "pizza_sauce",
+  "name": "Barilla Napoletana Pizza & Pasta Sauce",
+  "brand": "Barilla",
+  "packSize": 400,
+  "unit": "g",
+  "basePrice": 400
+ },
+ {
+  "id": "yeast__nature_vit_instant_dry_yeast",
+  "ingredientId": "yeast",
+  "name": "Nature Vit Instant Dry Yeast",
+  "brand": "Nature Vit",
+  "packSize": 200,
+  "unit": "g",
+  "basePrice": 225
+ },
+ {
+  "id": "yeast__twf_active_dry_yeast",
+  "ingredientId": "yeast",
+  "name": "TWF Active Dry Yeast",
+  "brand": "TWF",
+  "packSize": 100,
+  "unit": "g",
+  "basePrice": 399
+ },
+ {
+  "id": "basil__sft_premium_basil_seeds",
+  "ingredientId": "basil",
+  "name": "SFT Premium Basil Seeds",
+  "brand": "SFT",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 249
+ },
+ {
+  "id": "basil__keya_basil_leaves",
+  "ingredientId": "basil",
+  "name": "Keya Basil Leaves",
+  "brand": "Keya",
+  "packSize": 12,
+  "unit": "g",
+  "basePrice": 127
+ },
+ {
+  "id": "parsley__parsley_by_bettergreens",
+  "ingredientId": "parsley",
+  "name": "Parsley by BetterGreens",
+  "brand": "BetterGreens",
+  "packSize": 80,
+  "unit": "g",
+  "basePrice": 169
+ },
+ {
+  "id": "parsley__keya_parsley_seasoning",
+  "ingredientId": "parsley",
+  "name": "Keya Parsley Seasoning",
+  "brand": "Keya",
+  "packSize": 13,
+  "unit": "g",
+  "basePrice": 127
+ },
+ {
+  "id": "oregano__snapin_oregano_pizza_seasoning",
+  "ingredientId": "oregano",
+  "name": "Snapin Oregano Pizza Seasoning",
+  "brand": "Snapin",
+  "packSize": 50,
+  "unit": "g",
+  "basePrice": 54
+ },
+ {
+  "id": "oregano__on1y_oregano",
+  "ingredientId": "oregano",
+  "name": "On1y Oregano",
+  "brand": "On1y",
+  "packSize": 10,
+  "unit": "g",
+  "basePrice": 84
+ },
+ {
+  "id": "mixed_herbs__snapin_italian_mixed_herbs_seasoning",
+  "ingredientId": "mixed_herbs",
+  "name": "Snapin Italian Mixed Herbs Seasoning",
+  "brand": "Snapin",
+  "packSize": 27,
+  "unit": "g",
+  "basePrice": 114
+ },
+ {
+  "id": "mixed_herbs__on1y_mixed_herbs",
+  "ingredientId": "mixed_herbs",
+  "name": "On1y Mixed Herbs",
+  "brand": "On1y",
+  "packSize": 14,
+  "unit": "g",
+  "basePrice": 81
+ },
+ {
+  "id": "jowar_flour__whole_farm_premium_jowar_flour",
+  "ingredientId": "jowar_flour",
+  "name": "Whole Farm Premium Jowar Flour",
+  "brand": "Whole Farm",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 44
+ },
+ {
+  "id": "jowar_flour__tata_simply_better_sprouted_jowar_flour",
+  "ingredientId": "jowar_flour",
+  "name": "Tata Simply Better Sprouted Jowar Flour",
+  "brand": "Tata Simply Better",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 117
+ },
+ {
+  "id": "methi_leaves_pack",
+  "ingredientId": "methi_leaves",
+  "name": "Fenugreek Leaves",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 30
+ },
+ {
+  "id": "buttermilk_pack",
+  "ingredientId": "buttermilk",
+  "name": "Buttermilk",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "ml",
+  "basePrice": 35
+ },
+ {
+  "id": "masoor_dal_pack",
+  "ingredientId": "masoor_dal",
+  "name": "Masoor Dal",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 70
+ },
+ {
+  "id": "lobia_pack",
+  "ingredientId": "lobia",
+  "name": "Lobia",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 70
+ },
+ {
+  "id": "desiccated_coconut_pack",
+  "ingredientId": "desiccated_coconut",
+  "name": "Desiccated Coconut",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "coconut_milk_pack",
+  "ingredientId": "coconut_milk",
+  "name": "Coconut Milk",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "yogurt_ml",
+  "ingredientId": "yogurt",
+  "name": "Curd (Yogurt)",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "ml",
+  "basePrice": 45
+ },
+ {
+  "id": "ghee_g",
+  "ingredientId": "ghee",
+  "name": "Ghee",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "cream_g",
+  "ingredientId": "cream",
+  "name": "Dairy Cream",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "tamarind_ml",
+  "ingredientId": "tamarind",
+  "name": "Tamarind",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "ml",
+  "basePrice": 45
+ },
+ {
+  "id": "tamarind_piece",
+  "ingredientId": "tamarind",
+  "name": "Tamarind",
+  "brand": "Blinkit",
+  "packSize": 1,
+  "unit": "piece",
+  "basePrice": 50
+ },
+ {
+  "id": "milk_g",
+  "ingredientId": "milk",
+  "name": "Milk",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "coconut_g",
+  "ingredientId": "coconut",
+  "name": "Coconut",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "g",
+  "basePrice": 60
+ },
+ {
+  "id": "soy_sauce_ml",
+  "ingredientId": "soy_sauce",
+  "name": "Soy Sauce",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "ml",
+  "basePrice": 45
+ },
+ {
+  "id": "tomato_puree_ml",
+  "ingredientId": "tomato_puree",
+  "name": "Tomato Puree",
+  "brand": "Blinkit",
+  "packSize": 500,
+  "unit": "ml",
+  "basePrice": 45
+ }
 ]

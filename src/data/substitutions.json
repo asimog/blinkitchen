@@ -1,74 +1,360 @@
 [
-  {
-    "id": "paneer_to_tofu",
-    "requestedIngredientId": "paneer",
-    "substituteIngredientId": "tofu",
-    "compatibilityScore": 0.84,
-    "quantityRatio": 1,
-    "cuisines": ["north_indian", "punjabi", "indo_chinese"],
-    "explanation": "Plant protein alternative with a comparable portion"
-  },
-  {
-    "id": "tofu_to_paneer",
-    "requestedIngredientId": "tofu",
-    "substituteIngredientId": "paneer",
-    "compatibilityScore": 0.72,
-    "quantityRatio": 1,
-    "cuisines": ["indo_chinese", "north_indian"],
-    "explanation": "Dairy paneer works where tofu is not available"
-  },
-  {
-    "id": "rajma_to_chana",
-    "requestedIngredientId": "rajma",
-    "substituteIngredientId": "chana",
-    "compatibilityScore": 0.7,
-    "quantityRatio": 1,
-    "cuisines": ["punjabi", "north_indian", "mexican"],
-    "explanation": "Similar legumes; soak and cook the same way"
-  },
-  {
-    "id": "chana_to_rajma",
-    "requestedIngredientId": "chana",
-    "substituteIngredientId": "rajma",
-    "compatibilityScore": 0.7,
-    "quantityRatio": 1,
-    "cuisines": ["punjabi", "north_indian"],
-    "explanation": "Interchangeable legumes for slow-cooked curries"
-  },
-  {
-    "id": "toor_dal_to_moong_dal",
-    "requestedIngredientId": "toor_dal",
-    "substituteIngredientId": "moong_dal",
-    "compatibilityScore": 0.8,
-    "quantityRatio": 1,
-    "cuisines": ["north_indian"],
-    "explanation": "Lighter dal with a similar cook time"
-  },
-  {
-    "id": "moong_dal_to_toor_dal",
-    "requestedIngredientId": "moong_dal",
-    "substituteIngredientId": "toor_dal",
-    "compatibilityScore": 0.75,
-    "quantityRatio": 1,
-    "cuisines": ["north_indian"],
-    "explanation": "Everyday dal swap with a slightly heavier body"
-  },
-  {
-    "id": "ghee_to_oil",
-    "requestedIngredientId": "ghee",
-    "substituteIngredientId": "oil",
-    "compatibilityScore": 0.65,
-    "quantityRatio": 1,
-    "cuisines": ["punjabi", "north_indian"],
-    "explanation": "Neutral oil works for tempering and cooking"
-  },
-  {
-    "id": "oil_to_ghee",
-    "requestedIngredientId": "oil",
-    "substituteIngredientId": "ghee",
-    "compatibilityScore": 0.6,
-    "quantityRatio": 1,
-    "cuisines": ["punjabi", "north_indian"],
-    "explanation": "Richer flavour with the same cooking role"
-  }
+ {
+  "id": "atta_to_maida",
+  "requestedIngredientId": "atta",
+  "substituteIngredientId": "maida",
+  "compatibilityScore": 0.65,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian"
+  ],
+  "explanation": "Refined flour gives a softer result than whole wheat."
+ },
+ {
+  "id": "cashew_to_peanuts",
+  "requestedIngredientId": "cashew",
+  "substituteIngredientId": "peanuts",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "mughlai"
+  ],
+  "explanation": "Peanut paste thickens gravies when cashew is unavailable."
+ },
+ {
+  "id": "chana_to_lobia",
+  "requestedIngredientId": "chana",
+  "substituteIngredientId": "lobia",
+  "compatibilityScore": 0.75,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "punjabi"
+  ],
+  "explanation": "Either bean carries a spiced gravy well."
+ },
+ {
+  "id": "chana_to_rajma",
+  "requestedIngredientId": "chana",
+  "substituteIngredientId": "rajma",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1,
+  "cuisines": [
+   "punjabi",
+   "north_indian"
+  ],
+  "explanation": "Interchangeable legumes for slow-cooked curries"
+ },
+ {
+  "id": "coconut_milk_to_milk",
+  "requestedIngredientId": "coconut_milk",
+  "substituteIngredientId": "milk",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1,
+  "cuisines": [
+   "south_indian",
+   "indo_chinese"
+  ],
+  "explanation": "Milk is a lighter substitute when coconut milk runs out."
+ },
+ {
+  "id": "coconut_to_desiccated_coconut",
+  "requestedIngredientId": "coconut",
+  "substituteIngredientId": "desiccated_coconut",
+  "compatibilityScore": 0.8,
+  "quantityRatio": 1,
+  "cuisines": [
+   "south_indian",
+   "gujarati"
+  ],
+  "explanation": "Desiccated coconut is a store-cupboard stand-in for fresh."
+ },
+ {
+  "id": "cumin_powder_to_cumin",
+  "requestedIngredientId": "cumin_powder",
+  "substituteIngredientId": "cumin",
+  "compatibilityScore": 0.85,
+  "quantityRatio": 0.9,
+  "cuisines": [
+   "north_indian",
+   "gujarati"
+  ],
+  "explanation": "Whole seeds need a moment longer in the pan."
+ },
+ {
+  "id": "cumin_to_cumin_powder",
+  "requestedIngredientId": "cumin",
+  "substituteIngredientId": "cumin_powder",
+  "compatibilityScore": 0.9,
+  "quantityRatio": 1.1,
+  "cuisines": [
+   "north_indian",
+   "gujarati"
+  ],
+  "explanation": "Ground cumin mixes straight into the masala."
+ },
+ {
+  "id": "desiccated_coconut_to_coconut",
+  "requestedIngredientId": "desiccated_coconut",
+  "substituteIngredientId": "coconut",
+  "compatibilityScore": 0.8,
+  "quantityRatio": 1,
+  "cuisines": [
+   "south_indian",
+   "gujarati"
+  ],
+  "explanation": "Fresh coconut gives a wetter, sweeter result."
+ },
+ {
+  "id": "ghee_to_oil",
+  "requestedIngredientId": "ghee",
+  "substituteIngredientId": "oil",
+  "compatibilityScore": 0.65,
+  "quantityRatio": 1,
+  "cuisines": [
+   "punjabi",
+   "north_indian"
+  ],
+  "explanation": "Neutral oil works for tempering and cooking"
+ },
+ {
+  "id": "green_chili_to_black_pepper",
+  "requestedIngredientId": "green_chili",
+  "substituteIngredientId": "black_pepper",
+  "compatibilityScore": 0.5,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "continental"
+  ],
+  "explanation": "Pepper adds heat without changing the dish's colour."
+ },
+ {
+  "id": "green_chili_to_dried_red_chili",
+  "requestedIngredientId": "green_chili",
+  "substituteIngredientId": "dried_red_chili",
+  "compatibilityScore": 0.6,
+  "quantityRatio": 0.3,
+  "cuisines": [
+   "north_indian",
+   "south_indian"
+  ],
+  "explanation": "Dried chilli brings heat with an earthier finish."
+ },
+ {
+  "id": "jaggery_to_sugar",
+  "requestedIngredientId": "jaggery",
+  "substituteIngredientId": "sugar",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 0.9,
+  "cuisines": [
+   "maharashtrian",
+   "gujarati"
+  ],
+  "explanation": "Sugar is a neutral swap when jaggery is unavailable."
+ },
+ {
+  "id": "lobia_to_chana",
+  "requestedIngredientId": "lobia",
+  "substituteIngredientId": "chana",
+  "compatibilityScore": 0.75,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "punjabi"
+  ],
+  "explanation": "Chickpeas give a firmer bite than black-eyed peas."
+ },
+ {
+  "id": "maida_to_atta",
+  "requestedIngredientId": "maida",
+  "substituteIngredientId": "atta",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian"
+  ],
+  "explanation": "Whole wheat flour works in most everyday breads."
+ },
+ {
+  "id": "masoor_dal_to_moong_dal",
+  "requestedIngredientId": "masoor_dal",
+  "substituteIngredientId": "moong_dal",
+  "compatibilityScore": 0.8,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "south_indian"
+  ],
+  "explanation": "Moong dal is the gentler, slower-cooking swap."
+ },
+ {
+  "id": "methi_leaves_to_spinach",
+  "requestedIngredientId": "methi_leaves",
+  "substituteIngredientId": "spinach",
+  "compatibilityScore": 0.6,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "punjabi"
+  ],
+  "explanation": "Spinach is the milder green when methi runs out."
+ },
+ {
+  "id": "milk_to_coconut_milk",
+  "requestedIngredientId": "milk",
+  "substituteIngredientId": "coconut_milk",
+  "compatibilityScore": 0.75,
+  "quantityRatio": 1,
+  "cuisines": [
+   "south_indian",
+   "indo_chinese"
+  ],
+  "explanation": "Coconut milk keeps curries dairy-free with a similar richness."
+ },
+ {
+  "id": "moong_dal_to_masoor_dal",
+  "requestedIngredientId": "moong_dal",
+  "substituteIngredientId": "masoor_dal",
+  "compatibilityScore": 0.8,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "south_indian"
+  ],
+  "explanation": "Both cook soft and mild; masoor cooks faster."
+ },
+ {
+  "id": "moong_dal_to_toor_dal",
+  "requestedIngredientId": "moong_dal",
+  "substituteIngredientId": "toor_dal",
+  "compatibilityScore": 0.75,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian"
+  ],
+  "explanation": "Everyday dal swap with a slightly heavier body"
+ },
+ {
+  "id": "noodles_to_pasta",
+  "requestedIngredientId": "noodles",
+  "substituteIngredientId": "pasta",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1,
+  "cuisines": [
+   "indo_chinese",
+   "italian"
+  ],
+  "explanation": "Pasta carries the same sauces in a different shape."
+ },
+ {
+  "id": "oil_to_ghee",
+  "requestedIngredientId": "oil",
+  "substituteIngredientId": "ghee",
+  "compatibilityScore": 0.6,
+  "quantityRatio": 1,
+  "cuisines": [
+   "punjabi",
+   "north_indian"
+  ],
+  "explanation": "Richer flavour with the same cooking role"
+ },
+ {
+  "id": "paneer_to_tofu",
+  "requestedIngredientId": "paneer",
+  "substituteIngredientId": "tofu",
+  "compatibilityScore": 0.84,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "punjabi",
+   "indo_chinese"
+  ],
+  "explanation": "Plant protein alternative with a comparable portion"
+ },
+ {
+  "id": "pasta_to_noodles",
+  "requestedIngredientId": "pasta",
+  "substituteIngredientId": "noodles",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1,
+  "cuisines": [
+   "indo_chinese",
+   "italian"
+  ],
+  "explanation": "Noodles are the quicker-cooking swap."
+ },
+ {
+  "id": "peanuts_to_cashew",
+  "requestedIngredientId": "peanuts",
+  "substituteIngredientId": "cashew",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "mughlai"
+  ],
+  "explanation": "Cashews give a richer, less earthy gravy than peanuts."
+ },
+ {
+  "id": "rajma_to_chana",
+  "requestedIngredientId": "rajma",
+  "substituteIngredientId": "chana",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1,
+  "cuisines": [
+   "punjabi",
+   "north_indian",
+   "mexican"
+  ],
+  "explanation": "Similar legumes; soak and cook the same way"
+ },
+ {
+  "id": "spinach_to_methi_leaves",
+  "requestedIngredientId": "spinach",
+  "substituteIngredientId": "methi_leaves",
+  "compatibilityScore": 0.6,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian",
+   "punjabi"
+  ],
+  "explanation": "Fenugreek leaves add bitterness but work in saag-style dishes."
+ },
+ {
+  "id": "sugar_to_jaggery",
+  "requestedIngredientId": "sugar",
+  "substituteIngredientId": "jaggery",
+  "compatibilityScore": 0.7,
+  "quantityRatio": 1.1,
+  "cuisines": [
+   "maharashtrian",
+   "gujarati"
+  ],
+  "explanation": "Jaggery adds a caramel note; use slightly more."
+ },
+ {
+  "id": "tofu_to_paneer",
+  "requestedIngredientId": "tofu",
+  "substituteIngredientId": "paneer",
+  "compatibilityScore": 0.72,
+  "quantityRatio": 1,
+  "cuisines": [
+   "indo_chinese",
+   "north_indian"
+  ],
+  "explanation": "Dairy paneer works where tofu is not available"
+ },
+ {
+  "id": "toor_dal_to_moong_dal",
+  "requestedIngredientId": "toor_dal",
+  "substituteIngredientId": "moong_dal",
+  "compatibilityScore": 0.8,
+  "quantityRatio": 1,
+  "cuisines": [
+   "north_indian"
+  ],
+  "explanation": "Lighter dal with a similar cook time"
+ }
 ]

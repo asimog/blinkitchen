@@ -16,8 +16,8 @@ export function BuildExperience() {
         <p className="eyebrow">Build · stored only in this browser</p>
         <h1 className={styles.pageTitle}>Build your household</h1>
         <p className="muted" style={{ marginBottom: 0 }}>
-          Five short steps. Blinkitchen starts Week 1 from your answers, then learns from what you
-          cook, buy, swap and waste. No account, no ordering, no charge.{" "}
+          Three short steps, about a minute. Blinkitchen starts Week 1 from your answers, then
+          learns from what you cook, buy, swap and waste. No account, no ordering, no charge.{" "}
           {existing ? <Link href="/kitchen">Open your kitchen</Link> : null}
         </p>
       </section>

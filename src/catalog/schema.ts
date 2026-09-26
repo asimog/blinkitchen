@@ -10,6 +10,8 @@ export const ingredientSchema = z.strictObject({
   shelfLifeDays: z.number().int().positive(),
   staple: z.boolean(),
   dietaryAttributes: z.array(z.enum(["vegetarian", "vegan"])).min(1),
+  /** Ingestion-only provenance: never read by the domain or intelligence. */
+  aliases: z.array(z.string().min(1)),
 });
 
 export const recipeIngredientSchema = z.strictObject({

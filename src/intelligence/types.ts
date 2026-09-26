@@ -60,6 +60,30 @@ export type PlannedMeal = {
   source: "selected" | "suggested";
   day: WeekDay;
   slot: MealSlot;
+  /** One to three derived sentences: why this meal, given the plan so far. */
+  explanation: string[];
+};
+
+export type PlanFactors = {
+  pantryCoverage: number;
+  crossMealReuse: number;
+  cuisineFit: number;
+  convenienceFit: number;
+  incrementalCost: number;
+  useSoonRescue: number;
+  variety: number;
+};
+
+export type PlanCandidateEvaluation = {
+  recipe: Recipe;
+  utility: number;
+  factors: PlanFactors;
+  coveragePercent: number;
+  incrementalCost: number;
+  reuseIngredientIds: string[];
+  rescuedUseSoonIds: string[];
+  cuisineRepeats: number;
+  explanation: string[];
 };
 
 export type BasketItemStatus = "covered" | "buy" | "unavailable";

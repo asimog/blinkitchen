@@ -1,4 +1,4 @@
-import { canonicalUnitOf } from "@/domain/units";
+import { canonicalUnitOf, normalizeQuantity, roundQuantity } from "@/domain/units";
 import { compareStrings } from "@/domain/order";
 import type { Catalog, Ingredient, Product, Recipe, RecipeRequirement, Substitution } from "@/catalog/types";
 
@@ -93,6 +93,66 @@ export function findProductForUnit(
   return resolveProductCandidates(catalog, ingredientId, locationId).find(
     (product) => canonicalUnitOf(product.unit) === target,
   );
+}
+
+export type PackPurchase = {
+  product: Product;
+  packCount: number;
+  purchasedQuantity: number;
+  lineCost: number;
+};
+
+/**
+ * Whole-week pack reasoning for one basket line: instead of picking the
+ * cheapest SKU in isolation, evaluate every in-stock pack in the required
+ * dimension and choose the combination with the lowest total cost. Ties go to
+ * fewer packs (less cupboard overflow), then to sku id for determinism.
+ */
+export function planPackPurchase(
+  catalog: Catalog,
+  ingredientId: string,
+  locationId: string,
+  unit: Product["unit"],
+  missing: number,
+): PackPurchase | undefined {
+  if (!(missing > 0)) return undefined;
+
+  const target = canonicalUnitOf(unit);
+
+  const candidates = resolveProductCandidates(catalog, ingredientId, locationId).filter(
+    (product) => canonicalUnitOf(product.unit) === target,
+  );
+
+  let best: PackPurchase | undefined;
+
+  for (const product of candidates) {
+    const packSize = normalizeQuantity(product.packSize, product.unit).quantity;
+
+    if (!(packSize > 0)) continue;
+
+    const packCount = Math.max(0, Math.ceil(missing / packSize - 1e-9));
+
+    if (packCount === 0) continue;
+
+    const purchase: PackPurchase = {
+      product,
+      packCount,
+      purchasedQuantity: roundQuantity(packCount * packSize),
+      lineCost: roundQuantity(packCount * product.price),
+    };
+
+    const better =
+      !best ||
+      purchase.lineCost < best.lineCost ||
+      (purchase.lineCost === best.lineCost && purchase.packCount < best.packCount) ||
+      (purchase.lineCost === best.lineCost &&
+        purchase.packCount === best.packCount &&
+        compareStrings(product.skuId, best.product.skuId) < 0);
+
+    if (better) best = purchase;
+  }
+
+  return best;
 }
 
 /** Explicit substitutions offered for an ingredient (never text-inferred). */

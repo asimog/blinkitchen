@@ -48,7 +48,7 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
 
     if (!result.ok) {
       throw new Error(
-        `Simulation policy produced an invalid command (${result.error.code}): ${result.error.message}`,
+        `Simulation policy produced an invalid command (${result.error.code}): ${result.error.message} [${command.type} ${JSON.stringify(command)}]`,
       );
     }
 
@@ -101,6 +101,7 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
     const scale = kitchen.profile.memberCount / meal.recipe.servings;
 
     for (const requirement of recipeRequirements(catalog, meal.recipe)) {
+      if (requirement.optional) continue;
       const effective = effectiveRequirement(projected, catalog, requirement);
       usedIngredientIds.add(effective.ingredientId);
       const quantity = roundQuantity(effective.quantity * scale);

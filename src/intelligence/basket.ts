@@ -3,7 +3,7 @@ import type { CanonicalUnit } from "@/domain/units";
 import { compareStrings } from "@/domain/order";
 import type { Basket, BasketItem, BasketItemStatus, EffectiveRequirement, PlannedMeal } from "@/intelligence/types";
 import type { Catalog, Recipe, RecipeRequirement, Substitution } from "@/catalog/types";
-import { findProductForUnit, ingredientById, recipeRequirements } from "@/catalog/grocery-graph";
+import { ingredientById, planPackPurchase, recipeRequirements } from "@/catalog/grocery-graph";
 import { currentChoices, pantryQuantity } from "@/domain/kitchen/state";
 import type { KitchenState } from "@/domain/kitchen/types";
 import { unitCostOrZero } from "@/intelligence/costing";
@@ -84,6 +84,7 @@ function aggregateRequirements(
     const scale = kitchen.profile.memberCount / recipe.servings;
 
     for (const requirement of recipeRequirements(catalog, recipe)) {
+      if (requirement.optional) continue;
       const effective = effectiveRequirement(kitchen, catalog, requirement);
 
       if (!ingredientById(catalog, effective.ingredientId)) continue;
@@ -143,20 +144,15 @@ export function buildBasket(
     requiredValue += aggregate.required * unitCost;
     coveredValue += owned * unitCost;
 
-    const product =
+    const purchase =
       missing > 0
-        ? findProductForUnit(catalog, aggregate.ingredientId, locationId, aggregate.unit)
+        ? planPackPurchase(catalog, aggregate.ingredientId, locationId, aggregate.unit, missing)
         : undefined;
 
-    const packSizeCanonical = product
-      ? normalizeQuantity(product.packSize, product.unit).quantity
-      : 0;
-
-    const packCount =
-      product && packSizeCanonical > 0 ? Math.max(0, Math.ceil(missing / packSizeCanonical - 1e-9)) : 0;
-
-    const purchasedQuantity = roundQuantity(packCount * packSizeCanonical);
-    const lineCost = product ? roundQuantity(packCount * product.price) : 0;
+    const product = purchase?.product;
+    const packCount = purchase?.packCount ?? 0;
+    const purchasedQuantity = purchase?.purchasedQuantity ?? 0;
+    const lineCost = purchase?.lineCost ?? 0;
 
     const status: BasketItemStatus =
       missing <= 0 ? "covered" : product ? "buy" : "unavailable";

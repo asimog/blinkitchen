@@ -8,7 +8,8 @@ import { buildBasket, effectiveRequirement } from "@/intelligence/basket";
 import { findIngredientChains } from "@/intelligence/chains";
 import { humanizeId } from "@/intelligence/labels";
 import { deriveLearning } from "@/intelligence/learning";
-import { rankRecipes, suggestPlan } from "@/intelligence/meals";
+import { rankRecipes } from "@/intelligence/meals";
+import { evaluatePlanCandidate, planContext, suggestPlan } from "@/intelligence/planner";
 import { recommendReplenishments } from "@/intelligence/replenishment";
 import { recommendSubstitutions } from "@/intelligence/substitutions";
 import type {
@@ -67,11 +68,7 @@ function toOpportunity(
   };
 }
 
-function cuisineSignal(
-  kitchen: KitchenState,
-  catalog: Catalog,
-  learning: Learning,
-): string | undefined {
+function cuisineSignal(kitchen: KitchenState, catalog: Catalog): string | undefined {
   if (kitchen.mealFacts.length === 0) return undefined;
   const counts = new Map<string, number>();
 
@@ -87,9 +84,8 @@ function cuisineSignal(
   )[0];
 
   if (!top) return undefined;
-  const affinity = learning.cuisineAffinity[top[0]] ?? 0;
 
-  return `${humanizeId(top[0])} is now your strongest cuisine signal (${top[1]} of ${kitchen.mealFacts.length} meals, affinity ${Math.round(affinity * 100)}%).`;
+  return `${humanizeId(top[0])} is your most-cooked cuisine so far (${top[1]} of ${kitchen.mealFacts.length} meals).`;
 }
 
 function substitutionSignal(
@@ -172,7 +168,7 @@ function buildNarrative(input: {
     bullets.push(
       basket.coveragePercent >= 100
         ? "Everything in this week's plan is already in your kitchen."
-        : `${Math.round(basket.coveragePercent)}% of this week's basket value is already home — about ${formatRupees(basket.pantryValueAvoided)} of simulated groceries avoided.`,
+        : `${Math.round(basket.coveragePercent)}% of what this week's plan needs is already at home — about ${formatRupees(basket.pantryValueAvoided)} of simulated groceries avoided.`,
     );
   }
 
@@ -204,7 +200,7 @@ function buildNarrative(input: {
   const substitution = substitutionSignal(kitchen, catalog, substitutions);
 
   if (substitution) bullets.push(substitution);
-  const cuisine = cuisineSignal(kitchen, catalog, learning);
+  const cuisine = cuisineSignal(kitchen, catalog);
 
   if (cuisine) bullets.push(cuisine);
   const waste = wasteSignal(kitchen, catalog, learning);
@@ -234,19 +230,32 @@ export function buildWeekIntelligence(
   const learning = deriveLearning(kitchen, catalog);
   const recommendations = rankRecipes(kitchen, catalog, learning);
   const choices = currentChoices(kitchen);
+  const context = planContext(kitchen, catalog, learning);
 
   const selectedMeals = choices.selectedMeals.flatMap((selection) => {
     const recipe = recipeById(catalog, selection.recipeId);
 
-    return recipe ? [{ ...selection, recipe }] : [];
+    if (!recipe) return [];
+
+    return [
+      {
+        ...selection,
+        recipe,
+        explanation: evaluatePlanCandidate(context, recipe).explanation,
+      },
+    ];
   });
 
-  const suggestedPlan = suggestPlan(recommendations, kitchen);
+  const suggestedPlan = suggestPlan(kitchen, catalog, learning, recommendations);
   const planSource: "selected" | "suggested" = selectedMeals.length > 0 ? "selected" : "suggested";
 
   const plan: PlannedMeal[] =
     planSource === "selected"
-      ? selectedMeals.map((meal) => ({ ...meal, recipeId: meal.recipe.id, source: "selected" as const }))
+      ? selectedMeals.map((meal) => ({
+          ...meal,
+          recipeId: meal.recipe.id,
+          source: "selected" as const,
+        }))
       : suggestedPlan;
 
   const basket = buildBasket(kitchen, catalog, plan);

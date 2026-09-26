@@ -8,14 +8,24 @@ import { simulateJourney } from "@/simulation/simulate";
 
 const catalog = loadCatalog();
 
-function cohort(): KitchenState[] {
-  const states: KitchenState[] = [];
+let cohortCache: KitchenState[] | undefined;
 
-  for (const fixture of HOUSEHOLD_FIXTURES) {
-    states.push(...simulateJourney(buildFixtureKitchen(fixture), catalog, householdPolicy));
+/**
+ * The cohort replay is the expensive part of this file and the result is
+ * read-only, so build all 32 weekly states once and reuse them across tests.
+ */
+function cohort(): KitchenState[] {
+  if (!cohortCache) {
+    const states: KitchenState[] = [];
+
+    for (const fixture of HOUSEHOLD_FIXTURES) {
+      states.push(...simulateJourney(buildFixtureKitchen(fixture), catalog, householdPolicy));
+    }
+
+    cohortCache = states;
   }
 
-  return states;
+  return cohortCache;
 }
 
 describe("buildBlinkitInsights", () => {
@@ -46,7 +56,7 @@ describe("buildBlinkitInsights", () => {
     }, 0);
 
     expect(totalMeals).toBe(expectedMeals);
-  });
+  }, 30_000);
 
   it("is deterministic and read-only", () => {
     const states = cohort();

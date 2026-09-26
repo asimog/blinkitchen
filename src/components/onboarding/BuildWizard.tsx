@@ -2,130 +2,130 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Trash2 } from "lucide-react";
 import { loadCatalog } from "@/catalog/load";
-import { ingredientById, listCuisines, listIngredients, listStaples } from "@/catalog/grocery-graph";
+import { ingredientById, listCuisines, listIngredients } from "@/catalog/grocery-graph";
 import { createKitchenState } from "@/domain/kitchen/state";
 import { kitchenProfileSchema } from "@/domain/kitchen/schema";
-import { formatIssues } from "@/domain/zod-helpers";
-import type { DietPreference, KitchenProfile, KitchenType, PantryItem } from "@/domain/kitchen/types";
+import { formatQuantity, normalizeQuantity } from "@/domain/units";
 import type { Unit } from "@/domain/units";
+import { formatIssues } from "@/domain/zod-helpers";
+import type { KitchenProfile, KitchenType } from "@/domain/kitchen/types";
 import { saveKitchen, LOCAL_KITCHEN_ID } from "@/storage/kitchen-storage";
+import {
+  COOKING_FREQUENCY_OPTIONS,
+  DIET_OPTIONS,
+  PRIORITY_CHIPS,
+  cookingDaysForFrequency,
+  pantryItemsFromQuickPicks,
+  preferencesFromPriorities,
+  quickPickGroups,
+  typicalPack,
+} from "@/components/onboarding/onboarding-prefs";
+import type {
+  CookingFrequencyId,
+  PriorityChipId,
+  SupportedDiet,
+} from "@/components/onboarding/onboarding-prefs";
 import styles from "@/components/onboarding/onboarding.module.css";
 
-const DIET_OPTIONS: { id: DietPreference; label: string }[] = [
-  { id: "vegetarian", label: "Vegetarian" },
-  { id: "vegan", label: "Vegan" },
-];
+const STEPS = ["Your household", "How you eat", "Your kitchen"] as const;
 
-const STEPS = ["Household", "Food preferences", "Kitchen & pantry", "Cooking routine", "Review"] as const;
+const MAX_PRIORITIES = 2;
+
+const SEARCH_RESULT_LIMIT = 8;
 
 const KITCHEN_TYPES: { id: KitchenType; label: string; hint: string }[] = [
   {
     id: "existing",
-    label: "Existing kitchen",
-    hint: "I'll record useful pantry stock in the next step.",
+    label: "I have some stock",
+    hint: "Ticks become pantry stock, one typical pack each.",
   },
   {
     id: "fresh",
-    label: "Fresh kitchen",
-    hint: "Starts empty; I can name essentials I plan to stock.",
+    label: "Start mostly empty",
+    hint: "Nothing counts as stock yet; ticks are just plans.",
   },
 ];
-
-/** Numeric 0..1 preference fields, keyed for the routine sliders. */
-type PreferenceKey =
-  | "conveniencePreference"
-  | "priceSensitivity"
-  | "explorationPreference"
-  | "planningPreference";
 
 type Draft = {
   displayName: string;
   memberCount: number;
   locationId: string;
   weeklyBudget: number;
-  kitchenType: KitchenType;
-  diet: DietPreference;
+  diet: SupportedDiet;
   cuisines: string[];
-  cookingDaysPerWeek: number;
-  conveniencePreference: number;
-  priceSensitivity: number;
-  explorationPreference: number;
-  planningPreference: number;
-  pantry: PantryItem[];
-  starterIngredientIds: string[];
+  cookingFrequency: CookingFrequencyId;
+  priorities: PriorityChipId[];
+  kitchenType: KitchenType;
+  selectedIngredientIds: string[];
 };
 
-function level(value: number): string {
-  if (value < 0.34) return "Low";
+function chipClass(active: boolean): string {
+  const base = styles.chip ?? "";
 
-  if (value < 0.67) return "Medium";
+  const activeClass = styles.chipActive ?? "";
 
-  return "High";
+  return active ? `${base} ${activeClass}` : base;
 }
 
-/** Display label for a cuisine id: "indo_chinese" becomes "Indo Chinese". */
-function cuisineLabel(cuisine: string): string {
-  return cuisine
-    .replace(/_/g, " ")
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+function packLabel(quantity: number, unit: Unit): string {
+  const normalized = normalizeQuantity(quantity, unit);
+
+  return formatQuantity(normalized.quantity, normalized.unit);
 }
 
 export function BuildWizard({ existingKitchenName }: { existingKitchenName?: string }) {
   const router = useRouter();
   const catalog = useMemo(() => loadCatalog(), []);
   const cuisines = useMemo(() => listCuisines(catalog), [catalog]);
+  const quickPicks = useMemo(() => quickPickGroups(catalog), [catalog]);
   const [step, setStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [draft, setDraft] = useState<Draft>({
     displayName: "",
     memberCount: 4,
     locationId: catalog.locations[0]?.id ?? "delhi_south",
     weeklyBudget: 1500,
-    kitchenType: "existing",
     diet: "vegetarian",
     cuisines: [],
-    cookingDaysPerWeek: 5,
-    conveniencePreference: 0.5,
-    priceSensitivity: 0.5,
-    explorationPreference: 0.4,
-    planningPreference: 0.6,
-    pantry: [],
-    starterIngredientIds: [],
+    cookingFrequency: "few_days",
+    priorities: [],
+    kitchenType: "existing",
+    selectedIngredientIds: [],
   });
 
   const update = (patch: Partial<Draft>) => setDraft((current) => ({ ...current, ...patch }));
 
-  const updatePreference = (key: PreferenceKey, value: number) =>
-    setDraft((current) => {
-      const next = { ...current };
-      next[key] = value;
-
-      return next;
-    });
-
   const toggle = (list: string[], value: string): string[] =>
     list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
 
-  const profile: KitchenProfile = {
-    displayName: draft.displayName.trim(),
-    memberCount: draft.memberCount,
-    locationId: draft.locationId,
-    weeklyBudget: draft.weeklyBudget,
-    diet: draft.diet,
-    cuisines: draft.cuisines,
-    cookingDaysPerWeek: draft.cookingDaysPerWeek,
-    conveniencePreference: draft.conveniencePreference,
-    priceSensitivity: draft.priceSensitivity,
-    explorationPreference: draft.explorationPreference,
-    planningPreference: draft.planningPreference,
-    kitchenType: draft.kitchenType,
-    starterIngredientIds: draft.kitchenType === "fresh" ? draft.starterIngredientIds : [],
-  };
+  const togglePriority = (id: PriorityChipId) =>
+    setDraft((current) => {
+      if (current.priorities.includes(id)) {
+        return { ...current, priorities: current.priorities.filter((chip) => chip !== id) };
+      }
+
+      if (current.priorities.length >= MAX_PRIORITIES) return current;
+
+      return { ...current, priorities: [...current.priorities, id] };
+    });
+
+  const searchMatches = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (query.length === 0) return [];
+
+    return listIngredients(catalog)
+      .filter(
+        (ingredient) =>
+          ingredient.name.toLowerCase().includes(query) ||
+          ingredient.aliases.some((alias) => alias.includes(query)),
+      )
+      .slice(0, SEARCH_RESULT_LIMIT);
+  }, [catalog, searchQuery]);
 
   const validateStep = (index: number): string | null => {
     if (index === 0) {
@@ -136,14 +136,10 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
       if (draft.weeklyBudget < 100 || draft.weeklyBudget > 100_000) return "Weekly budget must be between ₹100 and ₹1,00,000.";
     }
 
-    if (index === 1 && draft.cuisines.length === 0) {
-      return "Pick at least one cuisine you actually cook.";
-    }
+    if (index === 1) {
+      if (draft.cuisines.length === 0) return "Pick at least one cuisine you actually cook.";
 
-    if (index === 2) {
-      const invalid = draft.pantry.find((item) => !(item.quantity > 0));
-
-      if (invalid) return "Every pantry item needs a quantity above zero.";
+      if (draft.priorities.length > MAX_PRIORITIES) return "Pick at most two priorities.";
     }
 
     return null;
@@ -168,6 +164,19 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
   };
 
   const finish = () => {
+    const profile: KitchenProfile = {
+      displayName: draft.displayName.trim(),
+      memberCount: draft.memberCount,
+      locationId: draft.locationId,
+      weeklyBudget: draft.weeklyBudget,
+      diet: draft.diet,
+      cuisines: draft.cuisines,
+      cookingDaysPerWeek: cookingDaysForFrequency(draft.cookingFrequency),
+      ...preferencesFromPriorities(draft.priorities),
+      kitchenType: draft.kitchenType,
+      starterIngredientIds: draft.kitchenType === "fresh" ? draft.selectedIngredientIds : [],
+    };
+
     const parsed = kitchenProfileSchema.safeParse(profile);
 
     if (!parsed.success) {
@@ -179,7 +188,10 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
     const kitchen = createKitchenState({
       id: LOCAL_KITCHEN_ID,
       profile: parsed.data,
-      pantry: draft.pantry,
+      pantry:
+        draft.kitchenType === "existing"
+          ? pantryItemsFromQuickPicks(catalog, draft.selectedIngredientIds, draft.locationId)
+          : [],
       createdAt: new Date().toISOString(),
     });
 
@@ -265,6 +277,26 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
               </div>
             </div>
             <div className={styles.field}>
+              <label htmlFor="diet">Diet</label>
+              <select
+                id="diet"
+                value={draft.diet}
+                onChange={(event) =>
+                  update({
+                    diet:
+                      DIET_OPTIONS.find((option) => option.id === event.target.value)?.id ?? draft.diet,
+                  })
+                }
+              >
+                {DIET_OPTIONS.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <p className={styles.hint}>Diet is a hard filter: incompatible recipes are never shown.</p>
+            </div>
+            <div className={styles.field}>
               <label htmlFor="location">Delivery area</label>
               <select
                 id="location"
@@ -279,8 +311,76 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
               </select>
               <p className={styles.hint}>Simulated availability — different areas stock different SKUs.</p>
             </div>
+          </>
+        ) : null}
+
+        {step === 1 ? (
+          <>
             <fieldset className={styles.fieldset}>
-              <legend>What does your kitchen look like right now?</legend>
+              <legend>Cuisines you cook (pick at least one)</legend>
+              <div className={styles.chipRow}>
+                {cuisines.map((cuisine) => (
+                  <label
+                    key={cuisine}
+                    className={chipClass(draft.cuisines.includes(cuisine))}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={draft.cuisines.includes(cuisine)}
+                      onChange={() => update({ cuisines: toggle(draft.cuisines, cuisine) })}
+                    />
+                    {cuisine.replace(/_/g, " ")}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className={styles.fieldset}>
+              <legend>How often do you cook?</legend>
+              <div className={styles.chipRow}>
+                {COOKING_FREQUENCY_OPTIONS.map((option) => (
+                  <label
+                    key={option.id}
+                    className={chipClass(draft.cookingFrequency === option.id)}
+                  >
+                    <input
+                      type="radio"
+                      name="cooking-frequency"
+                      checked={draft.cookingFrequency === option.id}
+                      onChange={() => update({ cookingFrequency: option.id })}
+                    />
+                    {option.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className={styles.fieldset}>
+              <legend>What matters most in your week? (pick up to two)</legend>
+              <div className={styles.chipRow}>
+                {PRIORITY_CHIPS.map((chip) => (
+                  <label key={chip.id} className={chipClass(draft.priorities.includes(chip.id))}>
+                    <input
+                      type="checkbox"
+                      checked={draft.priorities.includes(chip.id)}
+                      disabled={
+                        !draft.priorities.includes(chip.id) &&
+                        draft.priorities.length >= MAX_PRIORITIES
+                      }
+                      onChange={() => togglePriority(chip.id)}
+                    />
+                    {chip.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          </>
+        ) : null}
+
+        {step === 2 ? (
+          <>
+            <fieldset className={styles.fieldset}>
+              <legend>Where are you starting from?</legend>
               <div className={styles.optionRow}>
                 {KITCHEN_TYPES.map((option) => (
                   <label
@@ -295,13 +395,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
                       type="radio"
                       name="kitchen-type"
                       checked={draft.kitchenType === option.id}
-                      onChange={() =>
-                        update(
-                          option.id === "fresh"
-                            ? { kitchenType: "fresh", pantry: [] }
-                            : { kitchenType: "existing" },
-                        )
-                      }
+                      onChange={() => update({ kitchenType: option.id })}
                     />
                     <span>
                       <strong>{option.label}</strong>
@@ -311,173 +405,122 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
                 ))}
               </div>
             </fieldset>
-          </>
-        ) : null}
 
-        {step === 1 ? (
-          <>
-            <div className={styles.field}>
-              <label htmlFor="diet">Diet</label>
-              <select
-                id="diet"
-                value={draft.diet}
-                onChange={(event) =>
-                  update({
-                    diet:
-                      DIET_OPTIONS.find((option) => option.id === event.target.value)?.id ??
-                      draft.diet,
-                  })
-                }
-              >
-                {DIET_OPTIONS.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <p className={styles.hint}>Diet is a hard filter: incompatible recipes are never shown.</p>
-            </div>
-            <fieldset className={styles.fieldset}>
-              <legend>Cuisines you cook (pick at least one)</legend>
-              <div className={styles.chipRow}>
-                {cuisines.map((cuisine) => (
-                  <label
-                    key={cuisine}
-                    className={`${styles.chip} ${draft.cuisines.includes(cuisine) ? styles.chipActive : ""}`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={draft.cuisines.includes(cuisine)}
-                      onChange={() => update({ cuisines: toggle(draft.cuisines, cuisine) })}
-                    />
-                    {cuisine.replace(/_/g, " ")}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-          </>
-        ) : null}
-
-        {step === 2 ? (
-          draft.kitchenType === "existing" ? (
-            <PantryEditor draft={draft} update={update} />
-          ) : (
-            <fieldset className={styles.fieldset}>
-              <legend>Essentials you expect to stock (optional)</legend>
-              <p className={styles.hint}>
-                These are intentions for a fresh kitchen, not stock. They never count as inventory.
-              </p>
-              <div className={styles.chipRow}>
-                {listStaples(catalog).map((ingredient) => (
-                  <label
-                    key={ingredient.id}
-                    className={`${styles.chip} ${
-                      draft.starterIngredientIds.includes(ingredient.id) ? styles.chipActive : ""
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={draft.starterIngredientIds.includes(ingredient.id)}
-                      onChange={() =>
-                        update({ starterIngredientIds: toggle(draft.starterIngredientIds, ingredient.id) })
-                      }
-                    />
-                    {ingredient.name}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-          )
-        ) : null}
-
-        {step === 3 ? (
-          <>
-            <div className={styles.field}>
-              <label htmlFor="cooking-days">Typical cooking days per week</label>
-              <input
-                id="cooking-days"
-                type="range"
-                min={0}
-                max={7}
-                value={draft.cookingDaysPerWeek}
-                aria-valuetext={`${draft.cookingDaysPerWeek} days`}
-                onChange={(event) => update({ cookingDaysPerWeek: Number(event.target.value) })}
-              />
-              <p className={styles.hint}>
-                {draft.cookingDaysPerWeek} days. You will choose breakfast, lunch and dinner separately each week.
-              </p>
-            </div>
-
-            {(
-              [
-                ["conveniencePreference", "Convenience", "Quick, low-effort meals vs slow cooking"],
-                ["priceSensitivity", "Price sensitivity", "Value picks vs premium ingredients"],
-                ["explorationPreference", "Exploration", "Familiar dishes vs new cuisines"],
-                ["planningPreference", "Planning", "Cook from the pantry vs buy fresh each week"],
-              ] as const
-            ).map(([key, label, hint]) => (
-              <div className={styles.field} key={key}>
-                <label htmlFor={key}>
-                  {label}: <strong>{level(draft[key])}</strong>
-                </label>
-                <input
-                  id={key}
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  value={draft[key]}
-                  aria-valuetext={level(draft[key])}
-                  onChange={(event) => updatePreference(key, Number(event.target.value))}
-                />
-                <p className={styles.hint}>{hint}</p>
-              </div>
+            {quickPicks.map((group) => (
+              <fieldset className={styles.fieldset} key={group.id}>
+                <legend>{group.label}</legend>
+                <div className={styles.chipRow}>
+                  {group.ingredients.map((ingredient) => (
+                    <label
+                      key={ingredient.id}
+                      className={chipClass(draft.selectedIngredientIds.includes(ingredient.id))}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={draft.selectedIngredientIds.includes(ingredient.id)}
+                        onChange={() =>
+                          update({
+                            selectedIngredientIds: toggle(draft.selectedIngredientIds, ingredient.id),
+                          })
+                        }
+                      />
+                      {ingredient.name}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
             ))}
 
-          </>
-        ) : null}
+            <div className={styles.field}>
+              <label htmlFor="ingredient-search">Something else you buy every week?</label>
+              <input
+                id="ingredient-search"
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search all ingredients"
+                autoComplete="off"
+              />
+              <p className={styles.hint}>
+                Optional. Search adds one typical pack; pick nothing and Week 1 starts leaner.
+              </p>
+            </div>
 
-        {step === 4 ? (
-          <dl className={styles.review}>
-            <div>
-              <dt>Household</dt>
-              <dd>
-                {draft.displayName.trim()} · {draft.memberCount} people ·{" "}
-                {catalog.locations.find((location) => location.id === draft.locationId)?.name} · ₹
-                {draft.weeklyBudget}/week
-              </dd>
-            </div>
-            <div>
-              <dt>Preferences</dt>
-              <dd>
-                {DIET_OPTIONS.find((option) => option.id === draft.diet)?.label} ·{" "}
-                {draft.cuisines.map((cuisine) => cuisineLabel(cuisine)).join(", ")}
-              </dd>
-            </div>
-            <div>
-              <dt>Kitchen</dt>
-              <dd>
-                {draft.kitchenType === "fresh"
-                  ? `Fresh kitchen · ${draft.starterIngredientIds.length} ${draft.starterIngredientIds.length === 1 ? "essential" : "essentials"} planned`
-                  : `Existing kitchen · ${draft.pantry.length} pantry ${draft.pantry.length === 1 ? "item" : "items"}`}
-              </dd>
-            </div>
-            <div>
-              <dt>Routine</dt>
-              <dd>
-                Usually cooks {draft.cookingDaysPerWeek} days/week · convenience{" "}
-                {level(draft.conveniencePreference).toLowerCase()} · price{" "}
-                {level(draft.priceSensitivity).toLowerCase()}
-              </dd>
-            </div>
-            <div>
-              <dt>What happens next</dt>
-              <dd>
-                Blinkitchen starts Week 1 from these facts. Everything after that is learned from
-                what you cook, buy, swap and waste. Nothing is ordered or charged.
-              </dd>
-            </div>
-          </dl>
+            {searchQuery.trim().length > 0 ? (
+              <fieldset className={styles.fieldset}>
+                <legend>Matches</legend>
+                {searchMatches.length > 0 ? (
+                  <div className={styles.chipRow}>
+                    {searchMatches.map((ingredient) => (
+                      <label
+                        key={ingredient.id}
+                        className={chipClass(draft.selectedIngredientIds.includes(ingredient.id))}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={draft.selectedIngredientIds.includes(ingredient.id)}
+                          onChange={() =>
+                            update({
+                              selectedIngredientIds: toggle(draft.selectedIngredientIds, ingredient.id),
+                            })
+                          }
+                        />
+                        {ingredient.name}
+                      </label>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.hint}>No ingredients match that.</p>
+                )}
+              </fieldset>
+            ) : null}
+
+            <fieldset className={styles.fieldset}>
+              <legend>
+                {draft.kitchenType === "existing" ? "In your kitchen" : "Planned essentials"}
+              </legend>
+              {draft.selectedIngredientIds.length === 0 ? (
+                <p className={styles.hint}>
+                  {draft.kitchenType === "existing"
+                    ? "Nothing recorded — Week 1 starts mostly empty. That's allowed."
+                    : "No essentials planned — Week 1 starts mostly empty. That's allowed."}
+                </p>
+              ) : (
+                <ul className={styles.pantryList}>
+                  {draft.selectedIngredientIds.map((ingredientId) => {
+                    const row = ingredientById(catalog, ingredientId);
+                    const pack = typicalPack(catalog, ingredientId, draft.locationId);
+
+                    return (
+                      <li key={ingredientId}>
+                        <span>
+                          <strong>{row?.name ?? ingredientId}</strong>
+                          {draft.kitchenType === "existing" && pack
+                            ? ` · ${packLabel(pack.quantity, pack.unit)} typical pack`
+                            : null}
+                          {draft.kitchenType === "fresh" ? " · planned" : null}
+                        </span>
+                        <button
+                          type="button"
+                          className="btn btn-ghost btn-small"
+                          onClick={() =>
+                            update({
+                              selectedIngredientIds: draft.selectedIngredientIds.filter(
+                                (candidate) => candidate !== ingredientId,
+                              ),
+                            })
+                          }
+                        >
+                          <Trash2 size={14} aria-hidden />
+                          <span className="sr-only">Remove {row?.name ?? ingredientId}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </fieldset>
+          </>
         ) : null}
       </div>
 
@@ -495,156 +538,6 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
           </button>
         )}
       </div>
-    </div>
-  );
-}
-
-function PantryEditor({
-  draft,
-  update,
-}: {
-  draft: Draft;
-  update: (patch: Partial<Draft>) => void;
-}) {
-  const catalog = useMemo(() => loadCatalog(), []);
-  const ingredients = useMemo(() => listIngredients(catalog), [catalog]);
-  const [ingredientId, setIngredientId] = useState(ingredients[0]?.id ?? "");
-  const [quantity, setQuantity] = useState<number>(500);
-  const [unit, setUnit] = useState<Unit>("g");
-  const [useSoon, setUseSoon] = useState(false);
-  const [problem, setProblem] = useState<string | null>(null);
-
-  const ingredient = ingredientById(catalog, ingredientId);
-  const units = ingredient?.commonUnits ?? ["g"];
-
-  const add = () => {
-    if (!ingredient) {
-      setProblem("Pick an ingredient first.");
-
-      return;
-    }
-
-    if (!(quantity > 0)) {
-      setProblem("Quantity must be above zero.");
-
-      return;
-    }
-
-    if (!units.includes(unit)) {
-      setProblem(`Use one of: ${units.join(", ")} for ${ingredient.name}.`);
-
-      return;
-    }
-
-    if (draft.pantry.some((item) => item.ingredientId === ingredient.id)) {
-      setProblem(`${ingredient.name} is already in the pantry — remove it first to change it.`);
-
-      return;
-    }
-
-    setProblem(null);
-    update({
-      pantry: [...draft.pantry, { ingredientId: ingredient.id, quantity, unit, useSoon, acquiredWeek: 1 }],
-    });
-    setUseSoon(false);
-  };
-
-  return (
-    <div>
-      <p className={styles.hint}>
-        Record useful stock only. Leave out anything you don&apos;t track — an empty pantry is fine.
-      </p>
-      <div className={styles.fieldRow}>
-        <div className={styles.field}>
-          <label htmlFor="pantry-ingredient">Ingredient</label>
-          <select
-            id="pantry-ingredient"
-            value={ingredientId}
-            onChange={(event) => {
-              const nextIngredient = ingredientById(catalog, event.target.value);
-              setIngredientId(event.target.value);
-
-              if (nextIngredient && nextIngredient.commonUnits[0]) setUnit(nextIngredient.commonUnits[0]);
-            }}
-          >
-            {ingredients.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className={styles.field}>
-          <label htmlFor="pantry-quantity">Quantity</label>
-          <input
-            id="pantry-quantity"
-            type="number"
-            min={0}
-            step={10}
-            value={quantity}
-            onChange={(event) => setQuantity(Number(event.target.value))}
-          />
-        </div>
-        <div className={styles.field}>
-          <label htmlFor="pantry-unit">Unit</label>
-          <select
-            id="pantry-unit"
-            value={unit}
-            onChange={(event) =>
-              setUnit(units.find((candidate) => candidate === event.target.value) ?? unit)
-            }
-          >
-            {units.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <label className={styles.checkbox}>
-        <input type="checkbox" checked={useSoon} onChange={(event) => setUseSoon(event.target.checked)} />
-        Mark as “use soon”
-      </label>
-      <div className={styles.nav}>
-        <button type="button" className="btn btn-secondary btn-small" onClick={add}>
-          <Plus size={14} aria-hidden /> Add to pantry
-        </button>
-      </div>
-      {problem ? (
-        <p className={styles.error} role="alert">
-          {problem}
-        </p>
-      ) : null}
-
-      {draft.pantry.length > 0 ? (
-        <ul className={styles.pantryList}>
-          {draft.pantry.map((item) => {
-            const row = ingredientById(catalog, item.ingredientId);
-
-            return (
-              <li key={item.ingredientId}>
-                <span>
-                  <strong>{row?.name ?? item.ingredientId}</strong> · {item.quantity} {item.unit}
-                  {item.useSoon ? <em className={styles.useSoon}> · use soon</em> : null}
-                </span>
-                <button
-                  type="button"
-                  className="btn btn-ghost btn-small"
-                  onClick={() =>
-                    update({ pantry: draft.pantry.filter((row2) => row2.ingredientId !== item.ingredientId) })
-                  }
-                >
-                  <Trash2 size={14} aria-hidden />
-                  <span className="sr-only">Remove {row?.name ?? item.ingredientId}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <p className={styles.hint}>Nothing recorded yet — that&apos;s allowed.</p>
-      )}
     </div>
   );
 }

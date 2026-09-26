@@ -4,7 +4,7 @@ import productTemplatesJson from "@/data/product-templates.json";
 import substitutionsJson from "@/data/substitutions.json";
 import locationsJson from "@/data/locations.json";
 import { z } from "zod";
-import { dimensionOf, roundQuantity } from "@/domain/units";
+import { canonicalUnitOf, dimensionOf, roundQuantity } from "@/domain/units";
 import { compareStrings } from "@/domain/order";
 import { formatIssues } from "@/domain/zod-helpers";
 import {
@@ -61,10 +61,11 @@ function inventoryStatusFor(
 /**
  * Expand product templates across locations deterministically.
  *
- * A repair step guarantees every ingredient is purchasable in every location:
- * if all SKUs for an ingredient in a location would be out of stock, the
- * cheapest one is promoted to low_stock. This keeps simulated baskets
- * fulfillable while preserving out-of-stock SKUs for selection tests.
+ * A repair step guarantees every ingredient is purchasable in every location
+ * and in every pack dimension it is sold in: if every SKU of a dimension is out
+ * of stock, the cheapest one is promoted to low_stock. Without this, a recipe
+ * line measured in grams could be unbuyable while the same ingredient's piece
+ * packs are in stock, and a simulated week could not cook its plan.
  */
 export function expandProducts(
   templates: ProductTemplate[],
@@ -90,11 +91,19 @@ export function expandProducts(
   }
 
   for (const location of locations) {
-    const ingredientIds = [...new Set(products.map((product) => product.ingredientId))];
+    const dimensions = new Set<string>();
 
-    for (const ingredientId of ingredientIds) {
+    for (const product of products) {
+      if (product.locationId === location.id) {
+        dimensions.add(`${product.ingredientId}:${canonicalUnitOf(product.unit)}`);
+      }
+    }
+
+    for (const dimension of dimensions) {
       const rows = products.filter(
-        (product) => product.ingredientId === ingredientId && product.locationId === location.id,
+        (product) =>
+          product.locationId === location.id &&
+          `${product.ingredientId}:${canonicalUnitOf(product.unit)}` === dimension,
       );
 
       if (rows.length === 0 || rows.some((product) => product.inventoryStatus !== "out_of_stock")) {

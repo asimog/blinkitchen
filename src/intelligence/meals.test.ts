@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { loadCatalog } from "@/catalog/load";
 import { applyKitchenCommand } from "@/domain/kitchen/commands";
 import { deriveLearning } from "@/intelligence/learning";
-import { rankRecipes, suggestPlan } from "@/intelligence/meals";
+import { rankRecipes } from "@/intelligence/meals";
+import { suggestPlan } from "@/intelligence/planner";
 import type { KitchenState } from "@/domain/kitchen/types";
 import { makeKitchen, pantryItem } from "@/test-utils/kitchen";
 
@@ -10,6 +11,10 @@ const catalog = loadCatalog();
 
 function rank(kitchen: KitchenState) {
   return rankRecipes(kitchen, catalog, deriveLearning(kitchen, catalog));
+}
+
+function planFor(kitchen: KitchenState) {
+  return suggestPlan(kitchen, catalog, deriveLearning(kitchen, catalog), rank(kitchen));
 }
 
 function scoreOf(kitchen: KitchenState, recipeId: string): number {
@@ -136,7 +141,7 @@ describe("ranking behaviour", () => {
     for (const row of rank(kitchen)) {
       expect(row.explanation.length).toBeGreaterThan(0);
       expect(row.explanation.length).toBeLessThanOrEqual(5);
-      expect(row.explanation.join(" ")).not.toMatch(/AI|algorithm|model says/i);
+      expect(row.explanation.join(" ")).not.toMatch(/\bAI\b|algorithm|model says/i);
     }
   });
 
@@ -182,17 +187,18 @@ describe("ranking behaviour", () => {
 describe("suggested plan", () => {
   it("follows cooking days and keeps meal types realistic", () => {
     const kitchen = makeKitchen({}, { cookingDaysPerWeek: 3 });
-    const plan = suggestPlan(rank(kitchen), kitchen);
+    const plan = planFor(kitchen);
     expect(plan).toHaveLength(3);
     expect(plan.every((meal) => meal.source === "suggested")).toBe(true);
     expect(plan.every((meal) => meal.recipe.mealSlots.includes(meal.slot))).toBe(true);
+    expect(plan.every((meal) => meal.explanation.length > 0)).toBe(true);
   });
 
   it("clamps plan size for extreme cooking days", () => {
     const none = makeKitchen({}, { cookingDaysPerWeek: 0 });
-    expect(suggestPlan(rank(none), none).length).toBe(0);
+    expect(planFor(none).length).toBe(0);
     const always = makeKitchen({}, { cookingDaysPerWeek: 7 });
-    expect(suggestPlan(rank(always), always).length).toBe(7);
+    expect(planFor(always).length).toBe(7);
   });
 });
 

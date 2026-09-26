@@ -1,255 +1,175 @@
 # Implementation Plan
 
-Plan for moving Blinkitchen from its current prototype to the target product
-direction described in [PRODUCT_SCOPE.md](PRODUCT_SCOPE.md) and
-[PRODUCT_CASE.md](PRODUCT_CASE.md).
+The single future execution plan for Blinkitchen. It moves the prototype from its
+current state to the target product direction in [PRODUCT_CASE.md](PRODUCT_CASE.md)
+without changing the contracts in [ARCHITECTURE.md](ARCHITECTURE.md) or
+[DATA_MODEL.md](DATA_MODEL.md) unless a phase explicitly says so.
 
-Nothing in this document is implemented. It is a plan for future code work; the
-document itself is Markdown only. Executing it must not change the contracts in
-[ARCHITECTURE.md](ARCHITECTURE.md) or [DATA_MODEL.md](DATA_MODEL.md) unless a
-phase below explicitly says so.
+Each phase states product behaviour, boundaries, files likely affected, acceptance
+criteria, tests and sequencing. It avoids freezing internal APIs before they are
+implemented: where a type or helper shape is not yet required, the requirement is
+stated and the shape is decided during the phase.
 
 ## Constraints on every phase
 
-Every phase obeys the repository rules in [AGENTS.md](AGENTS.md): one
-`KitchenState` authority, facts in and intelligence out, no persisted
-projections, no new infrastructure or dependencies without demonstrated product
-need, and deterministic behaviour. Engine complexity may grow; interface
-complexity must not.
+Every phase obeys [AGENTS.md](AGENTS.md): one `KitchenState` authority, facts in
+and intelligence out, no persisted projections, no new infrastructure or
+dependencies without demonstrated product need, deterministic behaviour. Engine
+complexity may grow; interface complexity must not. Every phase ends with
+`npm run lint`, `npm run typecheck`, `npm run test`, `npm run build` and
+`npm run test:e2e` when browser-facing behaviour changed. Authoritative docs are
+updated in the same change, not afterwards.
 
-Every phase ends with `npm run lint`, `npm run typecheck`, `npm run test`,
-`npm run build`, and `npm run test:e2e` when browser-facing behaviour changed.
-Authoritative docs are updated in the same change, not afterwards.
+## Baseline after the MVP iteration (verified)
 
-## 1. Baseline
-
-Verified against `main` at the time of writing:
-
-| Area | Current |
+| Area | Now |
 | --- | --- |
-| Onboarding | 5 steps: Household, Food preferences, Kitchen and pantry, Cooking routine, Review |
-| Week view | Journey bar, week header, KPI strip, checklist, pantry, planner, ranked meals, scoring details, chains, basket, swaps, replenishment, learning, narrative |
-| Meal selection | `rankRecipes` scores meals individually; `suggestPlan` takes the top meals by rank |
-| Reuse signal | `MealFactors.ingredientReuse` from ingredient occurrence in the recipe corpus |
-| Diet coverage | `DietPreference` has 5 values; catalog attributes and onboarding cover 2 |
-| Optional ingredients | `RecipeRequirement.optional` is carried but never consulted |
-| Catalog | 43 ingredients, 14 recipes, 46 templates, 92 SKUs, 8 substitutions, 2 locations |
+| Onboarding | Three steps: Your household, How you eat (priority chips), Your kitchen (quick picks + optional search); no review step |
+| Week view | Five blocks: Your kitchen this week → This week's plan → Your basket → Smart extras → What changed; detail behind "Why this?" |
+| Meal selection | `rankRecipes` ranks for discovery; `suggestPlan` is a deterministic greedy planner evaluating each candidate against the partial week |
+| Reuse signal | Per-recipe factor retained for ranking; plan-level cross-meal reuse uses actual committed requirements |
+| Diet coverage | `DietPreference` has 5 values; catalog, filtering and onboarding intentionally cover 2 (deferred by scope) |
+| Optional ingredients | Excluded from coverage, basket, chains and simulation cooking; never auto-bought |
+| Catalog | 118 ingredients (351 aliases), 128 recipes, 273 templates, 546 SKUs, 30 substitutions, 11 cuisines, 42 optional lines |
+| Data provenance | Offline harvest of Blinkit Recipes via `tools/catalog-harvest/`; generated fixtures committed; runtime never fetches |
+| Week 1 → Week 8 | `compareJourney` projection + comparison panel on `/explore/[id]` with a jump link |
 | Storage | `blinkitchen:v2:kitchen`, Zod-validated, facts only |
-| Tests | 125 unit tests, 12 Playwright tests |
+| Routes and CI | All six routes reachable; CI runs lint, typecheck, unit tests, build and a Playwright job over the critical routes |
+| Tests | Unit suite across domain, catalog, intelligence, insights, simulation; Playwright desktop + mobile smoke |
 
-## 2. Contracts that change
+Remaining known limitations: diets beyond vegetarian and vegan are unbacked
+(deferred by explicit product scope); ingredient aliases are ingestion provenance
+only; recipe quantities are approximate normalisations; whole-week pack reasoning
+has no pantry-rescue heuristics beyond cost minimisation.
 
-| Contract | Current | Target | Phase |
-| --- | --- | --- | --- |
-| Onboarding steps (UI only) | 5 | 3 | 2 |
-| `KitchenProfile` fields | unchanged shape | unchanged; priorities map into existing 0..1 fields at the UI boundary | 2 |
-| `KitchenProfile.cuisines` | schema requires at least 1 | decision needed: keep required, or allow empty with a neutral affinity prior | 2 |
-| `MealFactors.ingredientReuse` | corpus reuse potential | plan-level reuse measured against the partial week (proposed rename `planReuse`) | 5 |
-| `PlannedMeal` | `recipeId, recipe, source, day, slot` | adds `utility: number` and `reasons: string[]` | 5 |
-| `WeekIntelligence` | unchanged shape | may add `planNotes: string[]`; no removals | 5 |
-| New projection | none | `JourneyComparison` from `compareJourney(states, catalog)` | 4 |
-| `DietaryAttribute` | `vegetarian \| vegan` | adds `eggetarian` and `non_vegetarian` data support | 6 |
-| `RecipeRequirement.optional` | ignored | required lines drive coverage and basket; optional lines never block or auto-buy | 6 |
-| `Ingredient` | no aliases | adds `aliases: string[]` (additive) | 6 |
+## Phase 0: repository hygiene — complete
 
-Rules that still hold: recipes reference canonical ingredients, never SKUs; the
-catalog stays read-only; nothing derived is persisted.
+Delivered: restored the missing `/build` route on the existing wizard shell so
+every advertised route resolves; a reachability audit found no dead modules (the
+onboarding stack was orphaned, not dead) and no clearly unused CSS selectors; docs
+were consolidated to the six authoritative documents listed in
+[README.md](README.md), with `PRODUCT_SCOPE.md` and `DATA_STRATEGY.md` merged and
+deleted; `.kilo/skills` was pruned to the skills actually useful here; CI gained a
+Playwright job; the full verification suite passes.
 
-## 3. Phases
+## Phase 1: copy honesty and reviewer path — complete
 
-### Phase 0: copy honesty and restraint
+The homepage now leads with "See the 8-week demo" (primary), "Build your kitchen"
+(secondary) and "Blinkit Lens" (tertiary); the hero is one sentence; the sections
+that repeated the product case are gone and only the derived Week 1 preview and a
+compact evidence strip remain. The overstating reuse claim was replaced with the
+plan-level truth. Replenishment copy leads with the outcome, substitutions lead
+with household history instead of a compatibility percentage, the basket narrative
+says "already at home", meal factors sit behind "Why this?", and the learning
+panel leads with two statements. `src/intelligence/copy.test.ts` guards every
+customer-facing explanation string (plus the Week 1 to Week 8 comparison) against
+internal vocabulary.
 
-Goal: the interface stops narrating the engine and stops overstating what the
-engine does.
-
-| # | Change | Files | Size |
-| --- | --- | --- | --- |
-| 0.1 | Replace the home reuse claim ("chaining shapes which dishes rank highest") with an accurate statement about shared ingredients across the plan | `src/app/page.tsx` | S |
-| 0.2 | Replace "Derived from your consumption history, not guesswork" with outcome copy: "You use this often and you're running low." | `src/components/kitchen/ReplenishmentPanel.tsx` | S |
-| 0.3 | Replace "Explicit ingredient relationships, no guessing" with plain language about why the swap is offered | `src/components/kitchen/SubstitutionPanel.tsx` | S |
-| 0.4 | Drop "Compatibility 84%" from swap bullets; lead with "You've accepted this swap before" | `src/intelligence/explanations.ts` | S |
-| 0.5 | Rewrite the cuisine narrative from "strongest cuisine signal, affinity 62%" to a concrete statement about what the household cooks | `src/intelligence/index.ts` | S |
-| 0.6 | Basket narrative uses "already at home" and drops "basket value" phrasing on customer surfaces | `src/intelligence/index.ts`, `src/components/kitchen/BasketPanel.tsx` | S |
-| 0.7 | Move the meal factor line (pantry 53 / cuisine 50 / reuse 40) behind "Why this?" | `src/components/kitchen/MealCard.tsx`, `WeekView.tsx` | S |
-| 0.8 | Learning panel leads with 1 to 2 concrete statements; affinity bars move behind expansion | `src/components/kitchen/LearningPanel.tsx` | M |
-| 0.9 | Basket hint says "6 things to buy", not "28 of 29 lines to buy" | `src/components/kitchen/BasketPanel.tsx` | S |
-| 0.10 | Disclosure: one page or section label per surface; stop repeating "simulated" beside every value, keep provenance where omission would mislead | `MetricRow.tsx`, `BasketPanel.tsx`, `blinkit/BlinkitLens.tsx` | M |
-| 0.11 | Trim panel hints to one line where the heading already says it | `src/components/kitchen/*` | S |
-
-Actions:
-
-- Add a copy guard test: explanation strings on customer surfaces must not contain
-  internal vocabulary (`affinity`, `compatibility`, `utility`, `factor`,
-  `corpus`). Keep the banned list short and deliberate.
-- Acceptance: every customer-facing sentence describes an outcome a household
-  would recognise, and no sentence claims plan-level optimisation.
-- Docs: none (copy only).
-
-### Phase 1: reviewer path
-
-Goal: a Blinkit reviewer reaches the strongest demonstration in two clicks.
-
-| # | Change | Files | Size |
-| --- | --- | --- | --- |
-| 1.1 | Primary home CTA becomes "See the 8-week demo" to `/explore/pantry_planner`; secondary "Build your kitchen"; tertiary Blinkit lens | `src/app/page.tsx` | S |
-| 1.2 | Keep the derived Week 1 preview as the product signal next to the thesis | `src/app/page.tsx` | S |
-| 1.3 | Restructure the Blinkit Lens into four layers: the opportunity, what the prototype demonstrates, what this could enable, how I would test it | `src/components/blinkit/BlinkitLens.tsx` | M |
-| 1.4 | Keep the three layers visibly separate: demonstrated mechanics, Blinkit hypotheses, what must be tested | `BlinkitLens.tsx` | M |
-| 1.5 | Move cohort tables and secondary metrics below the four layers or behind expansion | `BlinkitLens.tsx`, `blinkit.module.css` | M |
-
-- Acceptance: from `/`, a reviewer can open the demo and reach Week 8 without
-  onboarding, and the Blinkit Lens never mixes hypothesis with demonstration.
-- Docs: `README.md` demo path if labels change.
-
-### Phase 2: three-step onboarding
-
-Goal: enough signal for a useful Week 1, in about a minute, with no inventory
-precision.
-
-| # | Change | Files | Size |
-| --- | --- | --- | --- |
-| 2.1 | Step 1 "Your Household": size, diet, location, budget. Naming optional, prefilled "My Kitchen" | `BuildWizard.tsx` | M |
-| 2.2 | Step 2 "How You Eat": cuisines, cooking frequency, up to 2 priorities | `BuildWizard.tsx` + new pure helper `src/components/onboarding/profile-mapping.ts` | M |
-| 2.3 | Step 3 "Your Kitchen": quick-pick groups plus optional search and add plus "start mostly empty" | `BuildWizard.tsx` | M |
-| 2.4 | Quick picks set one typical pack size per ingredient using the existing simulated catalog lookup, not invented multipliers | onboarding helper | M |
-| 2.5 | Remove the review step and delete the four preference sliders | `BuildWizard.tsx` | S |
-| 2.6 | Priority chips map to existing fields: Use what I have → `planningPreference`, Save money → `priceSensitivity`, Cook quickly → `conveniencePreference`, Try new dishes → `explorationPreference` | `profile-mapping.ts` | S |
-| 2.7 | Keep diet options at vegetarian and vegan until Phase 6 lands; never offer a diet the data cannot support | `BuildWizard.tsx` | S |
-| 2.8 | Update the e2e wizard helper and any step-count assertions | `e2e/helpers.ts`, `e2e/journey.spec.ts` | S |
-
-- Acceptance: a household reaches Week 1 in three steps, no step needs an
-  explanation, and no step requires understanding the engine.
-- Tests: unit tests prove the mapping is deterministic, produces schema-valid
-  profiles, and never yields an empty cuisine list (or, if cuisines become
-  optional, yields the documented neutral prior).
-- Risk: dropping sliders and exact pantry rows removes signals the engine uses.
-  Mitigation: mapping table plus pack-size defaults; verify Week 1 output still
-  differentiates households.
-- Docs: `PRODUCT_SCOPE.md` (limitation removed), `ARCHITECTURE.md` module map,
-  `DATA_MODEL.md` if the cuisine schema decision changes the profile contract.
-
-### Phase 3: week view hierarchy
-
-Goal: one primary question and one obvious next action per screen, with mechanics
-behind disclosure.
+## Phase 2: three-step onboarding — complete
 
 ```text
-YOUR KITCHEN THIS WEEK     one state summary and what to use first
+STEP 1  YOUR HOUSEHOLD   size, diet, location, approximate weekly budget
+STEP 2  HOW YOU EAT      cuisines, cooking frequency, up to 2 priority chips
+STEP 3  YOUR KITCHEN     quick-pick groups (pantry basics, fresh basics,
+                         regularly bought), optional search/add, or start empty
+                         ↓
+                    START WEEK 1
+```
+
+No review step and no abstract sliders. The pure mapping lives in
+`src/components/onboarding/onboarding-prefs.ts`: priority chips set the existing
+profile fields at the UI boundary (selected 0.8, neutral 0.5), cooking frequency
+maps to `cookingDaysPerWeek`, and quick picks resolve one typical pack per
+ingredient from the catalog's own products. Unit tests cover determinism, schema
+validity, chip mapping and pack derivation; the e2e helper and wizard assertions
+run the three-step flow. Diet options remain vegetarian and vegan only.
+
+## Phase 3: week-view simplification — complete
+
+`WeekView` now renders the five target blocks in order:
+
+```text
+YOUR KITCHEN THIS WEEK     state summary, use-first line, pantry detail
         ↓
-THIS WEEK'S PLAN           3 to 5 meal choices, each with one action
+THIS WEEK'S PLAN           up to 5 planned meals, each explained and actionable
         ↓
 YOUR BASKET                what to buy and what is already at home
         ↓
-SMART EXTRAS               use soon, swap, restock
+SMART EXTRAS               chains, swaps and replenishment in one grouped panel
         ↓
-WHAT CHANGED               1 to 2 learning statements
+WHAT CHANGED               two statements, full learning behind a toggle
 ```
 
-| # | Change | Files | Size |
-| --- | --- | --- | --- |
-| 3.1 | Restructure `WeekView` into the five blocks, keeping the journey bar and week header | `WeekView.tsx` | M |
-| 3.2 | The KPI strip becomes one supporting summary line; the accessible `dl` with its four pairs stays | `MetricRow.tsx`, `kitchen.module.css` | M |
-| 3.3 | Meal cards lead with name, share already at home, incremental cost, one or two reasons, action; scoring behind "Why this?" | `MealCard.tsx` | M |
-| 3.4 | Basket headline becomes "6 things to buy, ₹620, ₹280 already at home", then the grouped list | `BasketPanel.tsx` | M |
-| 3.5 | Chains, swaps and replenishment become compact rows inside one Smart Extras panel, keeping each as an accessible sub-region | new `SmartExtras.tsx`, existing row components | L |
-| 3.6 | Learning panel: 1 to 2 statements, values behind expansion | `LearningPanel.tsx` | M |
-| 3.7 | Pantry and the week planner become drill-down views, with a "what's home" line kept in the summary | `PantrySnapshot.tsx`, `WeekMealPlanner.tsx` | M |
-| 3.8 | Update browser tests for the new structure without weakening behavioural assertions | `e2e/journey.spec.ts`, `e2e/smoke.mobile.spec.ts` | M |
+Meal cards lead with name, additional cost, "% already home" and two reasons;
+ingredients and fit factors sit behind "Why this?". The ranked discovery list and
+the scoring weights moved into disclosure. All accessible landmarks
+(`dl[aria-label="This week at a glance"]`, "Pantry-aware basket", "Ingredient
+chaining", "What Blinkitchen learned", the week rail) are preserved for screen
+readers and browser tests.
 
-- Acceptance: a first-time viewer answers "what do I cook and what do I buy"
-  without expanding anything, and every visible panel earns its place.
-- Docs: `PRODUCT_SCOPE.md` (limitation removed), `AGENTS.md` unchanged.
+## Phase 4: Week 1 to Week 8 comparison — complete
 
-### Phase 4: Week 1 to Week 8 comparison
+`compareJourney(kitchens, catalog)` is a pure, deterministic projection in
+`src/intelligence/journey.ts`. It reports six signals (meals recorded, plan
+already at home, shared ingredients, substitution decisions, recorded waste,
+cumulative groceries avoided) with Week 1 and Week 8 values, plus "what the
+system knew" and "what it learned" highlights. `JourneyComparisonPanel` renders
+it on `/explore/[id]` under an anchor link in the journey bar
+(`id="journey-comparison"`); weekly detail remains available by drill-down.
+Covered by determinism, read-only and household-difference tests.
 
-Goal: make the longitudinal claim visible on one screen.
+## Phase 5: plan-level intelligence — complete
 
-| # | Change | Files | Size |
-| --- | --- | --- | --- |
-| 4.1 | New pure projection `compareJourney(states, catalog): JourneyComparison`, derived only | `src/intelligence/compare.ts`, `src/intelligence/index.ts` | M |
-| 4.2 | Comparison surface: what Week 1 knew versus what Week 8 learned (recurring ingredients, cuisine behaviour, swap preferences, waste, replenishment) | new `src/components/explore/JourneyCompare.tsx` | M |
-| 4.3 | Jump link from the journey bar and a closing callout on `/explore` | `JourneyBar.tsx`, `src/app/explore/page.tsx` | S |
-| 4.4 | Determinism and archetype-difference tests for the new projection | new test file | M |
+`suggestPlan` is now a deterministic greedy planner
+(`src/intelligence/planner.ts`): each remaining candidate is evaluated against the
+partial week on pantry coverage, actual cross-meal reuse (against committed
+requirements, not the corpus), cuisine fit, convenience, incremental basket cost,
+use-soon rescue and cuisine variety, with `PLAN_WEIGHTS` as the authoritative
+table and stable recipe-id tie-breaking. Every planned meal carries one to three
+derived explanation sentences. `rankRecipes` still powers the discovery list.
+`planner.test.ts` proves the weights balance, determinism, reuse rewards, pantry
+effects and use-soon rescue; `simulation.test.ts` proves the four archetypes still
+diverge for their stated reasons. No general optimiser was introduced.
 
-- Acceptance: a reviewer describes what changed between Week 1 and Week 8 in under
-  a minute from one screen, with no invented outcome text.
-- Docs: `DATA_MODEL.md` (projection), `SIMULATION.md` (replace the planned
-  section), `README.md` demo path.
+## Phase 6: catalog, diet, optional-ingredient and ingestion foundation — delivered (diet deferred)
 
-### Phase 5: plan-level intelligence
+Delivered:
 
-Goal: reuse becomes real cross-meal reuse, chosen against the partial week.
+- **Optional ingredients.** Required lines drive coverage and the basket; optional
+  lines never block a recipe, never enter the basket or chains, and are skipped by
+  the simulation's cooking commands and the interactive cook action. The
+  interactive basket also pins the suggested plan before receiving it, so the
+  plan cannot change between buying and cooking.
+- **Aliases.** `Ingredient.aliases: string[]` is part of the catalog schema
+  (351 written forms across 118 ingredients). Aliases are ingestion provenance:
+  resolved offline, never read at runtime, canonical ids unchanged.
+- **Offline ingestion.** `tools/catalog-harvest/` is the ingestion boundary:
+  `harvest.mjs` collects Blinkit Recipes pages and product facts,
+  `generate.mjs` maps written forms to canonical ids, normalises quantities and
+  packs, validates nothing at runtime, and emits the committed
+  `src/data/*.json`. Instruction prose is never copied.
+- **Catalog scale.** 118 canonical ingredients, 128 recipes (11 cuisines,
+  18 explore-level, 66 vegan), 273 product templates (546 SKUs), 30 directed
+  substitutions. Scale is capped at the MVP milestone; the next step is roughly
+  300 ingredients / 800 recipes / 1,000 SKUs.
+- **Whole-week pack reasoning.** `planPackPurchase` evaluates every in-stock pack
+  in the required dimension and picks the lowest total cost, tie-breaking on fewer
+  packs. The repair step in `buildCatalog` guarantees every ingredient is
+  purchasable per location *and per pack dimension*.
 
-| # | Change | Files | Size |
-| --- | --- | --- | --- |
-| 5.1 | New pure planner: slot-by-slot greedy selection with an inspectable utility function | `src/intelligence/planner.ts` | L |
-| 5.2 | Utility inputs: household fit, pantry coverage, incremental basket cost, actual cross-meal reuse, use-soon rescue, budget fit, convenience, variety, recent repetition | `planner.ts`, `meals.ts` | M |
-| 5.3 | Weights centralized and documented, alongside `MEAL_WEIGHTS` | `planner.ts` | S |
-| 5.4 | `ingredientReuse` becomes plan-aware. Proposed rename `planReuse` with the corpus signal retired; keep `rankRecipes` for the discovery list only | `meals.ts`, `intelligence/types.ts`, `MealCard.tsx` | M |
-| 5.5 | `PlannedMeal` gains `utility` and `reasons`; the plan explains each pick in one sentence | `intelligence/types.ts`, `planner.ts`, `WeekView.tsx` | M |
-| 5.6 | Stable tie-break by recipe id; no randomness anywhere | `planner.ts` | S |
-| 5.7 | Tests: sharing changes selection, budget changes selection, use-soon rescue changes selection, same inputs give identical plans, archetype differences persist | `src/intelligence/planner.test.ts`, `simulation.test.ts` | L |
+Deferred by explicit product scope for this MVP: diets beyond vegetarian and
+vegan. The catalog intentionally covers only those two; `eggetarian`,
+`non_vegetarian` and `flexible` still behave as "allow everything", and onboarding
+does not offer them. No diet is exposed that the data cannot support.
 
-- Acceptance: tests prove household behaviour changes the plan, not just the
-  ranking; every planned meal can be explained in one sentence; the four fixtures
-  still diverge for their stated reasons rather than by tuning.
-- Terminology after this phase: meal-level chain potential (candidate signal),
-  plan-level cross-meal reuse (selection outcome). Never call it week
-  optimisation unless a solver is genuinely introduced, which it should not be.
-- Docs: `DATA_MODEL.md` (weights, fields, semantics), `ARCHITECTURE.md` and
-  `PRODUCT_SCOPE.md` (limitations removed), `SIMULATION.md` if policy inputs
-  change.
+## Phase 7: measurement readiness — complete
 
-### Phase 6: catalog, diet and optional-ingredient completeness
+`PRODUCT_CASE.md` now defines one event per primary metric (trigger and key
+properties) for a real deployment, and states explicitly that the prototype stays
+uninstrumented. Onboarding completion, correction burden and pantry coverage are
+called out as first-class signals rather than vanity numbers.
 
-Goal: make the data credible at a larger scale without touching runtime
-architecture. Can run in parallel with Phases 3 to 5.
-
-| # | Change | Files | Size |
-| --- | --- | --- | --- |
-| 6.1 | Extend `DietaryAttribute` and the schema; add real data behind eggetarian and non_vegetarian | `src/catalog/types.ts`, `schema.ts`, `src/data/*` | M |
-| 6.2 | Complete diet filtering end to end: profile, ingredients, recipes, ranking, substitutions, onboarding | `src/intelligence/diet.ts`, `BuildWizard.tsx` | M |
-| 6.3 | Define optional-ingredient semantics: required drives coverage and basket; optional never blocks and never auto-buys | `meals.ts`, `basket.ts`, `chains.ts` | M |
-| 6.4 | Add `aliases: string[]` to ingredients (additive) and resolve aliases during ingestion only | `catalog/types.ts`, `schema.ts`, `load.ts` | M |
-| 6.5 | Offline ingestion pipeline per `DATA_STRATEGY.md`, producing the existing catalog shape | separate offline workstream | L |
-| 6.6 | Grow the catalog to the target ranges, quality first | `src/data/*` | L |
-| 6.7 | Tests: every diet filters correctly, optional lines never become required, aliases never change canonical ids | catalog and intelligence tests | M |
-
-- Acceptance: the catalog can absorb new sources without runtime code changes,
-  and no recipe line depends on string matching.
-- Docs: `DATA_MODEL.md` (move future items to current), `DATA_STRATEGY.md`
-  current-versus-target table, `PRODUCT_SCOPE.md` limitations removed.
-
-### Phase 7: measurement readiness
-
-Goal: make a real pilot measurable without adding tracking to the prototype.
-
-| # | Change | Files | Size |
-| --- | --- | --- | --- |
-| 7.1 | Event definitions for every metric in `PRODUCT_CASE.md`, with name, trigger, properties and source | this document, `PRODUCT_CASE.md` | M |
-| 7.2 | Explicit statement that the prototype stays uninstrumented | `PRODUCT_CASE.md` | S |
-| 7.3 | Onboarding completion, correction burden and pantry coverage treated as first-class signals | `PRODUCT_CASE.md` | S |
-
-Proposed event definitions to refine:
-
-| Event | Trigger | Key properties |
-| --- | --- | --- |
-| `onboarding_step_completed` | each step submitted | step index, elapsed seconds |
-| `onboarding_completed` | Week 1 rendered | household size, diet, budget band |
-| `plan_meal_accepted` | meal added to plan | recipe id, plan source |
-| `plan_meal_dismissed` | recommendation dismissed | recipe id, reason if offered |
-| `basket_line_added` | basket line confirmed | ingredient id, status, line cost |
-| `swap_decided` | swap accepted or rejected | substitution id, decision, score band |
-| `replenishment_prompt_decided` | prompt accepted or dismissed | ingredient id, remaining band |
-| `pantry_corrected` | pantry edited after inference | ingredient id, direction |
-| `week_completed` | week closed | week, coverage percent, to-buy count |
-| `journey_returned` | next weekly session | days since previous |
-
-- Acceptance: every metric in the product case has a definition and a stated data
-  source for a real deployment.
-- Docs: `PRODUCT_CASE.md`.
-
-## 4. Test strategy
+## Test strategy
 
 - **Domain first.** New intelligence behaviour needs a test proving household
   behaviour changes the output, not just that the function runs.
@@ -258,14 +178,15 @@ Proposed event definitions to refine:
   payloads) before UI work.
 - **Copy.** A short banned-vocabulary test guards customer-facing explanation
   strings.
-- **Browser.** Keep the desktop journey suite and the mobile smoke suite. Update
-  landmarks deliberately; never delete an assertion to make a restructure pass.
+- **Browser.** Keep the desktop journey suite and the mobile smoke suite, and keep
+  CI running them. Update landmarks deliberately; never delete an assertion to
+  make a restructure pass.
 - **Accessibility.** Focus-visible contrast, `aria-current` on navigation, keyboard
   operability for the week rail, and `details`/`summary` for disclosure.
 
-## 5. Landmark obligations
+## Landmark obligations
 
-These accessible landmarks are load-bearing for tests and for screen readers.
+These accessible landmarks are load-bearing for tests and screen readers.
 Preserve them, or update the corresponding assertion in the same change with a
 stated reason.
 
@@ -273,82 +194,82 @@ stated reason.
 | --- | --- | --- |
 | `dl[aria-label="This week at a glance"]` with four pairs | 3 | Preserve, restyle as a summary line |
 | `section[aria-label="Your week, step by step"]` | 3 | Preserve |
-| `section[aria-label="Recommended meals"]` | 3 | Preserve |
-| `section[aria-label="Pantry-aware basket"]` | 3 | Preserve |
-| `section[aria-label="What you already have"]` | 3 | Preserve inside the drill-down |
+| `section[aria-label="Recommended meals"]`, `"Pantry-aware basket"`, `"What you already have"` | 3 | Preserve; pantry may move into a drill-down |
 | `section[aria-label="Suggested swaps"]`, `"Ingredient chaining"`, `"Replenishment prompts"` | 3 | Preserve as sub-regions inside Smart Extras |
-| Week rail buttons `W1..W8` and the single exact string `Week N of 8` | all | Preserve exactly one match |
+| Week rail buttons `W1..W8` and the exact string `Week N of 8` | all | Exactly one match |
 | Mobile: basket table hidden, list visible | 3 | Preserve |
-| Focus ring colour token | all | Preserve the token contract |
+| Focus ring colour token | all | Preserve |
 
-## 6. Risks
+## Risks
 
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
-| Three-step onboarding drops signals the engine uses | Weak Week 1 | Mapping table plus pack-size defaults; verify differentiation across households in tests |
-| `cuisines` schema requires at least one | Step 2 cannot be skipped | Decide explicitly: keep required, or relax the schema with a documented neutral prior |
-| Plan-level planner changes archetype outcomes | Simulation story shifts | Keep differences emergent; add tests for the stated reasons, never tune thresholds to force them |
-| Merging extras into one panel hides mechanics reviewers want | Weakened explainability | Keep each sub-region accessible and expandable |
-| Demoting pantry and planner hides facts | Reviewer confusion | Keep one "what's home" line in the week summary |
-| Diet extension changes existing filtering | Fixture behaviour shift | All four fixtures are vegetarian; add explicit tests for the new diets |
+| Three-step onboarding drops signals the engine uses | Weak Week 1 | Mapping table plus pack-size defaults; test differentiation across households |
+| `cuisines` schema requires at least one | Step 2 cannot be skipped | Decide explicitly: keep required, or relax with a documented neutral prior |
+| Plan-level planner changes archetype outcomes | Simulation story shifts | Keep differences emergent; test the stated reasons, never tune thresholds to force them |
+| Merging extras hides mechanics reviewers want | Weakened explainability | Keep each sub-region accessible and expandable |
+| Diet extension changes existing filtering | Fixture behaviour shift | All four fixtures are vegetarian; add explicit tests for new diets |
 | Alias additions mutate canonical ids | Breaks every join | Aliases are additive; canonical ids are stable by contract |
 | Copy test becomes brittle | Friction | Keep the banned list short, intentional and documented |
 
-## 7. Sequencing
+## Sequencing and status
 
 ```text
-Phase 0  copy honesty ─────────────┐
-                                   ↓
-Phase 1  reviewer path ──→ Phase 3  week hierarchy ──→ Phase 4  comparison
-                                   │                        │
-Phase 2  onboarding ───────────────┤                        │
-                                   ↓                        ↓
-Phase 5  plan-level intelligence ──→ (copy and plan claims freeze)
-                                   ↓
-Phase 6  catalog, diet, optional (parallel with 3 to 5)
-                                   ↓
-Phase 7  measurement readiness
+Phase 0  hygiene                     complete
+Phase 1  copy + reviewer path        complete
+Phase 2  three-step onboarding       complete
+Phase 3  week hierarchy              complete
+Phase 4  Week 1 → Week 8 comparison  complete
+Phase 5  plan-level intelligence     complete
+Phase 6  catalog / optional / aliases / ingestion   delivered (diet deferred by scope)
+Phase 7  measurement readiness       complete (definitions in PRODUCT_CASE.md)
 ```
 
-Phase 0 and Phase 1 are independent and cheap. Phase 2 and Phase 3 can proceed in
-parallel after Phase 1. Phase 4 depends on a stable week hierarchy. Phase 5 should
-land before final copy freezes, because it changes what the plan can claim.
-
-## 8. Progress tracker
+## Progress tracker
 
 | Phase | Status |
 | --- | --- |
-| 0. Copy honesty and restraint | Not started |
-| 1. Reviewer path | Not started |
-| 2. Three-step onboarding | Not started |
-| 3. Week view hierarchy | Not started |
-| 4. Week 1 to Week 8 comparison | Not started |
-| 5. Plan-level intelligence | Not started |
-| 6. Catalog, diet, optional completeness | Not started |
-| 7. Measurement readiness | Not started |
+| 0. Repository hygiene | Complete |
+| 1. Copy honesty and reviewer path | Complete |
+| 2. Three-step onboarding | Complete |
+| 3. Week view hierarchy | Complete |
+| 4. Week 1 to Week 8 comparison | Complete |
+| 5. Plan-level intelligence | Complete |
+| 6. Catalog, optional, aliases, ingestion | Delivered; diet deferred by scope |
+| 7. Measurement readiness | Complete |
 
-## 9. Non-goals
+## Post-MVP work, in order
 
-The product-level non-goals in [PRODUCT_SCOPE.md](PRODUCT_SCOPE.md) apply here
-unchanged: no checkout, accounts, databases, queues, runtime LLMs, embeddings,
-vector databases, persisted projections, real Blinkit data or operations
-dashboard. Two are specific to this plan:
+1. **Diet model completion.** Extend catalog data to eggetarian and
+   non_vegetarian, then filtering, ranking, substitutions and onboarding end to
+   end. Do not expose a diet until its data exists. Deferred by explicit scope.
+2. **Data scale.** Grow toward 300 ingredients, 800 recipes and 1,000 SKUs through
+   the harvest pipeline, quality first.
+3. **Pilot instrumentation.** Implement the event definitions in
+   [PRODUCT_CASE.md](PRODUCT_CASE.md) in a real deployment; the prototype stays
+   uninstrumented.
+4. **Optional ingredient refinement.** Decide whether optional lines should be
+   consumed (and use-soon rescued) when the household already owns them.
+5. **Pantry input ergonomics.** Test presence-plus-typical-pack against
+   "low / some / plenty" with real households.
 
-- No general optimisation framework. A deterministic greedy planner is the
-  intended ceiling.
-- No new planning or specification documents; this file is the plan.
+## Non-goals
 
-## 10. Open questions
+The product-level non-goals in [ARCHITECTURE.md](ARCHITECTURE.md) apply unchanged.
+Two are specific to this plan: no general optimisation framework (a deterministic
+greedy planner is the intended ceiling), and no new planning or specification
+documents — this file is the plan.
+
+## Open questions
 
 These need product or usability evidence, not assumptions:
 
-1. Are cuisines required in onboarding, or optional with a neutral affinity prior?
-   This decides whether the profile schema changes.
-2. Is approximate quantity capture (low, some, plenty) worth the translation
-   complexity, or is presence plus a typical pack size enough for Week 1?
-3. Should the Week 1 to Week 8 comparison be a section on the journey page or its
-   own route in the reviewer path?
-4. How much correction burden is acceptable before a household abandons inferred
-   state? This bounds how aggressive learning may be.
-5. Which pilot metrics can be defined without instrumentation, and which require
-   real event data to be meaningful?
+1. Must cuisine be selected in onboarding, or is it optional with a neutral
+   prior? The current wizard keeps it required; real completion data decides
+   whether to relax the schema.
+2. Is presence plus a typical pack size enough for pantry input, or is
+   "low / some / plenty" worth the translation complexity?
+3. How much pantry correction burden is acceptable before a household abandons
+   inferred state? This bounds how aggressive learning may be.
+4. Should optional ingredient lines count toward coverage, and be rescued, when
+   the household already owns them?

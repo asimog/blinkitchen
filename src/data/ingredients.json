@@ -1,45 +1,2356 @@
 [
-  { "id": "onion", "name": "Onion", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g", "kg"], "shelfLifeDays": 14, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "tomato", "name": "Tomato", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g", "kg"], "shelfLifeDays": 7, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "potato", "name": "Potato", "category": "vegetables", "storageType": "shelf_stable", "commonUnits": ["g", "kg"], "shelfLifeDays": 21, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "spinach", "name": "Spinach", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 4, "staple": false, "dietaryAttributes": ["vegan"] },
-  { "id": "garlic", "name": "Garlic", "category": "vegetables", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 30, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "ginger", "name": "Ginger", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 21, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "green_chili", "name": "Green Chilli", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 10, "staple": false, "dietaryAttributes": ["vegan"] },
-  { "id": "cauliflower", "name": "Cauliflower", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 7, "staple": false, "dietaryAttributes": ["vegan"] },
-  { "id": "green_peas", "name": "Green Peas", "category": "vegetables", "storageType": "frozen", "commonUnits": ["g"], "shelfLifeDays": 90, "staple": false, "dietaryAttributes": ["vegan"] },
-  { "id": "carrot", "name": "Carrot", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 14, "staple": false, "dietaryAttributes": ["vegan"] },
-  { "id": "coriander", "name": "Coriander Leaves", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 5, "staple": false, "dietaryAttributes": ["vegan"] },
-  { "id": "paneer", "name": "Paneer", "category": "dairy", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 5, "staple": false, "dietaryAttributes": ["vegetarian"] },
-  { "id": "yogurt", "name": "Curd (Yogurt)", "category": "dairy", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 7, "staple": true, "dietaryAttributes": ["vegetarian"] },
-  { "id": "tofu", "name": "Tofu", "category": "protein", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 7, "staple": false, "dietaryAttributes": ["vegan"] },
-  { "id": "rajma", "name": "Rajma (Kidney Beans)", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g", "kg"], "shelfLifeDays": 180, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "chana", "name": "Chana (Chickpeas)", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g", "kg"], "shelfLifeDays": 180, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "moong_dal", "name": "Moong Dal", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g", "kg"], "shelfLifeDays": 180, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "toor_dal", "name": "Toor Dal", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g", "kg"], "shelfLifeDays": 180, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "rice", "name": "Rice", "category": "pantry", "storageType": "shelf_stable", "commonUnits": ["g", "kg"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegan"] },
-  { "id": "atta", "name": "Atta (Whole Wheat Flour)", "category": "pantry", "storageType": "shelf_stable", "commonUnits": ["g", "kg"], "shelfLifeDays": 120, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "poha", "name": "Poha (Flattened Rice)", "category": "pantry", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 120, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "oil", "name": "Cooking Oil", "category": "fat", "storageType": "shelf_stable", "commonUnits": ["ml", "l"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "ghee", "name": "Ghee", "category": "fat", "storageType": "shelf_stable", "commonUnits": ["ml"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegetarian"] },
-  { "id": "cumin", "name": "Cumin Seeds", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "turmeric", "name": "Turmeric Powder", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "garam_masala", "name": "Garam Masala", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "salt", "name": "Salt", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 730, "staple": true, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "red_chili_powder", "name": "Red Chilli Powder", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "lemon", "name": "Lemon", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 14, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "peanuts", "name": "Peanuts", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "curry_leaves", "name": "Curry Leaves", "category": "vegetables", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 7, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "mustard_seeds", "name": "Mustard Seeds", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "bay_leaf", "name": "Bay Leaf", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "coriander_powder", "name": "Coriander Powder", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "amchur", "name": "Amchur", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "ajwain", "name": "Ajwain", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "bread", "name": "Bread", "category": "pantry", "storageType": "perishable", "commonUnits": ["g"], "shelfLifeDays": 5, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "cream", "name": "Dairy Cream", "category": "dairy", "storageType": "perishable", "commonUnits": ["ml"], "shelfLifeDays": 7, "staple": false, "dietaryAttributes": ["vegetarian"] },
-  { "id": "hing", "name": "Hing", "category": "spice", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 365, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "urad_dal", "name": "Urad Dal", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "chana_dal", "name": "Chana Dal", "category": "protein", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "papad", "name": "Papad", "category": "pantry", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] },
-  { "id": "pickle", "name": "Pickle", "category": "pantry", "storageType": "shelf_stable", "commonUnits": ["g"], "shelfLifeDays": 180, "staple": false, "dietaryAttributes": ["vegetarian", "vegan"] }
+ {
+  "id": "onion",
+  "name": "Onion",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 14,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "kanda",
+   "onions",
+   "pyaz"
+  ]
+ },
+ {
+  "id": "tomato",
+  "name": "Tomato",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 7,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "cherry tomato",
+   "tamatar",
+   "tomato sauce",
+   "tomatoes"
+  ]
+ },
+ {
+  "id": "potato",
+  "name": "Potato",
+  "category": "vegetables",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 21,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "aloo",
+   "batata",
+   "potatoes"
+  ]
+ },
+ {
+  "id": "spinach",
+  "name": "Spinach",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 4,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "palak",
+   "spinach leaves"
+  ]
+ },
+ {
+  "id": "garlic",
+  "name": "Garlic",
+  "category": "vegetables",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 30,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "garlic cloves",
+   "lasan",
+   "lehsun"
+  ]
+ },
+ {
+  "id": "ginger",
+  "name": "Ginger",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 21,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "adrak",
+   "ginger garlic paste",
+   "ginger paste"
+  ]
+ },
+ {
+  "id": "green_chili",
+  "name": "Green Chilli",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 10,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "chilies",
+   "chilli",
+   "chilli flakes",
+   "green chilli",
+   "green chilli sauce",
+   "green chillies",
+   "hari mirch",
+   "mirchi"
+  ]
+ },
+ {
+  "id": "cauliflower",
+  "name": "Cauliflower",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 7,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "gobhi",
+   "gobi",
+   "phool gobhi"
+  ]
+ },
+ {
+  "id": "green_peas",
+  "name": "Green Peas",
+  "category": "vegetables",
+  "storageType": "frozen",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 90,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "green peas",
+   "hari matar",
+   "matar",
+   "peas"
+  ]
+ },
+ {
+  "id": "carrot",
+  "name": "Carrot",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 14,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "carrots",
+   "gajar"
+  ]
+ },
+ {
+  "id": "coriander",
+  "name": "Coriander Leaves",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 5,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "cilantro",
+   "coriander leaves",
+   "dhania",
+   "hara dhania"
+  ]
+ },
+ {
+  "id": "paneer",
+  "name": "Paneer",
+  "category": "dairy",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 5,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "cottage cheese",
+   "paneer cubes"
+  ]
+ },
+ {
+  "id": "yogurt",
+  "name": "Curd (Yogurt)",
+  "category": "dairy",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 7,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "curd",
+   "dahi",
+   "plain curd",
+   "thick curd",
+   "yoghurt",
+   "yoghurt maker",
+   "yogurt"
+  ]
+ },
+ {
+  "id": "tofu",
+  "name": "Tofu",
+  "category": "protein",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 7,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "bean curd"
+  ]
+ },
+ {
+  "id": "rajma",
+  "name": "Rajma (Kidney Beans)",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 180,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "kidney beans",
+   "red kidney beans"
+  ]
+ },
+ {
+  "id": "chana",
+  "name": "Chana (Chickpeas)",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 180,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "chickpeas",
+   "kabuli chana",
+   "white chana"
+  ]
+ },
+ {
+  "id": "moong_dal",
+  "name": "Moong Dal",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 180,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "chilka moong dal",
+   "green gram",
+   "moong dal",
+   "mung dal",
+   "yellow moong dal"
+  ]
+ },
+ {
+  "id": "toor_dal",
+  "name": "Toor Dal",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 180,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "arhar dal",
+   "pigeon peas",
+   "toor dal",
+   "tuvar dal"
+  ]
+ },
+ {
+  "id": "rice",
+  "name": "Rice",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 365,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegan"
+  ],
+  "aliases": [
+   "basmati",
+   "basmati rice",
+   "chawal",
+   "dosa rice",
+   "idli rice",
+   "rice bran oil",
+   "samak rice",
+   "steamed rice"
+  ]
+ },
+ {
+  "id": "atta",
+  "name": "Atta (Whole Wheat Flour)",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "kg"
+  ],
+  "shelfLifeDays": 120,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "chakki atta",
+   "gehun atta",
+   "wheat atta",
+   "wheat flour",
+   "whole wheat flour"
+  ]
+ },
+ {
+  "id": "poha",
+  "name": "Poha (Flattened Rice)",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 120,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "aval",
+   "beaten rice",
+   "flattened rice"
+  ]
+ },
+ {
+  "id": "oil",
+  "name": "Cooking Oil",
+  "category": "fat",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "ml",
+   "l"
+  ],
+  "shelfLifeDays": 365,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "cooking oil",
+   "oil",
+   "refined oil",
+   "sunflower oil",
+   "vegetable oil"
+  ]
+ },
+ {
+  "id": "ghee",
+  "name": "Ghee",
+  "category": "fat",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 365,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "clarified butter",
+   "desi ghee",
+   "pure ghee"
+  ]
+ },
+ {
+  "id": "cumin",
+  "name": "Cumin Seeds",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "cumin seeds",
+   "jeera"
+  ]
+ },
+ {
+  "id": "turmeric",
+  "name": "Turmeric Powder",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "haldi",
+   "turmeric powder"
+  ]
+ },
+ {
+  "id": "garam_masala",
+  "name": "Garam Masala",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "garam masala powder"
+  ]
+ },
+ {
+  "id": "salt",
+  "name": "Salt",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 730,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "edible salt",
+   "namak",
+   "table salt"
+  ]
+ },
+ {
+  "id": "red_chili_powder",
+  "name": "Red Chilli Powder",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "chilli powder",
+   "lal mirch",
+   "red chilli",
+   "red chilli powder"
+  ]
+ },
+ {
+  "id": "lemon",
+  "name": "Lemon",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 14,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "lemon juice",
+   "nimbu"
+  ]
+ },
+ {
+  "id": "peanuts",
+  "name": "Peanuts",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "groundnut",
+   "groundnut oil",
+   "moongphali",
+   "peanut"
+  ]
+ },
+ {
+  "id": "curry_leaves",
+  "name": "Curry Leaves",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 7,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "curry leaf",
+   "kadi patta",
+   "meetha neem"
+  ]
+ },
+ {
+  "id": "mustard_seeds",
+  "name": "Mustard Seeds",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "mustard seed",
+   "rai",
+   "sarson seeds"
+  ]
+ },
+ {
+  "id": "bay_leaf",
+  "name": "Bay Leaf",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "bay leaves",
+   "tej patta"
+  ]
+ },
+ {
+  "id": "coriander_powder",
+  "name": "Coriander Powder",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "coriander seeds",
+   "dhania powder",
+   "ground coriander"
+  ]
+ },
+ {
+  "id": "amchur",
+  "name": "Amchur",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "amchoor",
+   "amchur powder",
+   "dry mango powder"
+  ]
+ },
+ {
+  "id": "ajwain",
+  "name": "Ajwain",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "bishop's weed",
+   "carom seeds"
+  ]
+ },
+ {
+  "id": "bread",
+  "name": "Bread",
+  "category": "pantry",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 5,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "bread crumbs",
+   "bread slices",
+   "brown bread",
+   "pita bread",
+   "white bread"
+  ]
+ },
+ {
+  "id": "cream",
+  "name": "Dairy Cream",
+  "category": "dairy",
+  "storageType": "perishable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 7,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "cream",
+   "fresh cream",
+   "ice cream",
+   "malai",
+   "vanilla ice cream",
+   "whipping cream"
+  ]
+ },
+ {
+  "id": "hing",
+  "name": "Hing",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "asafoetida",
+   "asafoetida powder"
+  ]
+ },
+ {
+  "id": "urad_dal",
+  "name": "Urad Dal",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "black gram",
+   "split black gram",
+   "urad dal"
+  ]
+ },
+ {
+  "id": "chana_dal",
+  "name": "Chana Dal",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "bengal gram",
+   "chana dal",
+   "split chickpeas"
+  ]
+ },
+ {
+  "id": "papad",
+  "name": "Papad",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "papadum",
+   "poppadom"
+  ]
+ },
+ {
+  "id": "pickle",
+  "name": "Pickle",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "achaar",
+   "achar",
+   "mango pickle"
+  ]
+ },
+ {
+  "id": "cabbage",
+  "name": "Cabbage",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 14,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "band gobhi",
+   "patta gobhi"
+  ]
+ },
+ {
+  "id": "capsicum",
+  "name": "Capsicum",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 10,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "bell pepper",
+   "green capsicum",
+   "red bell pepper",
+   "red capsicum",
+   "shimla mirch",
+   "yellow bell pepper",
+   "yellow capsicum"
+  ]
+ },
+ {
+  "id": "brinjal",
+  "name": "Brinjal",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 8,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "aubergine",
+   "baingan",
+   "eggplant"
+  ]
+ },
+ {
+  "id": "okra",
+  "name": "Okra",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 6,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "bhindi",
+   "lady finger",
+   "ladyfinger"
+  ]
+ },
+ {
+  "id": "bottle_gourd",
+  "name": "Bottle Gourd",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 14,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "calabash",
+   "doodhi",
+   "ghiya",
+   "lauki"
+  ]
+ },
+ {
+  "id": "bitter_gourd",
+  "name": "Bitter Gourd",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 8,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "bitter melon",
+   "karela"
+  ]
+ },
+ {
+  "id": "beetroot",
+  "name": "Beetroot",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 14,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "beet",
+   "chukandar"
+  ]
+ },
+ {
+  "id": "radish",
+  "name": "Radish",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 10,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "daikon",
+   "mooli",
+   "white radish"
+  ]
+ },
+ {
+  "id": "cucumber",
+  "name": "Cucumber",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 8,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "cucumbers",
+   "kheera"
+  ]
+ },
+ {
+  "id": "broccoli",
+  "name": "Broccoli",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 7,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "broccoli florets"
+  ]
+ },
+ {
+  "id": "mushroom",
+  "name": "Mushroom",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 5,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "button mushroom",
+   "mushrooms"
+  ]
+ },
+ {
+  "id": "corn",
+  "name": "Sweet Corn",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 5,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "baby corn",
+   "corn",
+   "corn kernels",
+   "makka",
+   "sweet corn kernels"
+  ]
+ },
+ {
+  "id": "french_beans",
+  "name": "French Beans",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 7,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "beans",
+   "cluster beans",
+   "gawar",
+   "green beans",
+   "guar"
+  ]
+ },
+ {
+  "id": "spring_onion",
+  "name": "Spring Onion",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 7,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "green onion",
+   "hara pyaz",
+   "scallion"
+  ]
+ },
+ {
+  "id": "mint",
+  "name": "Mint",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 5,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "fresh mint",
+   "mint leaves",
+   "pudina"
+  ]
+ },
+ {
+  "id": "methi_leaves",
+  "name": "Fenugreek Leaves",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 4,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "fresh methi",
+   "kasuri methi leaves",
+   "methi"
+  ]
+ },
+ {
+  "id": "raw_mango",
+  "name": "Raw Mango",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 10,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "dry mango",
+   "green mango",
+   "kaccha aam",
+   "mango pulp"
+  ]
+ },
+ {
+  "id": "tamarind",
+  "name": "Tamarind",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "ml"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "imli",
+   "tamarind paste",
+   "tamarind pulp"
+  ]
+ },
+ {
+  "id": "milk",
+  "name": "Milk",
+  "category": "dairy",
+  "storageType": "perishable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 4,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "boiled milk",
+   "condensed milk",
+   "cow milk",
+   "doodh",
+   "full cream milk",
+   "milk powder",
+   "toned milk"
+  ]
+ },
+ {
+  "id": "butter",
+  "name": "Butter",
+  "category": "dairy",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 60,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "makhan",
+   "salted butter",
+   "unsalted butter"
+  ]
+ },
+ {
+  "id": "cheese",
+  "name": "Cheese",
+  "category": "dairy",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 30,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "cheddar cheese",
+   "cream cheese",
+   "goat cheese",
+   "mozzarella cheese",
+   "parmesan",
+   "processed cheese"
+  ]
+ },
+ {
+  "id": "buttermilk",
+  "name": "Buttermilk",
+  "category": "dairy",
+  "storageType": "perishable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 4,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "chaas",
+   "chhach",
+   "mor"
+  ]
+ },
+ {
+  "id": "masoor_dal",
+  "name": "Masoor Dal",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "masoor dal",
+   "pink lentil",
+   "red lentil"
+  ]
+ },
+ {
+  "id": "lobia",
+  "name": "Lobia",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "black eyed peas",
+   "black-eyed beans",
+   "chawli"
+  ]
+ },
+ {
+  "id": "sprouts",
+  "name": "Sprouts",
+  "category": "protein",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 4,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "ankurit",
+   "bean sprouts",
+   "moong sprouts",
+   "sprouts mix"
+  ]
+ },
+ {
+  "id": "sattu",
+  "name": "Sattu",
+  "category": "protein",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "roasted gram flour"
+  ]
+ },
+ {
+  "id": "sooji",
+  "name": "Sooji",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "rava",
+   "semolina",
+   "suji"
+  ]
+ },
+ {
+  "id": "besan",
+  "name": "Besan",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "chickpea flour",
+   "gram flour"
+  ]
+ },
+ {
+  "id": "maida",
+  "name": "Maida",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "all purpose flour",
+   "plain flour",
+   "refined flour"
+  ]
+ },
+ {
+  "id": "rice_flour",
+  "name": "Rice Flour",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "chawal ka atta"
+  ]
+ },
+ {
+  "id": "sabudana",
+  "name": "Sabudana",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "sago",
+   "tapioca pearls"
+  ]
+ },
+ {
+  "id": "noodles",
+  "name": "Noodles",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 270,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "egg noodles",
+   "hakka noodles",
+   "instant noodles",
+   "plain noodles"
+  ]
+ },
+ {
+  "id": "pasta",
+  "name": "Pasta",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "fusilli",
+   "macaroni",
+   "penne",
+   "penne pasta",
+   "spaghetti"
+  ]
+ },
+ {
+  "id": "jaggery",
+  "name": "Jaggery",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "gud",
+   "gur",
+   "jaggery powder"
+  ]
+ },
+ {
+  "id": "sugar",
+  "name": "Sugar",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 730,
+  "staple": true,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "brown sugar",
+   "bura",
+   "bura sugar",
+   "cheeni",
+   "powdered sugar",
+   "sugar powder",
+   "white sugar"
+  ]
+ },
+ {
+  "id": "coconut",
+  "name": "Coconut",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 30,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "coconut chutney",
+   "copra",
+   "dry coconut",
+   "fresh coconut",
+   "grated coconut",
+   "nariyal"
+  ]
+ },
+ {
+  "id": "desiccated_coconut",
+  "name": "Desiccated Coconut",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "coconut powder"
+  ]
+ },
+ {
+  "id": "cashew",
+  "name": "Cashew",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "cashew nuts",
+   "cashews",
+   "kaju"
+  ]
+ },
+ {
+  "id": "almonds",
+  "name": "Almonds",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "almond",
+   "badam"
+  ]
+ },
+ {
+  "id": "pistachio",
+  "name": "Pistachio",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "pista",
+   "pistachios"
+  ]
+ },
+ {
+  "id": "raisins",
+  "name": "Raisins",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "dried grapes",
+   "kishmish",
+   "raisin"
+  ]
+ },
+ {
+  "id": "cornflour",
+  "name": "Cornflour",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "corn starch",
+   "cornstarch"
+  ]
+ },
+ {
+  "id": "baking_powder",
+  "name": "Baking Powder",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": []
+ },
+ {
+  "id": "vinegar",
+  "name": "Vinegar",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 730,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "apple cider vinegar",
+   "white vinegar"
+  ]
+ },
+ {
+  "id": "soy_sauce",
+  "name": "Soy Sauce",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "soya sauce"
+  ]
+ },
+ {
+  "id": "tomato_puree",
+  "name": "Tomato Puree",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "ml"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "tomato ketchup",
+   "tomato paste"
+  ]
+ },
+ {
+  "id": "coconut_milk",
+  "name": "Coconut Milk",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "nariyal milk"
+  ]
+ },
+ {
+  "id": "sev",
+  "name": "Sev",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 90,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "bhujia",
+   "namkeen sev",
+   "nylon sev"
+  ]
+ },
+ {
+  "id": "mustard_oil",
+  "name": "Mustard Oil",
+  "category": "fat",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "kachi ghani mustard oil",
+   "sarson ka tel"
+  ]
+ },
+ {
+  "id": "olive_oil",
+  "name": "Olive Oil",
+  "category": "fat",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "ml"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "extra virgin olive oil"
+  ]
+ },
+ {
+  "id": "black_pepper",
+  "name": "Black Pepper",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "black pepper powder",
+   "black peppercorns",
+   "kali mirch",
+   "pepper powder",
+   "peppercorns"
+  ]
+ },
+ {
+  "id": "cinnamon",
+  "name": "Cinnamon",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "piece"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "cinnamon powder",
+   "cinnamon stick",
+   "dalchini"
+  ]
+ },
+ {
+  "id": "cardamom",
+  "name": "Cardamom",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "black cardamom",
+   "cardamom powder",
+   "elaichi",
+   "green cardamom"
+  ]
+ },
+ {
+  "id": "clove",
+  "name": "Clove",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "cloves",
+   "laung"
+  ]
+ },
+ {
+  "id": "fenugreek_seeds",
+  "name": "Fenugreek Seeds",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "methi dana",
+   "methi seeds"
+  ]
+ },
+ {
+  "id": "kasuri_methi",
+  "name": "Kasuri Methi",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "dried fenugreek leaves"
+  ]
+ },
+ {
+  "id": "cumin_powder",
+  "name": "Cumin Powder",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "ground cumin",
+   "jeera powder"
+  ]
+ },
+ {
+  "id": "rasam_powder",
+  "name": "Rasam Powder",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "rasam masala"
+  ]
+ },
+ {
+  "id": "chaat_masala",
+  "name": "Chaat Masala",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "chat masala"
+  ]
+ },
+ {
+  "id": "black_salt",
+  "name": "Black Salt",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 730,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "kala namak",
+   "rock salt",
+   "sendha namak"
+  ]
+ },
+ {
+  "id": "dried_red_chili",
+  "name": "Dried Red Chilli",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "dry red chilli",
+   "red chilli sauce",
+   "red chillies",
+   "sookhi lal mirch"
+  ]
+ },
+ {
+  "id": "saffron",
+  "name": "Saffron",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "kesar",
+   "zafran"
+  ]
+ },
+ {
+  "id": "baking_soda",
+  "name": "Baking Soda",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "meetha soda",
+   "soda bicarbonate"
+  ]
+ },
+ {
+  "id": "mixed_vegetables",
+  "name": "Mixed Vegetables",
+  "category": "vegetables",
+  "storageType": "frozen",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "frozen mixed vegetables",
+   "mixed veg"
+  ]
+ },
+ {
+  "id": "pomegranate",
+  "name": "Pomegranate",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "piece",
+   "g"
+  ],
+  "shelfLifeDays": 14,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "anar"
+  ]
+ },
+ {
+  "id": "plum",
+  "name": "Plum",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 10,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "aloo bukhara",
+   "plums"
+  ]
+ },
+ {
+  "id": "kuttu_flour",
+  "name": "Kuttu Flour",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "buckwheat flour",
+   "kuttu ka atta"
+  ]
+ },
+ {
+  "id": "bun",
+  "name": "Bun",
+  "category": "pantry",
+  "storageType": "perishable",
+  "commonUnits": [
+   "piece",
+   "g"
+  ],
+  "shelfLifeDays": 4,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian"
+  ],
+  "aliases": [
+   "buns",
+   "burger bun",
+   "pav"
+  ]
+ },
+ {
+  "id": "pizza_sauce",
+  "name": "Pizza Sauce",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g",
+   "ml"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "pasta sauce",
+   "pizza base sauce"
+  ]
+ },
+ {
+  "id": "yeast",
+  "name": "Yeast",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "active dry yeast",
+   "dry yeast",
+   "instant yeast"
+  ]
+ },
+ {
+  "id": "basil",
+  "name": "Basil",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 4,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "basil leaves",
+   "basil seeds",
+   "holy basil",
+   "tulsi"
+  ]
+ },
+ {
+  "id": "parsley",
+  "name": "Parsley",
+  "category": "vegetables",
+  "storageType": "perishable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 5,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "parsley leaves"
+  ]
+ },
+ {
+  "id": "oregano",
+  "name": "Oregano",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "dried oregano",
+   "oregano leaves"
+  ]
+ },
+ {
+  "id": "mixed_herbs",
+  "name": "Mixed Herbs",
+  "category": "spice",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 365,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "herb mix",
+   "italian seasoning"
+  ]
+ },
+ {
+  "id": "jowar_flour",
+  "name": "Jowar Flour",
+  "category": "pantry",
+  "storageType": "shelf_stable",
+  "commonUnits": [
+   "g"
+  ],
+  "shelfLifeDays": 180,
+  "staple": false,
+  "dietaryAttributes": [
+   "vegetarian",
+   "vegan"
+  ],
+  "aliases": [
+   "jowar atta",
+   "sorghum flour"
+  ]
+ }
 ]

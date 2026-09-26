@@ -29,6 +29,7 @@ export function findIngredientChains(
     const scale = kitchen.profile.memberCount / meal.recipe.servings;
 
     for (const requirement of recipeRequirements(catalog, meal.recipe)) {
+      if (requirement.optional) continue;
       const required = normalizeQuantity(requirement.quantity * scale, requirement.unit);
       const existing = drafts.get(requirement.ingredient.id);
 

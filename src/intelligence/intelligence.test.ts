@@ -19,6 +19,7 @@ function plan(...recipeIds: string[]): PlannedMeal[] {
     source: "selected" as const,
     day: (["monday", "tuesday", "wednesday"] as const)[index] ?? "monday",
     slot: "dinner",
+    explanation: [],
   }));
 }
 
@@ -112,7 +113,7 @@ describe("substitution suggestions", () => {
 
     expect(suggestion).toBeDefined();
     expect(suggestion?.explanation[0]).toContain("Plant protein");
-    expect(suggestion?.explanation.join(" ")).toContain("84%");
+    expect(suggestion?.explanation.join(" ")).toContain("First time suggested");
   });
 });
 
@@ -157,8 +158,9 @@ describe("replenishment", () => {
     expect(suggestion?.ingredientId).toBe("onion");
     expect(suggestion?.remaining).toBe(100);
     expect(suggestion?.usedWeeks).toEqual([1, 2, 3, 4]);
-    expect(suggestion?.explanation[0]).toBe("Used in 4 of the last 5 weeks.");
-    expect(suggestion?.explanation[1]).toContain("Only 100 g left");
+    expect(suggestion?.explanation[0]).toBe("You use this often and you're running low.");
+    expect(suggestion?.explanation.join(" ")).toContain("Used in 4 of the last 5 weeks.");
+    expect(suggestion?.explanation.join(" ")).toContain("Only 100 g left");
   });
 
   it("stays quiet when the pantry is well stocked", () => {

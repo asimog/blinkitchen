@@ -1,0 +1,16 @@
+[
+  {
+    "id": "delhi_south",
+    "name": "Delhi South",
+    "city": "Delhi",
+    "priceMultiplier": 1.03,
+    "availabilityMultiplier": 0.96
+  },
+  {
+    "id": "delhi_central",
+    "name": "Delhi Central",
+    "city": "Delhi",
+    "priceMultiplier": 1,
+    "availabilityMultiplier": 0.75
+  }
+]

@@ -7,9 +7,27 @@ test.describe("home to kitchen", () => {
     await expect(
       page.getByRole("heading", { name: /remembers the kitchen/i }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: /Build your household/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /Explore four households/i })).toBeVisible();
-    await expect(page.getByRole("link", { name: /View Blinkit intelligence/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /See the 8-week demo/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Build your kitchen/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Blinkit Lens", exact: true })).toBeVisible();
+  });
+
+  test("build wizard travels in three steps with no review", async ({ page }) => {
+    await page.goto("/build");
+    await expect(page.getByText("Step 1 of 3")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your household", exact: true })).toBeVisible();
+
+    await page.getByLabel("Household name").fill("E2E Three Steps");
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page.getByText("Step 2 of 3")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "How you eat", exact: true })).toBeVisible();
+
+    await page.getByRole("checkbox", { name: "punjabi", exact: true }).check();
+    await page.getByRole("button", { name: "Continue" }).click();
+    await expect(page.getByText("Step 3 of 3")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Your kitchen", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Start Week 1" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Continue" })).toHaveCount(0);
   });
 
   test("build household then run the Week 1 loop", async ({ page }) => {
@@ -69,6 +87,14 @@ test.describe("explore journeys", () => {
     await expect(page.getByLabel("What Blinkitchen learned")).toBeVisible();
     await expect(page.getByLabel("Ingredient chaining")).toBeVisible();
     await expect(page.getByText(/weeks completed/i)).toBeVisible();
+
+    // The reviewer path ends on the longitudinal comparison, not the last week.
+    await page.getByRole("link", { name: /Week 1 . Week 8/i }).click();
+    await expect(page.getByLabel("Week 1 to Week 8 comparison")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Week 1 . Week 8/ }),
+    ).toBeVisible();
+    await expect(page.getByText(/meals, .* grocery receipts/)).toBeVisible();
   });
 });
 

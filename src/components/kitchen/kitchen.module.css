@@ -881,6 +881,23 @@
   margin-top: 0.6rem;
 }
 
+/* Week hierarchy blocks */
+
+.weekBlock {
+  margin-bottom: 1.5rem;
+}
+
+.useSoonLine {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.extrasStack {
+  display: grid;
+  gap: 1rem;
+}
+
 .scoreNote {
   margin-top: 0.85rem;
   font-size: 0.8125rem;

@@ -48,7 +48,7 @@ export function explainMeal(input: {
 
   if (input.additionalCost > 0) {
     bullets.push(
-      `Requires about ${formatRupees(input.additionalCost)} of additional simulated groceries.`,
+      `Requires about ${formatRupees(input.additionalCost)} of additional groceries.`,
     );
   } else {
     bullets.push("Needs nothing extra — cook it from what you have.");
@@ -59,6 +59,61 @@ export function explainMeal(input: {
   }
 
   return cap(bullets);
+}
+
+const MAX_PLAN_BULLETS = 3;
+
+/**
+ * Why the planner chose this meal for this slot of this week's plan. Written
+ * from the plan-level evaluation: reuse and rescue lead, cost follows.
+ */
+export function explainPlannedMeal(input: {
+  coveragePercent: number;
+  reuseNames: string[];
+  rescuedNames: string[];
+  incrementalCost: number;
+  cuisineName: string;
+  cuisineRepeats: number;
+  minutes: number;
+  convenienceEvidence: number;
+}): string[] {
+  const bullets: string[] = [];
+
+  if (input.reuseNames.length > 0) {
+    bullets.push(
+      `Shares ${input.reuseNames.slice(0, 3).join(", ")} with earlier meals, so one pack goes further.`,
+    );
+  }
+
+  if (input.rescuedNames.length > 0) {
+    bullets.push(`Uses ${input.rescuedNames.slice(0, 2).join(", ")} before it goes stale.`);
+  }
+
+  if (input.coveragePercent >= 50) {
+    bullets.push(
+      `${Math.round(input.coveragePercent)}% of its ingredients are already in your kitchen.`,
+    );
+  }
+
+  if (input.incrementalCost > 0) {
+    bullets.push(`Adds about ${formatRupees(input.incrementalCost)} to this week's basket.`);
+  } else if (bullets.length < MAX_PLAN_BULLETS) {
+    bullets.push("Adds nothing new to this week's basket.");
+  }
+
+  if (bullets.length < MAX_PLAN_BULLETS && input.cuisineRepeats > 0) {
+    bullets.push(`Adds ${input.cuisineName} variety alongside your other planned meals.`);
+  }
+
+  if (bullets.length < MAX_PLAN_BULLETS && input.minutes <= 25) {
+    bullets.push(`Ready in about ${input.minutes} minutes.`);
+  }
+
+  if (bullets.length === 0) {
+    bullets.push("One of the strongest matches for this week's plan.");
+  }
+
+  return bullets.slice(0, MAX_PLAN_BULLETS);
 }
 
 export function explainBasketItem(input: {
@@ -100,18 +155,18 @@ export function explainSubstitution(input: {
   rejectedCount: number;
   ratio: number;
 }): string[] {
-  const bullets = [input.reason, `Compatibility ${Math.round(input.compatibilityScore * 100)}%.`];
+  const bullets = [input.reason];
 
   if (input.acceptedCount > 0) {
     bullets.push(
-      `You accepted this swap ${input.acceptedCount === 1 ? "once" : `${input.acceptedCount} times`} before — the suggestion got stronger.`,
+      `You accepted this swap ${input.acceptedCount === 1 ? "once" : `${input.acceptedCount} times`} before — it ranks higher now.`,
     );
   } else if (input.rejectedCount > 0) {
     bullets.push(
-      `You turned this down ${input.rejectedCount === 1 ? "once" : `${input.rejectedCount} times`} before — the suggestion is weaker.`,
+      `You turned this down ${input.rejectedCount === 1 ? "once" : `${input.rejectedCount} times`} before — it ranks lower now.`,
     );
   } else {
-    bullets.push("First time suggested — your decision will shape future recommendations.");
+    bullets.push("First time suggested — your decision shapes the next time.");
   }
 
   if (input.ratio !== 1) {
@@ -128,16 +183,19 @@ export function explainReplenishment(input: {
   unit: CanonicalUnit;
   weeksOfUseLeft: number;
 }): string[] {
+  const headline =
+    input.remaining <= 0
+      ? "You use this often and it has run out."
+      : "You use this often and you're running low.";
+
   const remainingLine =
     input.remaining <= 0
       ? "Nothing left in the pantry."
-      : input.weeksOfUseLeft < 1
-        ? `Only ${formatQuantity(input.remaining, input.unit)} left — less than a week of use.`
-        : `Only ${formatQuantity(input.remaining, input.unit)} left — about ${
-            Math.round(input.weeksOfUseLeft * 10) / 10
-          } weeks of use.`;
+      : `Only ${formatQuantity(input.remaining, input.unit)} left — about ${
+          Math.round(input.weeksOfUseLeft * 10) / 10
+        } weeks of use.`;
 
-  return cap([`Used in ${input.usedWeekCount} of the last ${input.windowWeeks} weeks.`, remainingLine]);
+  return cap([headline, `Used in ${input.usedWeekCount} of the last ${input.windowWeeks} weeks.`, remainingLine]);
 }
 
 export function explainChain(recipeNames: string[]): string {

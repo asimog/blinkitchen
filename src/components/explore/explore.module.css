@@ -167,3 +167,86 @@
     justify-self: start;
   }
 }
+
+/* Week 1 -> Week 8 comparison */
+
+.comparison {
+  margin-top: 2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  padding: 1.25rem;
+}
+
+.comparisonHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.comparisonTitle {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.comparisonSubtitle {
+  margin: 0 0 0.4rem;
+  font-size: 0.9375rem;
+}
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.comparisonTable th,
+.comparisonTable td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.comparisonTable thead th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.comparisonTable tbody th {
+  font-weight: 600;
+}
+
+.comparisonUp {
+  color: var(--positive);
+  font-weight: 600;
+}
+
+.comparisonHighlights {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+@media (min-width: 720px) {
+  .comparisonHighlights {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.comparisonHighlights ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.875rem;
+}
+
+.jumpLink {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
