@@ -38,11 +38,9 @@ export function MealCard({
 }) {
   const { recipe, impact, explanation, score } = recommendation;
   const fit = Math.max(0, Math.round(score * 100));
-
-  const reasons = (planExplanation && planExplanation.length > 0 ? planExplanation : explanation).slice(
-    0,
-    VISIBLE_REASONS,
-  );
+  const allReasons = planExplanation && planExplanation.length > 0 ? planExplanation : explanation;
+  const reasons = allReasons.slice(0, VISIBLE_REASONS);
+  const moreReasons = allReasons.slice(VISIBLE_REASONS);
 
   const nameOf = (ingredientId: string) =>
     ingredientById(catalog, ingredientId)?.name ?? ingredientId;
@@ -87,6 +85,15 @@ export function MealCard({
 
       <details className={styles.scoreNote}>
         <summary className={styles.detailsToggle}>Why this?</summary>
+        {moreReasons.length > 0 ? (
+          <ul className={styles.whyList}>
+            {moreReasons.map((line) => (
+              <li key={line} className={styles.whyItem}>
+                {line}
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <div className={styles.ingredientColumns}>
           <div>
             <p className={styles.ingredientColTitle}>In your kitchen</p>

@@ -21,8 +21,6 @@ import { WeekHeader } from "@/components/kitchen/WeekHeader";
 import { useWeekScrollAnchor } from "@/components/kitchen/use-week-scroll";
 import styles from "@/components/kitchen/kitchen.module.css";
 
-const VISIBLE_PLAN_MEALS = 5;
-
 const VISIBLE_DISCOVERY_MEALS = 3;
 
 /** Display order for the scoring breakdown, matching MEAL_WEIGHTS. */
@@ -95,7 +93,7 @@ export function WeekView({
 
   const plannedIds = new Set(intelligence.plan.map((meal) => meal.recipeId));
 
-  const planCards = intelligence.plan.slice(0, VISIBLE_PLAN_MEALS).flatMap((meal) => {
+  const planCards = intelligence.plan.flatMap((meal) => {
     const recommendation = recommendationByRecipeId.get(meal.recipeId);
 
     return recommendation ? [{ meal, recommendation }] : [];

@@ -86,7 +86,13 @@ export function explainPlannedMeal(input: {
   }
 
   if (input.rescuedNames.length > 0) {
-    bullets.push(`Uses ${input.rescuedNames.slice(0, 2).join(", ")} before it goes stale.`);
+    const names = input.rescuedNames.slice(0, 2).join(", ");
+
+    bullets.push(
+      input.rescuedNames.length > 1
+        ? `Uses ${names} before they go stale.`
+        : `Uses ${names} before it goes stale.`,
+    );
   }
 
   if (input.coveragePercent >= 50) {
