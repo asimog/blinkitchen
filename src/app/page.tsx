@@ -1,121 +1,54 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Leaf, MoveUpRight } from "lucide-react";
 import { loadCatalog } from "@/catalog/load";
-import { formatRupees } from "@/domain/units";
 import { buildWeekIntelligence } from "@/intelligence";
-import { buildBlinkitInsights } from "@/insights/blinkit";
 import { buildFixtureKitchen, HOUSEHOLD_FIXTURES } from "@/simulation/fixtures";
-import { householdPolicy } from "@/simulation/policies";
-import { simulateJourney } from "@/simulation/simulate";
+import { BasketReveal } from "@/components/kitchen/BasketReveal";
 
 export default function HomePage() {
   const catalog = loadCatalog();
-
   const fixture = HOUSEHOLD_FIXTURES[0];
-
-  const preview = fixture
-    ? buildWeekIntelligence(buildFixtureKitchen(fixture), catalog)
-    : null;
-
-  const states = HOUSEHOLD_FIXTURES.flatMap((household) =>
-    simulateJourney(buildFixtureKitchen(household), catalog, householdPolicy),
-  );
-
-  const insights = buildBlinkitInsights(states, catalog);
-
-  const toBuy = preview
-    ? preview.basket.items.filter((item) => item.status === "buy").length
-    : 0;
+  const preview = fixture ? buildWeekIntelligence(buildFixtureKitchen(fixture), catalog) : null;
 
   return (
     <div className="container">
-      <section className="hero">
-        <div>
-          <p className="eyebrow">Household grocery intelligence · prototype</p>
-          <h1>
-            Your grocery app remembers the kitchen,
-            <br />
-            <em>not just the cart.</em>
-          </h1>
-          <p className="hero-lede">
-            Blinkitchen learns what a household already has, cooks, wastes and substitutes — then
-            plans meals and a smaller basket that improve as the weeks accumulate.
-          </p>
-          <div className="row wrap hero-actions">
-            <Link className="btn btn-primary" href="/explore/pantry_planner">
-              See the 8-week demo <ArrowRight size={16} aria-hidden />
-            </Link>
-            <Link className="btn btn-secondary" href="/build">
-              Build your kitchen
-            </Link>
-            <Link className="btn btn-ghost" href="/blinkit">
-              Blinkit Lens <ArrowRight size={14} aria-hidden />
-            </Link>
-          </div>
+      <section className="home-hero">
+        <div className="home-story">
+          <p className="eyebrow"><span className="brand-dot" /> A little kitchen intelligence</p>
+          <h1>Your kitchen.<br />A little more <em>possibility.</em></h1>
+          <p className="home-lede">Good meals start with what you have. Plan your week, use more of your groceries, and buy just what’s missing.</p>
+          <Link className="btn btn-primary home-cta" href="/explore/pantry_planner">See the 8-week demo <ArrowRight size={18} aria-hidden /></Link>
+          <Link className="home-secondary" href="/build">Build your kitchen <MoveUpRight size={14} aria-hidden /></Link>
+          <p className="home-caption">An independent Blinkit concept · simulated households &amp; prices</p>
         </div>
-
-        {preview && fixture ? (
-          <aside className="hero-preview" aria-label="Live week projection for a simulated household">
-            <div className="hero-preview-top">
-              <p className="hero-preview-household">{fixture.householdName}</p>
-              <span className="hero-preview-week">Week 1 · simulated</span>
-            </div>
-            <dl className="hero-preview-stats">
-              <div>
-                <dt>Pantry coverage</dt>
-                <dd>{Math.round(preview.coverage.percent)}%</dd>
-              </div>
-              <div>
-                <dt>Simulated basket</dt>
-                <dd>{formatRupees(preview.basket.totalCost)}</dd>
-              </div>
-              <div>
-                <dt>To buy</dt>
-                <dd>{toBuy}</dd>
-              </div>
-            </dl>
-            <ul className="hero-preview-meals">
-              {preview.recommendations.slice(0, 3).map((recommendation) => (
-                <li key={recommendation.recipe.id}>
-                  <span>{recommendation.recipe.name}</span>
-                  <span className="hero-preview-fit">
-                    {Math.round(recommendation.score * 100)}% fit
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="hero-preview-note">
-              Derived on this render from the deterministic fixture — no projection is stored.
-            </p>
-          </aside>
-        ) : null}
+        <div className="home-photo">
+          <Image src="/images/kitchen-table.png" alt="" fill sizes="(max-width: 760px) 100vw, 50vw" priority />
+          <div className="photo-label"><Leaf size={18} aria-hidden /><span>A good week starts<br /><strong>right here, at home.</strong></span></div>
+          <span className="photo-note">An imagined kitchen table</span>
+        </div>
       </section>
-
-      <section className="evidence-strip" aria-label="Cohort evidence">
-        <div>
-          <p className="eyebrow">The loop</p>
-          <h2 style={{ fontSize: "1.5rem" }}>
-            Facts accumulate. Intelligence recomputes. The kitchen gets easier.
-          </h2>
-          <p className="small muted" style={{ marginBottom: 0 }}>
-            Every number below comes from the same engine you can replay: four deterministic
-            households, eight weeks each.
-          </p>
-        </div>
-        <dl className="evidence-stats">
-          <div>
-            <dt>Already at home</dt>
-            <dd>{formatRupees(insights.avoidedBasketValue)}</dd>
+      {preview && fixture ? (
+        <section className="home-demo" aria-label="Try pantry-aware shopping">
+          <div className="section-heading">
+            <div><p className="eyebrow">01 / Start with what’s already there</p><h2>A full week.<br /><em>A more thoughtful basket.</em></h2></div>
+            <p>{fixture.householdName} · Week 1<br /><span className="muted">{preview.plan.length} meals, one shared kitchen.</span></p>
           </div>
-          <div>
-            <dt>Household-weeks replayed</dt>
-            <dd>{insights.weekSnapshots}</dd>
+          <div className="home-demo-grid">
+            <div className="home-menu">
+              <p className="eyebrow">On the menu</p>
+              {preview.plan.slice(0, 3).map((meal, index) => (
+                <div className="home-menu-row" key={meal.recipeId}><span className="menu-number">0{index + 1}</span><div><h3>{meal.recipe.name}</h3><p>{meal.recipe.estimatedPreparationMinutes} min · made for sharing</p></div></div>
+              ))}
+              <Link className="text-link" href="/explore/pantry_planner">Explore the whole week <ArrowRight size={15} aria-hidden /></Link>
+            </div>
+            <BasketReveal basket={preview.basket} />
           </div>
-          <div>
-            <dt>Cumulative simulated basket</dt>
-            <dd>{formatRupees(insights.cumulativeBasketSpend)}</dd>
-          </div>
-        </dl>
+        </section>
+      ) : null}
+      <section className="home-next">
+        <div><p className="eyebrow">02 / It gets to know your kitchen</p><h2>Every week tells<br />a little more of your story.</h2></div>
+        <div><p>The meals you cook. The swaps you keep. The ingredients you reach for again. See what eight weeks can teach a kitchen.</p><Link className="text-link" href="/explore">Meet the four households <ArrowRight size={16} aria-hidden /></Link><Link className="home-secondary" href="/blinkit">Blinkit Lens <MoveUpRight size={14} aria-hidden /></Link></div>
       </section>
     </div>
   );

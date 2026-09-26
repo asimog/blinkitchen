@@ -12,7 +12,6 @@ import { ChainPanel } from "@/components/kitchen/ChainPanel";
 import { JourneyBar } from "@/components/kitchen/JourneyBar";
 import { LearningPanel } from "@/components/kitchen/LearningPanel";
 import { MealCard } from "@/components/kitchen/MealCard";
-import { MetricRow } from "@/components/kitchen/MetricRow";
 import { PantrySnapshot } from "@/components/kitchen/PantrySnapshot";
 import { ReplenishmentPanel } from "@/components/kitchen/ReplenishmentPanel";
 import { SmartExtras } from "@/components/kitchen/SmartExtras";
@@ -47,9 +46,8 @@ const FACTOR_LABELS = {
  * the interactive kitchen render this component; it only consumes derived
  * intelligence and explicit kitchen facts.
  *
- * Hierarchy: your kitchen → this week's plan → basket → smart extras → what
- * changed. Engine depth stays available behind disclosure, never at equal
- * visual weight.
+ * Meals and coverage lead; basket and learning sit alongside. Supporting
+ * intelligence and household details stay available behind disclosure.
  */
 export function WeekView({
   kitchen,
@@ -109,6 +107,8 @@ export function WeekView({
     .map((entry) => entry.ingredient.name)
     .slice(0, 3);
 
+  const sharedIngredient = intelligence.chains.find((chain) => chain.ingredient.category === "vegetables") ?? intelligence.chains[0];
+
   const extrasCount =
     intelligence.substitutions.length + intelligence.replenishments.length + intelligence.chains.length;
 
@@ -136,26 +136,27 @@ export function WeekView({
           householdName={householdName}
           {...(badges ? { badges } : {})}
         />
-        <MetricRow intelligence={intelligence} />
+        <div className={styles.weekPromise}>
+          <div><p className="eyebrow">Less to figure out. More to enjoy.</p><h2>{intelligence.plan.length} meals.<br /><em>Your week is coming together.</em></h2></div>
+          <div className={styles.coverageCallout}><strong>{Math.round(intelligence.coverage.percent)}<span>%</span></strong><p>of this plan’s value<br />already at home</p></div>
+        </div>
         <p className={styles.useSoonLine}>
           {useSoonNames.length > 0
             ? `Use first: ${useSoonNames.join(", ")}${intelligence.useSoon.length > useSoonNames.length ? ` +${intelligence.useSoon.length - useSoonNames.length} more` : ""}.`
             : "Nothing needs rescuing this week."}
         </p>
-        {feedbackSlot}
-        <PantrySnapshot kitchen={kitchen} catalog={catalog} />
+
       </section>
 
-      {mealPlanner}
-
-      <section className={styles.panel} aria-label="Recommended meals">
+      <div className={styles.weekLayout}>
+      <section className={styles.menuPanel} aria-label="Recommended meals">
         <div className={styles.panelHeader}>
           <div>
             <h3 className={styles.panelTitle}>This week&apos;s plan</h3>
             <p className={styles.panelHint}>
               {intelligence.planSource === "selected"
-                ? "Your selected meals, explained against the rest of the week"
-                : `Suggested plan of ${intelligence.plan.length} meals from your cooking routine`}
+                ? "Picked by you"
+                : "A few good things to cook"}
             </p>
           </div>
           {mealsHeaderAction ? <div className={styles.actionRow}>{mealsHeaderAction}</div> : null}
@@ -163,12 +164,11 @@ export function WeekView({
 
         {planCards.length > 0 ? (
           <div className={styles.mealGrid}>
-            {planCards.map(({ meal, recommendation }) => (
+            {planCards.map(({ meal, recommendation }, index) => (
               <MealCard
                 key={meal.recipeId}
                 recommendation={recommendation}
-                planned
-                planBadge={intelligence.planSource === "selected" ? "In this week's plan" : "Suggested for you"}
+                number={index + 1}
                 catalog={catalog}
                 planExplanation={meal.explanation}
                 {...(renderMealAction ? { action: renderMealAction(meal.recipeId, true) } : {})}
@@ -181,6 +181,11 @@ export function WeekView({
           </p>
         )}
 
+        {sharedIngredient ? <details className={styles.reuseSpotlight}>
+          <summary><span>One ingredient, more possibilities</span><strong>{sharedIngredient.ingredient.name} · {sharedIngredient.recipeNames.length} meals</strong></summary>
+          <p>{sharedIngredient.recipeNames.join(" · ")}</p>
+        </details> : null}
+        {mealPlanner ? <details className="disclosure"><summary>Edit your meal plan</summary>{mealPlanner}</details> : null}
         {discoveryCards.length > 0 ? (
           <details className={styles.scoreNote}>
             <summary className={styles.detailsToggle}>
@@ -222,8 +227,13 @@ export function WeekView({
         </details>
       </section>
 
-      <BasketPanel basket={intelligence.basket} toBuyCount={toBuyCount} />
-
+      <aside className={styles.weekAside}>
+        <BasketPanel basket={intelligence.basket} toBuyCount={toBuyCount} />
+        <PantrySnapshot kitchen={kitchen} catalog={catalog} />
+        <LearningPanel intelligence={intelligence} kitchen={kitchen} catalog={catalog} />
+      </aside>
+      </div>
+      {feedbackSlot}
       <SmartExtras count={extrasCount}>
         <ChainPanel chains={intelligence.chains} />
         <SubstitutionPanel
@@ -233,8 +243,7 @@ export function WeekView({
         />
         <ReplenishmentPanel replenishments={intelligence.replenishments} />
       </SmartExtras>
-
-      <LearningPanel intelligence={intelligence} kitchen={kitchen} catalog={catalog} />
+      <a className={styles.mobileBasketJump} href="#weekly-basket">See your basket <strong>{formatRupees(intelligence.basket.totalCost)} <span aria-hidden>↗</span></strong></a>
     </div>
   );
 }

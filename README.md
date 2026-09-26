@@ -18,9 +18,9 @@ labelled; no simulated result is evidence about real Blinkit customers.
 The simulated 8-week demo is the preferred review path; you do not need to build a
 household to understand the product.
 
-1. `/` — the thesis in one screen, with a live Week 1 projection.
+1. `/` — a visual introduction and an interactive pantry check using the Week 1 basket.
 2. `/explore/pantry_planner` — the simulated 8-week demo. Jump between weeks with
-   the week rail, then use the "Week 1 → Week 8" link for what the system learned.
+   the week rail, then use the "Compare weeks" link for what the system learned.
 3. `/explore/cuisine_explorer` — different household inputs, same engine.
 4. `/blinkit` — what the prototype demonstrates across the cohort, what it could
    enable for Blinkit, and what still needs real customer validation.
@@ -57,7 +57,7 @@ structures carry their Blinkit source URL.
 
 | Route | What it shows |
 | --- | --- |
-| `/` | The product thesis plus a derived Week 1 projection and cohort evidence |
+| `/` | A food-led introduction, plan preview and interactive pantry check |
 | `/explore` | Four simulated households, each replayable across Weeks 1 to 8 |
 | `/explore/[id]` | One household's week: plan, basket, reuse, swaps, replenishment, learning |
 | `/build` | Build your own household (stored only in this browser) |
@@ -99,3 +99,24 @@ mobile smoke suite.
 - [SIMULATION.md](SIMULATION.md) — the four households, the deterministic 8-week loop, assumptions
 - [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) — sequenced plan for the target product direction
 - [AGENTS.md](AGENTS.md) — working rules for coding agents
+
+## Interface
+
+The homepage introduces the concept through a kitchen photograph and a live pantry
+check: fully covered ingredients are marked as already home, while the shopping
+count and estimate come from the same derived basket. The listed dishes come from
+that basket's plan. The toggle is temporary presentation state only.
+
+The weekly view leads with meals and pantry coverage, beside a compact basket
+summary. Basket lines, pack quantities, pantry inventory, plan editing, swaps and
+full learning are available through disclosures. Mobile has a basket shortcut.
+The comparison names the last replayed week, including partial journeys.
+Onboarding keeps three steps; a blank name becomes "My kitchen", and pantry groups
+expand individually. Blinkit Lens leads with three derived observations and keeps
+cohort tables behind a disclosure. All outputs remain labelled as simulated.
+
+The decorative homepage asset is `public/images/kitchen-table.png`, generated
+with the built-in image-generation tool. Prompt: overhead editorial photograph of
+herb parathas, yogurt and rajma on a forest-green plate, an ivory kitchen table,
+fresh greens, tomato, lime and linen in natural afternoon light; no text or people.
+It illustrates a kitchen atmosphere, not an exact catalog recipe.

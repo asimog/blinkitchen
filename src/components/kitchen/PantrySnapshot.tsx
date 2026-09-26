@@ -23,12 +23,7 @@ export function PantrySnapshot({ kitchen, catalog }: { kitchen: KitchenState; ca
 
   return (
     <section className={`${styles.panel}`} aria-label="What you already have">
-      <div className={styles.panelHeader}>
-        <h3 className={styles.panelTitle}>What you already have</h3>
-        <p className={styles.panelHint}>
-          {items.length} {items.length === 1 ? "ingredient" : "ingredients"} in the pantry
-        </p>
-      </div>
+      <details><summary className={styles.pantrySummary}>What you already have <span>{items.length} ingredients</span></summary>
       {items.length === 0 ? (
         <p className={styles.emptyState}>
           This kitchen starts empty. Week 1 recommendations will fill the pantry.
@@ -53,6 +48,7 @@ export function PantrySnapshot({ kitchen, catalog }: { kitchen: KitchenState; ca
           Planning to stock: {starters.map((ingredient) => ingredient?.name).join(", ")}.
         </p>
       ) : null}
+      </details>
     </section>
   );
 }

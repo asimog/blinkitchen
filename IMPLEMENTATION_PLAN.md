@@ -25,7 +25,7 @@ updated in the same change, not afterwards.
 | Area | Now |
 | --- | --- |
 | Onboarding | Three steps: Your household, How you eat (priority chips), Your kitchen (quick picks + optional search); no review step |
-| Week view | Five blocks: Your kitchen this week → This week's plan → Your basket → Smart extras → What changed; detail behind "Why this?" |
+| Week view | Meals and coverage first; compact basket alongside; pantry, editing, swaps and learning disclosed on demand |
 | Meal selection | `rankRecipes` ranks for discovery; `suggestPlan` is a deterministic greedy planner evaluating each candidate against the partial week |
 | Reuse signal | Per-recipe factor retained for ranking; plan-level cross-meal reuse uses actual committed requirements |
 | Diet coverage | `DietPreference` has 5 values; catalog, filtering and onboarding intentionally cover 2 (deferred by scope) |
@@ -54,16 +54,11 @@ Playwright job; the full verification suite passes.
 
 ## Phase 1: copy honesty and reviewer path — complete
 
-The homepage now leads with "See the 8-week demo" (primary), "Build your kitchen"
-(secondary) and "Blinkit Lens" (tertiary); the hero is one sentence; the sections
-that repeated the product case are gone and only the derived Week 1 preview and a
-compact evidence strip remain. The overstating reuse claim was replaced with the
-plan-level truth. Replenishment copy leads with the outcome, substitutions lead
-with household history instead of a compatibility percentage, the basket narrative
-says "already at home", meal factors sit behind "Why this?", and the learning
-panel leads with two statements. `src/intelligence/copy.test.ts` guards every
-customer-facing explanation string (plus the Week 1 to Week 8 comparison) against
-internal vocabulary.
+The homepage leads with a food image and "See the 8-week demo", followed by a
+live pantry-check interaction. Its menu and shopping estimate use the same plan.
+Implementation copy and the cumulative cohort strip have been removed from the
+landing page. Simulation disclosure remains explicit. Blinkit Lens leads with
+three derived observations; detailed cohort tables are expandable.
 
 ## Phase 2: three-step onboarding — complete
 
@@ -86,33 +81,22 @@ run the three-step flow. Diet options remain vegetarian and vegan only.
 
 ## Phase 3: week-view simplification — complete
 
-`WeekView` now renders the five target blocks in order:
+`WeekView` leads with the meal count and coverage, followed by compact meal cards
+and a basket summary. Reasoning lives behind "Why this?"; pack quantities, pantry
+inventory, manual meal slots, reuse, swaps and replenishment expand on request.
+One ingredient-reuse example and one learning observation remain visible. Mobile
+has a persistent basket shortcut and wrapping replay controls. The interactive
+week checklist still uses the production domain commands.
 
-```text
-YOUR KITCHEN THIS WEEK     state summary, use-first line, pantry detail
-        ↓
-THIS WEEK'S PLAN           up to 5 planned meals, each explained and actionable
-        ↓
-YOUR BASKET                what to buy and what is already at home
-        ↓
-SMART EXTRAS               chains, swaps and replenishment in one grouped panel
-        ↓
-WHAT CHANGED               two statements, full learning behind a toggle
-```
-
-Meal cards lead with name, additional cost, "% already home" and two reasons;
-ingredients and fit factors sit behind "Why this?". The ranked discovery list and
-the scoring weights moved into disclosure. All accessible landmarks
-(`dl[aria-label="This week at a glance"]`, "Pantry-aware basket", "Ingredient
-chaining", "What Blinkitchen learned", the week rail) are preserved for screen
-readers and browser tests.
+Onboarding names are optional (default "My kitchen"); pantry quick-pick groups
+expand independently, with fresh basics initially open. No new primary step.
 
 ## Phase 4: Week 1 to Week 8 comparison — complete
 
 `compareJourney(kitchens, catalog)` is a pure, deterministic projection in
 `src/intelligence/journey.ts`. It reports six signals (meals recorded, plan
 already at home, shared ingredients, substitution decisions, recorded waste,
-cumulative groceries avoided) with Week 1 and Week 8 values, plus "what the
+cumulative groceries avoided) with Week 1 and latest replayed week values, plus "what the
 system knew" and "what it learned" highlights. `JourneyComparisonPanel` renders
 it on `/explore/[id]` under an anchor link in the journey bar
 (`id="journey-comparison"`); weekly detail remains available by drill-down.

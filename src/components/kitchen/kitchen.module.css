@@ -75,7 +75,7 @@
   align-items: center;
   justify-content: center;
   min-width: 34px;
-  min-height: 30px;
+  min-height: 40px;
   padding: 0 0.4rem;
   border: none;
   background: transparent;
@@ -329,11 +329,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-}
-
-.mealCardPlanned {
-  border-color: var(--primary);
-  background: #f5faf6;
 }
 
 .mealTop {
@@ -1036,8 +1031,8 @@
     order: 1;
     width: 100%;
     margin-left: 0;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    flex-wrap: wrap;
+    overflow-x: visible;
     scrollbar-width: none;
   }
 
@@ -1100,4 +1095,77 @@
     grid-column: 2;
     justify-content: flex-start;
   }
+}/* A week of meals with a compact shopping companion. */
+.weekPromise { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: 1.5rem 0 2rem; }
+.weekPromise h2 { font-size: clamp(2rem, 3.2vw, 2.8rem); font-weight: 500; line-height: 1.15; }
+.weekPromise h2 em { color: var(--primary-deep); }
+.coverageCallout { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
+.coverageCallout strong { font-family: var(--font-display); font-weight: 450; font-size: 4.5rem; color: var(--primary-deep); line-height: 1; }
+.coverageCallout strong span { font-size: 2rem; }
+.coverageCallout p { margin: 0; font-size: 0.8rem; color: var(--muted); }
+.weekLayout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 2.5rem; align-items: start; margin: 1rem 0 2rem; }
+.menuPanel { min-width: 0; }
+.menuPanel .mealGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mealNumber { font-family: var(--font-display); color: var(--primary-deep); font-size: 1.65rem; font-weight: 400; line-height: 1; }
+.mealTop { justify-content: start; gap: 0.8rem; }
+.mealCuisine { margin: 0 0 0.3rem; font-size: 0.65rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.mealName { text-transform: capitalize; font-weight: 600; }
+.mealCard { gap: 0.7rem; padding: 1.25rem; border-radius: 16px; }
+.impactRow { flex-wrap: wrap; margin: 0; gap: 0.2rem; }
+.impactCost { font-size: 0.75rem; font-weight: 500; color: var(--muted); }
+.cardFooter { font-size: 0.75rem; }
+.reuseSpotlight { background: #edf1e6; border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0; }
+.reuseSpotlight summary { cursor: pointer; font-size: 0.875rem; }
+.reuseSpotlight summary span { display: block; color: var(--muted); font-size: 0.7rem; margin-bottom: 0.25rem; }
+.reuseSpotlight p { font-size: 0.8rem; margin: 0.7rem 0 0; }
+.pantrySummary { cursor: pointer; font-size: 0.875rem; font-weight: 600; }
+.pantrySummary span { display: block; font-weight: 400; color: var(--muted); font-size: 0.75rem; margin-top: 0.3rem; }
+.panel details[open] > .pantrySummary { margin-bottom: 1rem; }
+.weekAside .panel { padding: 1.1rem; background: transparent; border: 0; border-bottom: 1px solid var(--border); border-radius: 0; }
+.weekAside .panelHeader { margin-bottom: 0.65rem; }
+.weekAside .panelTitle { font-size: 0.9rem; }
+.basketSummary { background: #f4e9be; border: 1px solid #e5d8a4; border-radius: 20px; padding: 1.5rem; scroll-margin-top: 160px; }
+.basketEyebrow { display: flex; gap: 10px; align-items: center; font-size: 0.75rem; color: #5b502b; margin-bottom: 1.4rem; }
+.basketSummary h3 { font-weight: 500; font-size: 1rem; }
+.basketPrice { font-size: 3rem; letter-spacing: -0.06em; font-weight: 550; line-height: 1.1; margin: 0.6rem 0; }
+.pantryCredit { display: flex; align-items: start; gap: 6px; font-size: 0.75rem; margin: 1.25rem 0; }
+.pantryCredit svg { flex-shrink: 0; margin-top: 3px; }
+.basketDisclosure > summary { display: flex; justify-content: space-between; align-items: center; list-style: none; cursor: pointer; background: var(--primary-deep); color: #fff; padding: 0.8rem 1rem; border-radius: 9px; font-size: 0.85rem; font-weight: 600; }
+.basketDisclosure > summary::-webkit-details-marker { display: none; }
+.basketDisclosure[open] > summary span { transform: rotate(90deg); }
+.basketContents { margin-top: 1.25rem; }
+.basketContents h4 { font-size: 0.8rem; }
+.basketContents .basketLine { background: #fffaf0; padding: 0.8rem; margin-bottom: 0.4rem; border: 0; border-radius: 8px; }
+.basketContents .basketLineTop { font-size: 0.8rem; }
+.lineDetails { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
+.lineDetails summary { cursor: pointer; padding: 0.4rem 0; }
+.lineDetails p { margin: 0.3rem 0; }
+.basketFootnote { font-size: 0.65rem; color: #62572f; margin: 0.8rem 0 0; text-align: center; }
+.unavailableNote { font-size: 0.8rem; color: var(--danger); }
+@media (max-width: 1000px) { .weekLayout { grid-template-columns: minmax(0, 1fr) 300px; gap: 1.25rem; } }
+@media (max-width: 760px) {
+  .weekPromise { padding: 0.5rem 0 1rem; gap: 1rem; align-items: start; }
+  .weekPromise h2 { font-size: 1.65rem; }
+  .weekPromise :global(.eyebrow) { display: none; }
+  .coverageCallout { display: block; }
+  .coverageCallout strong { font-size: 2.5rem; }
+  .coverageCallout strong span { font-size: 1.25rem; }
+  .coverageCallout p { font-size: 0.65rem; margin-top: 0.3rem; }
+  .weekLayout { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .menuPanel .mealGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .mealCard { padding: 0.85rem; }
+  .mealTop { flex-direction: column; gap: 0.5rem; }
+  .mealName { font-size: 0.95rem; }
+  .journeyBarActions { flex-wrap: wrap; overflow-x: visible; }
+  .journeyBar { position: static; }
+  .weekHeader { margin-bottom: 0.6rem; }
+  .weekMeta :global(.pill) { font-size: 0.65rem; }
+  .weekAside { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .useSoonLine { font-size: 0.75rem; }
+}
+
+.mobileBasketJump { display: none; }
+@media (max-width: 760px) {
+  .mobileBasketJump { position: fixed; z-index: 25; bottom: 12px; left: 20px; right: 20px; display: flex; align-items: center; justify-content: space-between; min-height: 50px; border: 1px solid #d7c78f; background: #f4e9be; color: var(--text); border-radius: 12px; padding: 0.7rem 1rem; box-shadow: var(--shadow); font-size: 0.85rem; }
+  .mobileBasketJump:focus-visible { outline-offset: 3px; }
 }

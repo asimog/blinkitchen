@@ -32,20 +32,19 @@ export function LearningPanel({
     <section className={styles.panel} aria-label="What Blinkitchen learned">
       <div className={styles.panelHeader}>
         <h3 className={styles.panelTitle}>What changed</h3>
-        <p className={styles.panelHint}>
-          {kitchen.mealFacts.length} meals and {kitchen.groceryFacts.length} grocery lines of
-          recorded history
-        </p>
+
       </div>
 
       <ul className={styles.narrativeList}>
-        {intelligence.narrative.slice(0, 2).map((line) => (
+        {intelligence.narrative.slice(0, 1).map((line) => (
           <li key={line}>{line}</li>
         ))}
       </ul>
 
       <details className={styles.scoreNote}>
-        <summary className={styles.detailsToggle}>Everything Blinkitchen has learned</summary>
+        <summary className={styles.detailsToggle}>See what your kitchen is teaching us</summary>
+        <p className="small muted">{kitchen.mealFacts.length} meals recorded so far.</p>
+        <ul className={styles.narrativeList}>{intelligence.narrative.slice(1).map((line) => <li key={line}>{line}</li>)}</ul>
         <div className={`${styles.learningGrid} ${styles.detailsBody}`}>
           <div>
             {cuisines.length > 0 ? (

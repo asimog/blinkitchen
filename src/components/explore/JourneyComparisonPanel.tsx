@@ -21,34 +21,35 @@ export function JourneyComparisonPanel({ states }: { states: KitchenState[] }) {
 
   if (!comparison) {
     return (
-      <section id="journey-comparison" className={styles.comparison} aria-label="Week 1 to Week 8 comparison">
-        <h2 className={styles.comparisonTitle}>Week 1 &rarr; Week 8</h2>
+      <section id="journey-comparison" className={styles.comparison} aria-label="Journey comparison">
+        <h2 className={styles.comparisonTitle}>Your kitchen, over time</h2>
         <p className="small muted">
-          Advance at least one week (or replay to Week 8) to compare what the system knew at the
-          start with what it learned.
+          Advance a week to see what your kitchen learns.
         </p>
       </section>
     );
   }
 
+  const lastWeek = states.at(-1)?.week ?? 1;
+
   return (
-    <section id="journey-comparison" className={styles.comparison} aria-label="Week 1 to Week 8 comparison">
+    <section id="journey-comparison" className={styles.comparison} aria-label="Journey comparison">
       <div className={styles.comparisonHeader}>
         <div>
-          <h2 className={styles.comparisonTitle}>Week 1 &rarr; Week 8</h2>
+          <h2 className={styles.comparisonTitle}>Week 1 &rarr; Week {lastWeek}</h2>
           <p className="small muted">
-            {comparison.householdName} · {comparison.weeksObserved} weeks of recorded facts ·
-            derived, never stored
+            {comparison.householdName} · comparing {comparison.weeksObserved} weekly snapshots
           </p>
         </div>
       </div>
 
+      <details className="disclosure"><summary>Compare the details</summary>
       <table className={styles.comparisonTable}>
         <thead>
           <tr>
             <th scope="col">Signal</th>
             <th scope="col">Week 1</th>
-            <th scope="col">Week 8</th>
+            <th scope="col">Week {lastWeek}</th>
           </tr>
         </thead>
         <tbody>
@@ -56,16 +57,17 @@ export function JourneyComparisonPanel({ states }: { states: KitchenState[] }) {
             <tr key={metric.id}>
               <th scope="row">
                 {metric.label}
-                <span className="small muted"> — {metric.explanation}</span>
+
               </th>
               <td>{metric.week1}</td>
-              <td className={metric.direction === "up" ? styles.comparisonUp : undefined}>
+              <td className={metric.direction === "up" && metric.id !== "waste" ? styles.comparisonUp : undefined}>
                 {metric.week8}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      </details>
 
       <div className={styles.comparisonHighlights}>
         <div>

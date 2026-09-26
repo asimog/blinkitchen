@@ -22,9 +22,7 @@ export default function ExplorePage() {
         <p className="eyebrow">Explore · simulated households</p>
         <h1>Four kitchens, eight weeks each</h1>
         <p className={styles.lede}>
-          Every household below is a deterministic fixture. They run the same intelligence engine
-          with different preferences, pantries and budgets — and their journeys replay identically
-          every time. Nothing here is real customer data.
+          Different routines. Different tastes. Watch each kitchen find its rhythm over eight simulated weeks.
         </p>
       </section>
 
@@ -41,9 +39,7 @@ export default function ExplorePage() {
 
               <div className={styles.rowBody}>
                 <p className={styles.tagline}>{fixture.tagline}</p>
-                <p className="small muted" style={{ marginBottom: 0 }}>
-                  {fixture.description}
-                </p>
+
                 <ul className={styles.rowStats}>
                   <li>
                     <Users size={13} aria-hidden /> {fixture.profile.memberCount} people

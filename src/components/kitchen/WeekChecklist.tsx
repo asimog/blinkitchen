@@ -69,7 +69,7 @@ export function WeekChecklist({
       detail:
         checklist.plannedMeals === 0
           ? "no meals planned yet"
-          : `${checklist.mealsCooked} of ${checklist.plannedMeals} cooked (records pantry use)`,
+          : `${checklist.mealsCooked} of ${checklist.plannedMeals} cooked`,
       done: checklist.plannedMeals === 0 || checklist.mealsCooked >= checklist.plannedMeals,
       action: !allCooked
         ? (variant) => (
@@ -110,7 +110,7 @@ export function WeekChecklist({
       detail: checklist.weekComplete
         ? "the week is already complete"
         : allCooked
-          ? "advances to the next week and closes the facts"
+          ? "ready for a fresh week"
           : "cook or remove the planned meals first",
       done: checklist.weekComplete,
       action:
@@ -135,7 +135,7 @@ export function WeekChecklist({
       <div className={styles.panelHeader}>
         <div>
           <h3 className={styles.panelTitle}>Your week, step by step</h3>
-          <p className={styles.panelHint}>Every action records a fact; nothing is saved twice</p>
+          <p className={styles.panelHint}>Try the week: receive groceries, cook, then move forward.</p>
         </div>
         {firstPending >= 0 ? <p className={styles.panelValue}>Next step {firstPending + 1} of 4</p> : null}
       </div>

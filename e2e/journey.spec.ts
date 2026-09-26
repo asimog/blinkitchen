@@ -5,11 +5,18 @@ test.describe("home to kitchen", () => {
   test("home explains the product and links to every surface", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: /remembers the kitchen/i }),
+      page.getByRole("heading", { name: /Your kitchen.*possibility/i }),
     ).toBeVisible();
     await expect(page.getByRole("link", { name: /See the 8-week demo/i })).toBeVisible();
     await expect(page.getByRole("link", { name: /Build your kitchen/i })).toBeVisible();
     await expect(page.getByRole("link", { name: "Blinkit Lens", exact: true })).toBeVisible();
+    const demo = page.getByLabel("Try pantry-aware shopping");
+    await expect(demo.getByText("ingredients in the plan", { exact: true })).toBeVisible();
+    await demo.getByRole("button", { name: "Now, check the kitchen" }).click();
+    await expect(demo.getByText("ingredients to buy", { exact: true })).toBeVisible();
+    await expect(demo.getByText(/5 fully covered at home/)).toBeVisible();
+    await demo.getByRole("button", { name: "See the full ingredient list" }).click();
+    await expect(demo.getByText("ingredients in the plan", { exact: true })).toBeVisible();
   });
 
   test("build wizard travels in three steps with no review", async ({ page }) => {
@@ -17,7 +24,7 @@ test.describe("home to kitchen", () => {
     await expect(page.getByText("Step 1 of 3")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Your household", exact: true })).toBeVisible();
 
-    await page.getByLabel("Household name").fill("E2E Three Steps");
+    // Naming is optional; the household can start without it.
     await page.getByRole("button", { name: "Continue" }).click();
     await expect(page.getByText("Step 2 of 3")).toBeVisible();
     await expect(page.getByRole("heading", { name: "How you eat", exact: true })).toBeVisible();
@@ -28,6 +35,9 @@ test.describe("home to kitchen", () => {
     await expect(page.getByRole("heading", { name: "Your kitchen", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Start Week 1" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Continue" })).toHaveCount(0);
+    await page.getByRole("button", { name: "Start Week 1" }).click();
+    await expect(page).toHaveURL(/\/kitchen$/);
+    await expect(page.getByRole("heading", { name: "My kitchen", exact: true })).toBeVisible();
   });
 
   test("build household then run the Week 1 loop", async ({ page }) => {
@@ -77,7 +87,8 @@ test.describe("explore journeys", () => {
     await page.getByRole("button", { name: "W5", exact: true }).click();
     await expect(page.getByText("Week 5 of 8", { exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
-    await expect(page.locator('dl[aria-label="This week at a glance"] dt')).toHaveCount(4);
+    await expect(page.getByLabel("Pantry-aware basket")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Week 1 → Week 5", exact: true })).toBeVisible();
   });
 
   test("replay through Week 8 shows the learning summary", async ({ page }) => {
@@ -85,12 +96,13 @@ test.describe("explore journeys", () => {
     await page.getByRole("button", { name: /Replay to Week 8/i }).click();
     await expect(page.getByText("Week 8 of 8", { exact: true })).toBeVisible();
     await expect(page.getByLabel("What Blinkitchen learned")).toBeVisible();
+    await page.getByText("Make a little more of your groceries", { exact: false }).click();
     await expect(page.getByLabel("Ingredient chaining")).toBeVisible();
     await expect(page.getByText(/weeks completed/i)).toBeVisible();
 
     // The reviewer path ends on the longitudinal comparison, not the last week.
-    await page.getByRole("link", { name: /Week 1 . Week 8/i }).click();
-    await expect(page.getByLabel("Week 1 to Week 8 comparison")).toBeVisible();
+    await page.getByRole("link", { name: "Compare weeks" }).click();
+    await expect(page.getByLabel("Journey comparison")).toBeVisible();
     await expect(
       page.getByRole("heading", { name: /Week 1 . Week 8/ }),
     ).toBeVisible();
@@ -150,6 +162,7 @@ test.describe("blinkit lens", () => {
   test("loads cohort insights and labels them as simulated", async ({ page }) => {
     await page.goto("/blinkit");
     await expect(page.getByText(/SIMULATED DATA/)).toBeVisible();
+    await page.getByText("Explore the cohort data · 4 households, 8 weeks").click();
     const archetypeTable = page.locator("table").first();
     await expect(archetypeTable).toBeVisible();
 

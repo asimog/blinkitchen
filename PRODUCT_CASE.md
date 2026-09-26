@@ -147,7 +147,8 @@ inventory precision.
 
 ## Product principles
 
-The target interface follows these. They do not all describe the current UI yet.
+The interface follows these principles. Pantry and preference correction beyond
+the existing controls remain future work.
 
 1. **Reviewer path first.** A reviewer reaches the simulated 8-week journey
    without completing onboarding.
@@ -256,8 +257,8 @@ Verified behaviour in the current code:
   baskets, or that relevance improves retention and lifetime value.
 - That observed substitution behaviour matches stated price sensitivity.
 - That any simulated archetype difference corresponds to a real segment.
-- That the current engine optimises a week as a whole; it ranks meals
-  individually and detects chains afterwards.
+- That the current engine finds a globally optimal week; it chooses meals
+  greedily against the partial plan.
 - That diets beyond vegetarian and vegan behave as the product intends; that
   work is deferred by scope (see [DATA_MODEL.md](DATA_MODEL.md)).
 

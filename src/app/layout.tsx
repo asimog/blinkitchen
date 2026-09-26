@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div>
               <p className="site-footer-brand">blinkitchen</p>
               <p className="small muted" style={{ margin: 0 }}>
-                Household facts are truth. Intelligence is derived.
+                A little less planning. A little more possibility.
               </p>
             </div>
             <nav className="site-footer-nav" aria-label="Footer">

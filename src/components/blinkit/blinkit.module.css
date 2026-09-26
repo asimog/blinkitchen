@@ -146,4 +146,8 @@
   .grid {
     grid-template-columns: minmax(0, 1fr);
   }
-}
+}.takeaways { padding: 2rem 0; max-width: 900px; }
+.takeaways h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 500; }
+.takeaways ol { list-style: decimal-leading-zero; padding-left: 2rem; margin: 1.5rem 0 0; }
+.takeaways li { padding: 1.1rem 0 1.1rem 0.8rem; border-bottom: 1px solid var(--border); font-size: 1rem; line-height: 1.7; }
+.takeaways li::marker { color: var(--primary-deep); font-family: var(--font-display); font-size: 1.5rem; }

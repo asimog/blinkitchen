@@ -39,12 +39,12 @@ const KITCHEN_TYPES: { id: KitchenType; label: string; hint: string }[] = [
   {
     id: "existing",
     label: "I have some stock",
-    hint: "Ticks become pantry stock, one typical pack each.",
+    hint: "Pick what’s at home. We’ll start with one typical pack.",
   },
   {
     id: "fresh",
     label: "Start mostly empty",
-    hint: "Nothing counts as stock yet; ticks are just plans.",
+    hint: "Pick essentials you’d like to stock up on.",
   },
 ];
 
@@ -129,7 +129,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
 
   const validateStep = (index: number): string | null => {
     if (index === 0) {
-      if (draft.displayName.trim().length < 2) return "Give the household a name (at least 2 characters).";
+      if (draft.displayName.trim().length === 1) return "Use at least two characters, or leave the name blank.";
 
       if (draft.memberCount < 1 || draft.memberCount > 20) return "People must be between 1 and 20.";
 
@@ -165,7 +165,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
 
   const finish = () => {
     const profile: KitchenProfile = {
-      displayName: draft.displayName.trim(),
+      displayName: draft.displayName.trim() || "My kitchen",
       memberCount: draft.memberCount,
       locationId: draft.locationId,
       weeklyBudget: draft.weeklyBudget,
@@ -241,7 +241,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
         {step === 0 ? (
           <>
             <div className={styles.field}>
-              <label htmlFor="household-name">Household name</label>
+              <label htmlFor="household-name">Household name <span className={styles.hint}>(optional)</span></label>
               <input
                 id="household-name"
                 type="text"
@@ -294,7 +294,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
                   </option>
                 ))}
               </select>
-              <p className={styles.hint}>Diet is a hard filter: incompatible recipes are never shown.</p>
+              <p className={styles.hint}>We’ll only suggest meals that fit your diet.</p>
             </div>
             <div className={styles.field}>
               <label htmlFor="location">Delivery area</label>
@@ -309,7 +309,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
                   </option>
                 ))}
               </select>
-              <p className={styles.hint}>Simulated availability — different areas stock different SKUs.</p>
+              <p className={styles.hint}>Demo availability varies by area.</p>
             </div>
           </>
         ) : null}
@@ -407,8 +407,9 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
             </fieldset>
 
             {quickPicks.map((group) => (
-              <fieldset className={styles.fieldset} key={group.id}>
-                <legend>{group.label}</legend>
+              <details className={styles.pantryGroup} key={group.id} open={group.id === "fresh_basics"}>
+                <summary>{group.label}<span>{group.ingredients.filter((ingredient) => draft.selectedIngredientIds.includes(ingredient.id)).length} selected</span></summary>
+                <fieldset className={styles.fieldset}><legend className="sr-only">{group.label}</legend>
                 <div className={styles.chipRow}>
                   {group.ingredients.map((ingredient) => (
                     <label
@@ -428,7 +429,8 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
                     </label>
                   ))}
                 </div>
-              </fieldset>
+                </fieldset>
+              </details>
             ))}
 
             <div className={styles.field}>
@@ -442,7 +444,7 @@ export function BuildWizard({ existingKitchenName }: { existingKitchenName?: str
                 autoComplete="off"
               />
               <p className={styles.hint}>
-                Optional. Search adds one typical pack; pick nothing and Week 1 starts leaner.
+                Pick a few things, or skip this and start with an empty kitchen.
               </p>
             </div>
 

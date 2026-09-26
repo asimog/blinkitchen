@@ -87,7 +87,7 @@ src/
     onboarding/       BuildExperience, BuildWizard (three steps: household,
                       how you eat, your kitchen) and onboarding-prefs.ts, the
                       pure priority/quick-pick mapping
-    kitchen/          WeekView, JourneyBar and its panels, shared by /explore/[id] and /kitchen
+    kitchen/          WeekView, JourneyBar and disclosed details, shared by /explore/[id] and /kitchen
     explore/          household rail and the journey controller
     blinkit/          cohort lens rendering
   domain/
@@ -159,3 +159,12 @@ vegetarian and vegan data the catalog carries (deferred by scope); ingredient
 quantities are approximate normalisations of the harvested amounts, good for
 basket reasoning but not nutrition. The current state of each is tracked in
 [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+
+## Presentation boundaries
+
+`BasketReveal` switches the homepage between ingredient requirements and the
+pantry-aware purchase count. It consumes a derived `Basket` and stores only an
+open/closed presentation boolean. Native disclosures expose weekly basket lines,
+pantry inventory, plan editing and supporting intelligence. These controls do not
+persist projections or introduce another household authority. The decorative food
+image is local to `public/images`; recipes and products still live only in Catalog.

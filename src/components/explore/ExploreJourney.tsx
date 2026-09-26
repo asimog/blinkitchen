@@ -129,10 +129,9 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
       <p className={styles.simulatedNote}>
         <Info size={14} aria-hidden />
         <span>
-          Simulated household · {completedWeeks} of {WEEK_MAX} weeks completed · replay is
-          deterministic and nothing is stored ·{" "}
+          Simulated household · {completedWeeks} of {WEEK_MAX} weeks completed ·{" "}
           <a className={styles.jumpLink} href="#journey-comparison">
-            Week 1 &rarr; Week 8
+            Compare weeks
           </a>
         </span>
       </p>
@@ -151,7 +150,6 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
         journeyContext="Simulated replay"
         badges={
           <>
-            <span className="pill pill-accent">Simulated</span>
             <span className="pill">{fixture.archetype}</span>
             <span className="pill">{location?.name ?? kitchen.profile.locationId}</span>
             <span className="pill">{kitchen.profile.memberCount} people</span>
@@ -160,7 +158,7 @@ export function ExploreJourney({ fixtureId }: { fixtureId: string }) {
         weekNav={<WeekRail week={kitchen.week} onSelect={goToWeek} />}
         headerActions={
           <>
-            <button type="button" className="btn btn-primary btn-small" onClick={advance} disabled={isJourneyComplete(kitchen)}>
+            <button type="button" className="btn btn-secondary btn-small" onClick={advance} disabled={isJourneyComplete(kitchen)}>
               <SkipForward size={14} aria-hidden /> Advance one week
             </button>
             <button type="button" className="btn btn-secondary btn-small" onClick={replayToWeek8}>

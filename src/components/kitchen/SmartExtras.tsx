@@ -9,15 +9,9 @@ import styles from "@/components/kitchen/kitchen.module.css";
 export function SmartExtras({ children, count }: { children: ReactNode; count: number }) {
   return (
     <section className={styles.panel} aria-label="Smart extras">
-      <div className={styles.panelHeader}>
-        <div>
-          <h3 className={styles.panelTitle}>Smart extras</h3>
-          <p className={styles.panelHint}>
-            {count > 0 ? `${count} optional move${count === 1 ? "" : "s"} this week` : "Nothing extra this week"}
-          </p>
-        </div>
-      </div>
+      <details><summary className={styles.pantrySummary}>Make a little more of your groceries <span>{count} ideas · reuse, swap & restock</span></summary>
       <div className={styles.extrasStack}>{children}</div>
+      </details>
     </section>
   );
 }

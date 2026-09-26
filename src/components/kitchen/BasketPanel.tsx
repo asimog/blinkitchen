@@ -1,198 +1,44 @@
+import { Check, ShoppingBag } from "lucide-react";
 import { formatQuantity, formatRupees } from "@/domain/units";
 import type { Basket, BasketItem } from "@/intelligence";
 import { displayPack } from "@/components/kitchen/format";
 import styles from "@/components/kitchen/kitchen.module.css";
 
-/** Short SKU description shared by the desktop table and the mobile lines. */
-function skuText(item: BasketItem): string | null {
-  if (!item.product) return null;
-
-  return `${item.packCount} × ${item.product.name} (${displayPack(item.product.packSize, item.product.unit)}, ${formatRupees(item.product.price)}) · ${item.product.brand}`;
-}
-
-function toBuyText(item: BasketItem): string {
-  if (item.status === "covered") return "covered";
-
-  if (item.status === "unavailable") return "no SKU available";
-
-  return formatQuantity(item.missing, item.unit);
-}
-
-function BasketRow({ item }: { item: BasketItem }) {
-  return (
-    <tr>
-      <td>
-        <strong>{item.ingredient.name}</strong>
-        <div className="small muted">
-          used in {item.usedInRecipeIds.length}{" "}
-          {item.usedInRecipeIds.length === 1 ? "meal" : "meals"}
-        </div>
-      </td>
-      <td className={styles.numeric}>{formatQuantity(item.required, item.unit)}</td>
-      <td className={styles.numeric}>{formatQuantity(item.owned, item.unit)}</td>
-      <td className={styles.numeric}>
-        {item.status === "buy" ? (
-          toBuyText(item)
-        ) : (
-          <span
-            className={`pill ${item.status === "covered" ? "pill-positive" : "pill-warning"}`}
-          >
-            {toBuyText(item)}
-          </span>
-        )}
-      </td>
-      <td>
-        {item.product ? (
-          <>
-            <div>
-              {item.packCount} × {item.product.name}
-            </div>
-            <div className="small muted">
-              {item.product.brand} · {displayPack(item.product.packSize, item.product.unit)} pack ·{" "}
-              {formatRupees(item.product.price)} · simulated
-            </div>
-          </>
-        ) : (
-          <span className="small muted">—</span>
-        )}
-      </td>
-      <td className={styles.numeric}>{item.lineCost > 0 ? formatRupees(item.lineCost) : "—"}</td>
-    </tr>
-  );
-}
-
 function BasketLine({ item }: { item: BasketItem }) {
   return (
     <li className={styles.basketLine}>
-      <div className={styles.basketLineTop}>
-        <strong>{item.ingredient.name}</strong>
-        <span className={styles.basketLineCost}>
-          {item.lineCost > 0 ? formatRupees(item.lineCost) : "—"}
-        </span>
-      </div>
-      <span className={styles.basketLineMeta}>
-        need {formatQuantity(item.required, item.unit)} · have{" "}
-        {formatQuantity(item.owned, item.unit)}
-        {item.status === "covered"
-          ? " · covered by your pantry"
-          : item.status === "unavailable"
-            ? " · no simulated SKU available"
-            : ` · buy ${formatQuantity(item.missing, item.unit)}`}
-      </span>
-      {skuText(item) ? (
-        <span className={styles.basketLineMeta}>{skuText(item)} · simulated</span>
-      ) : null}
+      <div className={styles.basketLineTop}><strong>{item.ingredient.name}</strong><span>{item.status === "covered" ? <Check size={16} aria-label="Already covered" /> : item.status === "unavailable" ? "Unavailable" : formatRupees(item.lineCost)}</span></div>
+      <span className={styles.basketLineMeta}>{item.product && item.status === "buy" ? `${item.packCount} × ${displayPack(item.product.packSize, item.product.unit)} · ${item.product.brand}` : item.status === "covered" ? "Already in your kitchen" : "No product available for this ingredient"}</span>
+      <details className={styles.lineDetails}><summary>Quantity details</summary><p>Need {formatQuantity(item.required, item.unit)} · have {formatQuantity(item.owned, item.unit)} · missing {formatQuantity(item.missing, item.unit)}</p>{item.product ? <p>{item.product.name}</p> : null}</details>
     </li>
   );
 }
 
 export function BasketPanel({ basket, toBuyCount }: { basket: Basket; toBuyCount: number }) {
   const buy = basket.items.filter((item) => item.status === "buy");
-  const covered = basket.items.filter((item) => item.status !== "buy");
+  const covered = basket.items.filter((item) => item.status === "covered");
+  const unavailable = basket.items.filter((item) => item.status === "unavailable");
 
   return (
-    <section className={styles.panel} aria-label="Pantry-aware basket">
-      <div className={styles.panelHeader}>
-        <div>
-          <h3 className={styles.panelTitle}>Your basket</h3>
-          <p className={styles.panelHint}>
-            {toBuyCount} {toBuyCount === 1 ? "thing" : "things"} to buy ·{" "}
-            {formatRupees(basket.pantryValueAvoided)} already at home · simulated products, nothing
-            is ordered
-          </p>
-        </div>
-        <p className={styles.panelValue}>{formatRupees(basket.totalCost)}</p>
-      </div>
-
-      {basket.items.length === 0 ? (
-        <p className={styles.emptyState}>
-          No plan yet, so there is nothing to compare against your pantry.
-        </p>
-      ) : (
-        <>
-          <div className={styles.tableWrap}>
-            <table className={styles.basketTable}>
-              <thead>
-                <tr>
-                  <th scope="col">Ingredient</th>
-                  <th scope="col">Required</th>
-                  <th scope="col">In pantry</th>
-                  <th scope="col">To buy</th>
-                  <th scope="col">Simulated SKU</th>
-                  <th scope="col">Line cost</th>
-                </tr>
-              </thead>
-              {buy.length > 0 ? (
-                <tbody>
-                  <tr className={styles.groupRow}>
-                    <th scope="colgroup" colSpan={6}>
-                      To buy · {buy.length}
-                    </th>
-                  </tr>
-                  {buy.map((item) => (
-                    <BasketRow key={`${item.ingredientId}:${item.unit}`} item={item} />
-                  ))}
-                </tbody>
-              ) : null}
-              {covered.length > 0 ? (
-                <tbody>
-                  <tr className={styles.groupRow}>
-                    <th scope="colgroup" colSpan={6}>
-                      Already covered by the pantry · {covered.length}
-                    </th>
-                  </tr>
-                  {covered.map((item) => (
-                    <BasketRow key={`${item.ingredientId}:${item.unit}`} item={item} />
-                  ))}
-                </tbody>
-              ) : null}
-            </table>
+    <section className={styles.basketSummary} aria-label="Pantry-aware basket" id="weekly-basket" tabIndex={-1}>
+      <div className={styles.basketEyebrow}><ShoppingBag size={18} aria-hidden /><span>Just what’s missing</span></div>
+      <h3>Your basket</h3>
+      <p className={styles.basketPrice}>{formatRupees(basket.totalCost)}</p>
+      <p className={styles.panelHint}>{toBuyCount} ingredients to buy · estimated</p>
+      <p className={styles.pantryCredit}><Check size={15} aria-hidden /> {formatRupees(basket.pantryValueAvoided)} of required quantities already home</p>
+      {unavailable.length > 0 ? <p className={styles.unavailableNote}>{unavailable.length} ingredient{unavailable.length === 1 ? "" : "s"} unavailable. This basket cannot cover the full plan.</p> : null}
+      {basket.items.length === 0 ? <p className={styles.panelHint}>Choose a meal to start your shopping list.</p> : (
+        <details className={styles.basketDisclosure}>
+          <summary>Review basket <span aria-hidden>↗</span></summary>
+          <div className={styles.basketContents}>
+            {buy.length > 0 ? <><h4>To buy · {buy.length}</h4><ul className={styles.basketMobileList}>{buy.map((item) => <BasketLine key={item.ingredientId} item={item} />)}</ul></> : null}
+            {unavailable.length > 0 ? <><h4>Unavailable · {unavailable.length}</h4><ul className={styles.basketMobileList}>{unavailable.map((item) => <BasketLine key={item.ingredientId} item={item} />)}</ul></> : null}
+            {covered.length > 0 ? <details className="disclosure"><summary>{covered.length} ingredients fully covered at home</summary><ul className={styles.basketMobileList}>{covered.map((item) => <BasketLine key={item.ingredientId} item={item} />)}</ul></details> : null}
+            <p className="small muted">Prices include whole packs. Pantry value reflects the quantities you already own, so it is not a checkout discount.</p>
           </div>
-
-          <div className={styles.basketMobile}>
-            {buy.length > 0 ? (
-              <>
-                <p className={styles.basketGroupTitle}>To buy · {buy.length}</p>
-                <ul className={styles.basketMobileList}>
-                  {buy.map((item) => (
-                    <BasketLine key={`${item.ingredientId}:${item.unit}-mobile`} item={item} />
-                  ))}
-                </ul>
-              </>
-            ) : null}
-            {covered.length > 0 ? (
-              <>
-                <p className={styles.basketGroupTitle}>
-                  Already covered by the pantry · {covered.length}
-                </p>
-                <ul className={styles.basketMobileList}>
-                  {covered.map((item) => (
-                    <BasketLine
-                      key={`${item.ingredientId}:${item.unit}-mobile`}
-                      item={item}
-                    />
-                  ))}
-                </ul>
-              </>
-            ) : null}
-          </div>
-
-          <dl className={styles.basketTotals}>
-            <div>
-              <dt>Basket total</dt>
-              <dd>{formatRupees(basket.totalCost)}</dd>
-            </div>
-            <div>
-              <dt>Pantry avoided</dt>
-              <dd>{formatRupees(basket.pantryValueAvoided)}</dd>
-            </div>
-            <div>
-              <dt>Coverage</dt>
-              <dd>{Math.round(basket.coveragePercent)}%</dd>
-            </div>
-          </dl>
-        </>
+        </details>
       )}
+      <p className={styles.basketFootnote}>Prototype estimate. Nothing is ordered.</p>
     </section>
   );
 }

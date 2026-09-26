@@ -69,22 +69,28 @@ export function BlinkitLens() {
     <div className="container">
       <section className={styles.intro}>
         <p className="eyebrow">Blinkit lens · weeks 1–8 · simulated</p>
-        <h1>What the cohort signal looks like</h1>
+        <h1>A kitchen changes<br />the whole basket.</h1>
         <p className={styles.lede}>
-          Four deterministic household fixtures, replayed through the same engine. This is a
-          product-strategy view of household intelligence — not an operations dashboard, and not
-          real Blinkit data.
+          Explore what household context could mean for Blinkit, through four fictional kitchens.
         </p>
       </section>
 
       <p className={styles.simulatedBanner} role="note">
         <ShieldAlert size={15} aria-hidden />
         <span>
-          SIMULATED DATA — four fixtures, not real Blinkit users, demand or inventory. Nothing here
-          is an order, a forecast or a business fact.
+          SIMULATED DATA · Illustrative mechanics, not evidence of real customers, demand or business results.
         </span>
       </p>
 
+      <section className={styles.takeaways} aria-label="Strategic read-out">
+        <p className="eyebrow">What this prototype makes visible</p>
+        <h2>Small household details.<br />A different shopping experience.</h2>
+        <ol>{insights.narrative.slice(0, 3).map((line) => <li key={line}>{line}</li>)}</ol>
+        <Link className="text-link" href="/explore">Follow a household’s story →</Link>
+      </section>
+
+      <details className="disclosure"><summary>Explore the cohort data · 4 households, 8 weeks</summary>
+      <ul className={kitchenStyles.narrativeList}>{insights.narrative.slice(3).map((line) => <li key={line}>{line}</li>)}</ul>
       <dl className={kitchenStyles.metrics} aria-label="Cohort at a glance">
         <MetricCard
           label="Simulated households"
@@ -306,23 +312,8 @@ export function BlinkitLens() {
         </section>
       </div>
 
-      <section className={kitchenStyles.panel} aria-label="Strategic read-out">
-        <div className={kitchenStyles.panelHeader}>
-          <h2 className={kitchenStyles.panelTitle}>Strategic read-out</h2>
-          <p className={kitchenStyles.panelHint}>plain language, simulated source</p>
-        </div>
-        <ul className={kitchenStyles.narrativeList}>
-          {insights.narrative.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
-        <p className="small muted" style={{ marginTop: "1rem", marginBottom: 0 }}>
-          Reading: pantry awareness changes basket composition more than it changes intent;
-          substitution memory is cheap to earn and cheap to lose; use-soon pressure concentrates in
-          perishables bought in packs larger than the week&apos;s need.{" "}
-          <Link href="/explore">Replay a household</Link> to inspect any claim.
-        </p>
-      </section>
+
+      </details>
     </div>
   );
 }

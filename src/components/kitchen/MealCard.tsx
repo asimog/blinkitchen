@@ -13,20 +13,15 @@ const COMPLEXITY_LABEL = {
   high: "Project cook",
 } satisfies Record<PreparationComplexity, string>;
 
-const VISIBLE_REASONS = 2;
-
 export function MealCard({
   recommendation,
-  planned,
-  planBadge = "In this week's plan",
+  number,
   catalog,
   action,
   planExplanation,
 }: {
   recommendation: MealRecommendation;
-  planned?: boolean;
-  /** Label for the planned badge; the caller distinguishes suggested from chosen. */
-  planBadge?: string;
+  number?: number;
   catalog: Catalog;
   /** Optional interactive control (e.g. add to plan) rendered in the footer. */
   action?: ReactNode;
@@ -39,8 +34,6 @@ export function MealCard({
   const { recipe, impact, explanation, score } = recommendation;
   const fit = Math.max(0, Math.round(score * 100));
   const allReasons = planExplanation && planExplanation.length > 0 ? planExplanation : explanation;
-  const reasons = allReasons.slice(0, VISIBLE_REASONS);
-  const moreReasons = allReasons.slice(VISIBLE_REASONS);
 
   const nameOf = (ingredientId: string) =>
     ingredientById(catalog, ingredientId)?.name ?? ingredientId;
@@ -49,33 +42,20 @@ export function MealCard({
   const missing = impact.missingIngredientIds;
 
   return (
-    <article className={`${styles.mealCard} ${planned ? styles.mealCardPlanned : ""}`}>
+    <article className={styles.mealCard}>
       <div className={styles.mealTop}>
-        <h4 className={styles.mealName}>{recipe.name}</h4>
-        {planned ? <span className="pill pill-positive">{planBadge}</span> : null}
+        <span className={styles.mealNumber} aria-hidden>{number ? String(number).padStart(2, "0") : "+"}</span>
+        <div><p className={styles.mealCuisine}>{humanizeId(recipe.cuisine)}</p><h4 className={styles.mealName}>{recipe.name}</h4></div>
       </div>
 
       <div className={styles.impactRow}>
-        <span className={styles.impactCost}>
-          {impact.additionalCost > 0 ? `${formatRupees(impact.additionalCost)} additional` : "Nothing extra to buy"}
-        </span>
         <span className="muted small">{percent(impact.coveragePercent)} already home</span>
       </div>
-
-      <ul className={styles.whyList}>
-        {reasons.map((line) => (
-          <li key={line} className={styles.whyItem}>
-            {line}
-          </li>
-        ))}
-      </ul>
 
       <div className={styles.cardFooter}>
         <span>{recipe.estimatedPreparationMinutes} min</span>
         <span aria-hidden>·</span>
         <span>{COMPLEXITY_LABEL[recipe.preparationComplexity]}</span>
-        <span aria-hidden>·</span>
-        <span>{humanizeId(recipe.cuisine)}</span>
         {recipe.discoveryLevel === "explore" ? (
           <span className="pill pill-accent">A little new</span>
         ) : null}
@@ -85,15 +65,18 @@ export function MealCard({
 
       <details className={styles.scoreNote}>
         <summary className={styles.detailsToggle}>Why this?</summary>
-        {moreReasons.length > 0 ? (
+        {allReasons.length > 0 ? (
           <ul className={styles.whyList}>
-            {moreReasons.map((line) => (
+            {allReasons.map((line) => (
               <li key={line} className={styles.whyItem}>
                 {line}
               </li>
             ))}
           </ul>
         ) : null}
+        <span className={styles.impactCost}>
+          {impact.additionalCost > 0 ? `${formatRupees(impact.additionalCost)} additional` : "Nothing extra to buy"}
+        </span>
         <div className={styles.ingredientColumns}>
           <div>
             <p className={styles.ingredientColTitle}>In your kitchen</p>
