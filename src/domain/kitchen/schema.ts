@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { unitSchema } from "@/domain/units";
-import { MAX_WEEKLY_MEALS, WEEK_MAX, WEEK_MIN } from "@/domain/kitchen/types";
+import { DIET_PREFERENCES, MAX_WEEKLY_MEALS, WEEK_MAX, WEEK_MIN } from "@/domain/kitchen/types";
 
 const weekSchema = z.number().int().min(WEEK_MIN).max(WEEK_MAX);
 
@@ -11,8 +11,8 @@ export const kitchenProfileSchema = z.strictObject({
   memberCount: z.number().int().min(1).max(20),
   locationId: z.string().min(1).max(120),
   weeklyBudget: z.number().int().min(100).max(100_000),
-  diet: z.enum(["vegetarian", "vegan", "eggetarian", "non_vegetarian", "flexible"]),
-  cuisines: z.array(z.string().min(1)).min(1).max(9),
+  diet: z.enum(DIET_PREFERENCES),
+  cuisines: z.array(z.string().min(1)).max(12),
   cookingDaysPerWeek: z.number().int().min(0).max(7),
   conveniencePreference: preferenceSchema,
   priceSensitivity: preferenceSchema,

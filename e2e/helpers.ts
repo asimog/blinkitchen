@@ -1,21 +1,14 @@
 import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 
-/** Fill the three-step wizard and land on the kitchen page. */
-export async function completeWizard(page: Page, householdName: string): Promise<void> {
-  await page.goto("/build");
-  await page.getByLabel("Household name").fill(householdName);
-  await page.getByRole("button", { name: "Continue" }).click();
-
-  await expect(page.getByText("Step 2 of 3")).toBeVisible();
-  await page.getByRole("checkbox", { name: "punjabi", exact: true }).check();
-  await page.getByRole("button", { name: "Continue" }).click();
-
-  await expect(page.getByText("Step 3 of 3")).toBeVisible();
-  await page.getByRole("checkbox", { name: "Onion", exact: true }).check();
-  await page.getByRole("button", { name: "Start Week 1" }).click();
-
-  await expect(page).toHaveURL(/\/kitchen$/);
-  await expect(page.getByText("Week 1 of 8", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: householdName, exact: true })).toBeVisible();
+/** Three taps in: people, diet, what is at home. Lands on the swipe planner. */
+export async function startKitchen(page: Page): Promise<void> {
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/start$/);
+  await page.getByRole("button", { name: "4", exact: true }).click();
+  await page.getByRole("button", { name: "Veg", exact: true }).click();
+  await page.getByRole("button", { name: "Onion", exact: true }).click();
+  await page.getByRole("button", { name: /Show my week/ }).click();
+  await expect(page).toHaveURL(/\/week$/);
+  await expect(page.getByRole("heading", { name: "Fill your week" })).toBeVisible();
 }

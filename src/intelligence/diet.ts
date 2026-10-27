@@ -3,35 +3,21 @@ import type { DietPreference } from "@/domain/kitchen/types";
 
 /**
  * Diet compatibility is a hard filter, always respected for recipes and for
- * suggested substitutions. vegan <= vegetarian <= eggetarian <= everything.
+ * suggested substitutions. Vegetarian households see only recipes and
+ * ingredients tagged vegetarian (vegan implies vegetarian); non-vegetarian
+ * households see everything.
  */
 
-export function recipeAllowedForDiet(recipe: Recipe, diet: DietPreference): boolean {
-  const has = (attribute: DietaryAttribute) => recipe.dietaryAttributes.includes(attribute);
+function allowed(attributes: DietaryAttribute[], diet: DietPreference): boolean {
+  if (diet === "non_vegetarian") return true;
 
-  switch (diet) {
-    case "vegan":
-      return has("vegan");
-    case "vegetarian":
-    case "eggetarian":
-      return has("vegetarian") || has("vegan");
-    case "non_vegetarian":
-    case "flexible":
-      return true;
-  }
+  return attributes.includes("vegetarian") || attributes.includes("vegan");
+}
+
+export function recipeAllowedForDiet(recipe: Recipe, diet: DietPreference): boolean {
+  return allowed(recipe.dietaryAttributes, diet);
 }
 
 export function ingredientAllowedForDiet(ingredient: Ingredient, diet: DietPreference): boolean {
-  const has = (attribute: DietaryAttribute) => ingredient.dietaryAttributes.includes(attribute);
-
-  switch (diet) {
-    case "vegan":
-      return has("vegan");
-    case "vegetarian":
-    case "eggetarian":
-      return has("vegetarian") || has("vegan");
-    case "non_vegetarian":
-    case "flexible":
-      return true;
-  }
+  return allowed(ingredient.dietaryAttributes, diet);
 }

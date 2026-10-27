@@ -2,12 +2,23 @@ import { describe, expect, it } from "vitest";
 import { loadCatalog } from "@/catalog/load";
 import { applyKitchenCommand } from "@/domain/kitchen/commands";
 import { deriveLearning } from "@/intelligence/learning";
+import { recipeAllowedForDiet } from "@/intelligence/diet";
 import { rankRecipes } from "@/intelligence/meals";
+import { recipeById } from "@/catalog/grocery-graph";
+import type { Recipe } from "@/catalog/types";
 import { suggestPlan } from "@/intelligence/planner";
 import type { KitchenState } from "@/domain/kitchen/types";
 import { makeKitchen, pantryItem } from "@/test-utils/kitchen";
 
 const catalog = loadCatalog();
+
+function requireRecipe(id: string): Recipe {
+  const recipe = recipeById(catalog, id);
+
+  if (!recipe) throw new Error(`Missing recipe ${id}`);
+
+  return recipe;
+}
 
 function rank(kitchen: KitchenState) {
   return rankRecipes(kitchen, catalog, deriveLearning(kitchen, catalog));
@@ -26,19 +37,21 @@ function rankIndexOf(kitchen: KitchenState, recipeId: string): number {
 }
 
 describe("diet compatibility", () => {
-  it("is a hard filter for vegan households", () => {
-    const vegan = makeKitchen({}, { diet: "vegan" });
-    const ranked = rank(vegan);
-    expect(ranked.length).toBeGreaterThan(0);
-    expect(ranked.every((row) => row.recipe.dietaryAttributes.includes("vegan"))).toBe(true);
-    expect(ranked.some((row) => row.recipe.id === "palak_paneer")).toBe(false);
-    expect(ranked.some((row) => row.recipe.id === "aloo_paratha")).toBe(false);
+  const nonVegRecipe = { ...requireRecipe("palak_paneer"), id: "test_chicken", dietaryAttributes: [] };
+
+  it("is a hard filter for vegetarian households", () => {
+    expect(recipeAllowedForDiet(nonVegRecipe, "vegetarian")).toBe(false);
+    expect(recipeAllowedForDiet(nonVegRecipe, "non_vegetarian")).toBe(true);
+    const ranked = rank(makeKitchen());
+    expect(ranked.every((row) => recipeAllowedForDiet(row.recipe, "vegetarian"))).toBe(true);
   });
 
-  it("allows vegetarian recipes for vegetarian households", () => {
-    const ranked = rank(makeKitchen());
-    expect(ranked.some((row) => row.recipe.id === "palak_paneer")).toBe(true);
-    expect(ranked.some((row) => row.recipe.id === "rajma_chawal")).toBe(true);
+  it("allows vegetarian recipes for both diets", () => {
+    for (const diet of ["vegetarian", "non_vegetarian"] as const) {
+      const ranked = rank(makeKitchen({}, { diet }));
+      expect(ranked.some((row) => row.recipe.id === "palak_paneer")).toBe(true);
+      expect(ranked.some((row) => row.recipe.id === "rajma_chawal")).toBe(true);
+    }
   });
 });
 

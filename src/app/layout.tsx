@@ -1,79 +1,25 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Fraunces, Inter } from "next/font/google";
-import { SiteNav } from "@/components/shell/SiteNav";
+import type { Metadata, Viewport } from "next";
+import { Bricolage_Grotesque, Figtree, Mukta } from "next/font/google";
 import "../styles/globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
+const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--nf-display", display: "swap" });
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  display: "swap",
-});
+const body = Figtree({ subsets: ["latin"], variable: "--nf-body", display: "swap" });
+
+const hindi = Mukta({ subsets: ["devanagari"], weight: ["500", "700"], variable: "--nf-hindi", display: "swap" });
 
 export const metadata: Metadata = {
-  title: {
-    default: "Blinkitchen — the kitchen, not just the cart",
-    template: "%s · Blinkitchen",
-  },
-  description:
-    "A prototype of a longitudinal household grocery intelligence layer. Household facts are truth; intelligence is derived.",
-  openGraph: {
-    title: "Blinkitchen",
-    description: "Your grocery app remembers the kitchen, not just the cart.",
-    type: "website",
-  },
+  title: { default: "Blinkitchen", template: "%s · Blinkitchen" },
+  description: "Aaj kya banega? A kitchen that plans the week from what is already at home.",
 };
 
-const FOOTER_LINKS = [
-  { href: "/explore", label: "Explore households" },
-  { href: "/build", label: "Build yours" },
-  { href: "/kitchen", label: "My kitchen" },
-  { href: "/blinkit", label: "Blinkit lens" },
-] as const;
+export const viewport: Viewport = { themeColor: "#1B1310", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${hindi.variable}`}>
       <body>
-        <a className="skip-link" href="#main">
-          Skip to content
-        </a>
-        <header className="site-header">
-          <div className="container site-header-inner">
-            <Link href="/" className="wordmark" aria-label="Blinkitchen home">
-              blinkitchen<span className="wordmark-sub">kitchen intelligence</span>
-            </Link>
-            <SiteNav />
-          </div>
-        </header>
-        <main id="main">{children}</main>
-        <footer className="site-footer">
-          <div className="container site-footer-inner">
-            <div>
-              <p className="site-footer-brand">blinkitchen</p>
-              <p className="small muted" style={{ margin: 0 }}>
-                A little less planning. A little more possibility.
-              </p>
-            </div>
-            <nav className="site-footer-nav" aria-label="Footer">
-              {FOOTER_LINKS.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-            <p className="small muted site-footer-note">
-              Prototype. All products, prices, households and availability are simulated — not real
-              Blinkit data. Nothing is ordered or charged.
-            </p>
-          </div>
-        </footer>
+        <main className="app-frame">{children}</main>
       </body>
     </html>
   );

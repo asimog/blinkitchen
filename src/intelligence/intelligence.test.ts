@@ -55,13 +55,6 @@ describe("substitution suggestions", () => {
     expect(suggestions.every((row) => row.substitution.id !== "paneer_to_tofu")).toBe(true);
   });
 
-  it("respects diet constraints for substitutes", () => {
-    const vegan = makeKitchen({}, { diet: "vegan" });
-    const basket = buildBasket(vegan, catalog, plan("tofu_bhurji"));
-    const suggestions = recommendSubstitutions(vegan, catalog, basket, deriveLearning(vegan, catalog));
-    expect(suggestions.some((row) => row.substitution.id === "tofu_to_paneer")).toBe(false);
-  });
-
   it("grows stronger after acceptance and weaker after rejection", () => {
     const base = makeKitchen();
     const basket = buildBasket(base, catalog, plan("palak_paneer"));

@@ -13,21 +13,26 @@ that improve as the weeks accumulate. It is intentionally not a recipe app, a
 pantry tracker, a marketplace clone or an AI demo. Everything simulated is
 labelled; no simulated result is evidence about real Blinkit customers.
 
-## Fastest demo path (about three minutes)
+## Fastest demo path (about two minutes)
 
-The simulated 8-week demo is the preferred review path; you do not need to build a
-household to understand the product.
+The app is a phone-first kitchen. Open it on a phone, or in a narrow window.
 
-1. `/` — a visual introduction and an interactive pantry check using the Week 1 basket.
-2. `/explore/pantry_planner` — the simulated 8-week demo. Jump between weeks with
-   the week rail, then use the "Compare weeks" link for what the system learned.
-3. `/explore/cuisine_explorer` — different household inputs, same engine.
-4. `/blinkit` — what the prototype demonstrates across the cohort, what it could
-   enable for Blinkit, and what still needs real customer validation.
-5. [PRODUCT_CASE.md](PRODUCT_CASE.md) — opportunity, hypothesis, experiment and
+1. `/start` — three taps: who's eating, veg or non-veg, what's at home. Or open
+   the lived-in sample kitchen (the Mehtas, four simulated weeks in).
+2. `/week` — swipe dinners into the week, or "Fill the rest for me".
+3. `/checkout` — the plain prototype basket: only what is missing, with packs,
+   prices and the meals each item is for. Nothing is ordered.
+4. `/` — "What's cooking? / आज क्या बनेगा?": tonight's dinner, what it rescues,
+   and what carries into a later meal.
+5. `/pantry` — the shelf and the flags: what to use today, what runs out on which
+   day, and whether the basket already covers it.
+6. Wrap up the week from `/week`. Assigned meals count as cooked; `/remix` then
+   proposes next week as stories (a chain, a swap, something new, a cuisine the
+   pantry can already cook).
+7. `/kitchen` — the journey (Week 1 to 8, projected ahead from this household's
+   choices) and the Blinkit lens.
+8. [PRODUCT_CASE.md](PRODUCT_CASE.md) — opportunity, hypothesis, experiment and
    metrics.
-
-Building a household is the secondary path: `/build`, then `/kitchen`.
 
 ## How it works
 
@@ -40,8 +45,8 @@ Household facts (KitchenState)      Catalog (read-only, simulated)
         ┌──────────────┴──────────────┐
         ↓                             ↓
  Customer experience            Blinkit Lens
- /build, /kitchen,              /blinkit
- /explore, /explore/[id]
+ /start, /week, /checkout,      /kitchen (lens view)
+ /, /pantry, /remix
 ```
 
 One household authority. Facts are persisted, intelligence is recomputed on every
@@ -57,12 +62,13 @@ structures carry their Blinkit source URL.
 
 | Route | What it shows |
 | --- | --- |
-| `/` | A food-led introduction, plan preview and interactive pantry check |
-| `/explore` | Four simulated households, each replayable across Weeks 1 to 8 |
-| `/explore/[id]` | One household's week: plan, basket, reuse, swaps, replenishment, learning |
-| `/build` | Build your own household (stored only in this browser) |
-| `/kitchen` | Your interactive household journey |
-| `/blinkit` | Cohort-level projection across the simulated households |
+| `/start` | Three-tap onboarding, or a lived-in sample kitchen |
+| `/` | Today: tonight's dinner, what it uses up, what carries over |
+| `/week` | Swipe planner for the week's dinners; wraps up the week |
+| `/checkout` | Prototype basket of only what is missing |
+| `/remix` | Between weeks: next week's changes as stories |
+| `/pantry` | Pantry shelf and a dated timeline of run-outs and use-soon items |
+| `/kitchen` | The household's eight-week journey and the Blinkit lens |
 
 ## Run it
 
@@ -80,9 +86,9 @@ Open http://localhost:3000
 ```powershell
 npm run lint       # oxlint (anti-slop) + eslint
 npm run typecheck
-npm run test       # 145 unit tests across 17 files
+npm run test       # 148 unit tests across 19 files
 npm run build
-npm run test:e2e   # 13 Playwright tests; first time: npx playwright install chromium
+npm run test:e2e   # 6 Playwright tests; first time: npx playwright install chromium
 ```
 
 `npm run lint` includes the vendored anti-slop Oxlint ruleset
@@ -102,21 +108,13 @@ mobile smoke suite.
 
 ## Interface
 
-The homepage introduces the concept through a kitchen photograph and a live pantry
-check: fully covered ingredients are marked as already home, while the shopping
-count and estimate come from the same derived basket. The listed dishes come from
-that basket's plan. The toggle is temporary presentation state only.
+Seven phone screens, one primary action each. The household never reports
+cooking: a meal assigned to a day counts as cooked when the week is wrapped up,
+which is what moves the pantry forward. Copy describes outcomes ("3 of 6 at
+home", "covered by this week's basket"), and mechanics stay in the engine.
 
-The weekly view leads with meals and pantry coverage, beside a compact basket
-summary. Basket lines, pack quantities, pantry inventory, plan editing, swaps and
-full learning are available through disclosures. Mobile has a basket shortcut.
-The comparison names the last replayed week, including partial journeys.
-Onboarding keeps three steps; a blank name becomes "My kitchen", and pantry groups
-expand individually. Blinkit Lens leads with three derived observations and keeps
-cohort tables behind a disclosure. All outputs remain labelled as simulated.
-
-The decorative homepage asset is `public/images/kitchen-table.png`, generated
-with the built-in image-generation tool. Prompt: overhead editorial photograph of
-herb parathas, yogurt and rajma on a forest-green plate, an ivory kitchen table,
-fresh greens, tomato, lime and linen in natural afternoon light; no text or people.
-It illustrates a kitchen atmosphere, not an exact catalog recipe.
+Dishes are drawn as illustrated plates coloured by their main ingredient, and
+each is marked "photo to come". Food photography and non-vegetarian recipes are
+planned, not built: the non-veg diet is offered, but the catalog has no meat
+recipes yet, so it currently sees the same dishes as veg. Simulated prices and
+households are disclosed at checkout and in the lens.

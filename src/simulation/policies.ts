@@ -1,12 +1,10 @@
 import { roundQuantity } from "@/domain/units";
 import type { Catalog } from "@/catalog/types";
-import { recipeRequirements } from "@/catalog/grocery-graph";
 import { applyKitchenCommand } from "@/domain/kitchen/commands";
 import type { KitchenCommand } from "@/domain/kitchen/commands";
 import type { KitchenState } from "@/domain/kitchen/types";
 import { buildWeekIntelligence } from "@/intelligence";
-import { effectiveRequirement } from "@/intelligence/basket";
-import { deriveUseSoon } from "@/intelligence/use-soon";
+import { closeWeek } from "@/intelligence/week-close";
 import type { WeekIntelligence } from "@/intelligence/types";
 
 /**
@@ -32,8 +30,8 @@ const REJECT_MARGIN = 0;
 
 /**
  * The demo policy: cook the engine's suggested plan, accept the swaps this
- * household would accept, buy the resulting pantry-aware basket, cook it,
- * waste whatever spoiled, then close the week.
+ * household would accept, buy the resulting pantry-aware basket, then close
+ * the week exactly as the app does: assigned meals count as cooked.
  *
  * The policy projects its own decisions through the same pure domain and the
  * same intelligence engine, so what it buys, cooks and consumes always agrees
@@ -95,41 +93,15 @@ export const householdPolicy: JourneyPolicy = (kitchen, catalog, intelligence) =
     push({ type: "receive_grocery", lines });
   }
 
-  const usedIngredientIds = new Set<string>();
+  const closed = closeWeek(projected, catalog, decided);
 
-  for (const meal of decided.plan) {
-    const scale = kitchen.profile.memberCount / meal.recipe.servings;
-
-    for (const requirement of recipeRequirements(catalog, meal.recipe)) {
-      if (requirement.optional) continue;
-      const effective = effectiveRequirement(projected, catalog, requirement);
-      usedIngredientIds.add(effective.ingredientId);
-      const quantity = roundQuantity(effective.quantity * scale);
-
-      if (quantity > 0) {
-        push({
-          type: "consume_ingredient",
-          ingredientId: effective.ingredientId,
-          quantity,
-          unit: effective.unit,
-        });
-      }
-    }
-
-    push({ type: "complete_meal", recipeId: meal.recipeId, day: meal.day, slot: meal.slot });
+  if (!closed.ok) {
+    throw new Error(
+      `Simulation policy could not close the week (${closed.error.code}): ${closed.error.message}`,
+    );
   }
 
-  for (const entry of deriveUseSoon(projected, catalog)) {
-    if (usedIngredientIds.has(entry.ingredientId)) continue;
-    push({
-      type: "waste_ingredient",
-      ingredientId: entry.ingredientId,
-      quantity: entry.quantity,
-      unit: entry.unit,
-    });
-  }
-
-  push({ type: "complete_week" });
+  commands.push(...closed.commands);
 
   return commands;
 };

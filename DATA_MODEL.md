@@ -23,10 +23,12 @@ type KitchenState = {
 `KitchenProfile` carries household facts: display name, member count, location,
 weekly budget, diet, cuisines, cooking days per week, four 0..1 preference fields
 (convenience, price, exploration, planning), kitchen type (`existing` or `fresh`)
-and `starterIngredientIds` (intentions for a fresh kitchen, never stock). The type
-supports five diets, but the catalog carries only `vegetarian` and `vegan`
-attributes and onboarding offers only those two, so `eggetarian`,
-`non_vegetarian` and `flexible` currently behave as "allow everything".
+and `starterIngredientIds` (intentions for a fresh kitchen, never stock). Diet is
+`vegetarian` or `non_vegetarian`. Vegetarian keeps recipes and ingredients
+tagged vegetarian or vegan; non-vegetarian allows everything. The catalog has no
+meat recipes yet. Cuisines may be empty: onboarding does not ask, and affinity
+is learned from cooked meals. Onboarding starts every preference at a neutral
+0.5 and plans all seven dinners.
 `PantryItem` is `{ ingredientId, quantity, unit, useSoon, acquiredWeek }`:
 canonical id, non-negative quantity in a canonical unit, an explicit spoilage flag
 and the week it entered the kitchen (staleness evidence).
@@ -245,7 +247,7 @@ staples and excluded from chainable reuse signals.
 
 ## localStorage
 
-Only the user-built household is persisted, under `blinkitchen:v2:kitchen`, with a
+Only the user-built household is persisted, under `blinkitchen:v3:kitchen`, with a
 stable id of `local-kitchen`. Zod validates the stored value on read; an invalid
 or outdated value is discarded and removed without crashing. Derived intelligence
 and simulated households are never stored.
@@ -300,9 +302,9 @@ whose absence never breaks a surface.
 
 **Model changes in the target direction:**
 
-- **Diet model completion.** Back `eggetarian` and `non_vegetarian` with real
-  catalog data and complete filtering end to end. Explicitly deferred for this
-  MVP: the catalog intentionally covers vegetarian and vegan only.
+- **Non-vegetarian catalog.** Harvest and curate meat, fish and egg recipes and
+  tag them so the non-vegetarian diet sees dishes the vegetarian one does not.
+  Planned; the diet already exists in the model.
 - **Household staple projection.** A derived, never-persisted view of what this
   household uses, buys and replenishes often, distinct from the catalog `staple`
   hint. `usualIngredientIds` ("ingredients this household normally keeps") is a

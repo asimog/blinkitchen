@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
-import { KitchenJourney } from "@/components/kitchen/KitchenJourney";
+import { KitchenStory } from "@/components/app/KitchenStory";
 
-export const metadata: Metadata = {
-  title: "My kitchen",
-  description:
-    "Your household's eight-week journey: suggested meals, pantry-aware basket, swaps, replenishment and what Blinkitchen learned.",
-};
+export const metadata: Metadata = { title: "Kitchen" };
 
 export default function KitchenPage() {
-  return <KitchenJourney />;
+  return <KitchenStory />;
 }

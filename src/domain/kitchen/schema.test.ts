@@ -73,8 +73,14 @@ describe("kitchenStateSchema", () => {
     expect(
       kitchenStateSchema.safeParse({
         ...state,
-        profile: { ...state.profile, cuisines: [] },
+        profile: { ...state.profile, diet: "vegan" },
       }).success,
     ).toBe(false);
+    expect(
+      kitchenStateSchema.safeParse({
+        ...state,
+        profile: { ...state.profile, cuisines: [] },
+      }).success,
+    ).toBe(true);
   });
 });

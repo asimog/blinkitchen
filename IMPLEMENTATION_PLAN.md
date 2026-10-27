@@ -28,17 +28,16 @@ updated in the same change, not afterwards.
 | Week view | Meals and coverage first; compact basket alongside; pantry, editing, swaps and learning disclosed on demand |
 | Meal selection | `rankRecipes` ranks for discovery; `suggestPlan` is a deterministic greedy planner evaluating each candidate against the partial week |
 | Reuse signal | Per-recipe factor retained for ranking; plan-level cross-meal reuse uses actual committed requirements |
-| Diet coverage | `DietPreference` has 5 values; catalog, filtering and onboarding intentionally cover 2 (deferred by scope) |
+| Diet coverage | `DietPreference` is `vegetarian` or `non_vegetarian`; no meat recipes in the catalog yet |
 | Optional ingredients | Excluded from coverage, basket, chains and simulation cooking; never auto-bought |
 | Catalog | 118 ingredients (351 aliases), 128 recipes, 273 templates, 546 SKUs, 30 substitutions, 11 cuisines, 42 optional lines |
 | Data provenance | Offline harvest of Blinkit Recipes via `tools/catalog-harvest/`; generated fixtures committed; runtime never fetches |
-| Week 1 → Week 8 | `compareJourney` projection + comparison panel on `/explore/[id]` with a jump link |
-| Storage | `blinkitchen:v2:kitchen`, Zod-validated, facts only |
-| Routes and CI | All six routes reachable; CI runs lint, typecheck, unit tests, build and a Playwright job over the critical routes |
+| Week 1 → Week 8 | `/kitchen` journey: completed weeks from facts (`householdWeeks`), remaining weeks projected from the household's state |
+| Storage | `blinkitchen:v3:kitchen`, Zod-validated, facts only |
+| Routes and CI | Seven phone routes (see Phase 8); CI runs lint, typecheck, unit tests, build and a Playwright job |
 | Tests | Unit suite across domain, catalog, intelligence, insights, simulation; Playwright desktop + mobile smoke |
 
-Remaining known limitations: diets beyond vegetarian and vegan are unbacked
-(deferred by explicit product scope); ingredient aliases are ingestion provenance
+Remaining known limitations: the non-vegetarian diet has no meat recipes yet; ingredient aliases are ingestion provenance
 only; recipe quantities are approximate normalisations; whole-week pack reasoning
 has no pantry-rescue heuristics beyond cost minimisation.
 
@@ -141,10 +140,8 @@ Delivered:
   packs. The repair step in `buildCatalog` guarantees every ingredient is
   purchasable per location *and per pack dimension*.
 
-Deferred by explicit product scope for this MVP: diets beyond vegetarian and
-vegan. The catalog intentionally covers only those two; `eggetarian`,
-`non_vegetarian` and `flexible` still behave as "allow everything", and onboarding
-does not offer them. No diet is exposed that the data cannot support.
+Superseded in Phase 8: diets are now vegetarian and non-vegetarian. Meat recipes
+are still to be harvested.
 
 ## Phase 7: measurement readiness — complete
 
@@ -152,6 +149,26 @@ does not offer them. No diet is exposed that the data cannot support.
 properties) for a real deployment, and states explicitly that the prototype stays
 uninstrumented. Onboarding completion, correction burden and pantry coverage are
 called out as first-class signals rather than vanity numbers.
+
+## Phase 8: phone-first redesign — complete
+
+The reviewer-facing pages (`/explore`, `/build`, `/blinkit` and the dense week
+view) were replaced by seven phone screens around one household:
+
+- `/start`: three taps (people, diet, what's at home, with masalas pre-ticked)
+  or a lived-in sample kitchen.
+- `/week`: a swipe deck of ranked dinners into a Mon–Sun row, plus "Fill the
+  rest for me".
+- `/checkout`: a plain prototype basket.
+- `/`: Today, "What's cooking? / आज क्या बनेगा?".
+- `/pantry`: a shelf plus a dated timeline (`buildPantryTimeline`).
+- `/remix`: between-week stories (`buildRemixStories`).
+- `/kitchen`: the journey and the Blinkit lens, both following this household's
+  facts.
+
+Cooking is never reported. `closeWeek` treats assigned meals as cooked, and the
+simulation policy now uses the same function. Diets were cut to vegetarian and
+non-vegetarian, and the storage key moved to v3.
 
 ## Test strategy
 
@@ -189,7 +206,7 @@ stated reason.
 | Risk | Impact | Mitigation |
 | --- | --- | --- |
 | Three-step onboarding drops signals the engine uses | Weak Week 1 | Mapping table plus pack-size defaults; test differentiation across households |
-| `cuisines` schema requires at least one | Step 2 cannot be skipped | Decide explicitly: keep required, or relax with a documented neutral prior |
+| Cuisines start empty | Week 1 ranking has no cuisine prior | Accepted: affinity is learned from cooked meals and swipes |
 | Plan-level planner changes archetype outcomes | Simulation story shifts | Keep differences emergent; test the stated reasons, never tune thresholds to force them |
 | Merging extras hides mechanics reviewers want | Weakened explainability | Keep each sub-region accessible and expandable |
 | Diet extension changes existing filtering | Fixture behaviour shift | All four fixtures are vegetarian; add explicit tests for new diets |
@@ -224,9 +241,9 @@ Phase 7  measurement readiness       complete (definitions in PRODUCT_CASE.md)
 
 ## Post-MVP work, in order
 
-1. **Diet model completion.** Extend catalog data to eggetarian and
-   non_vegetarian, then filtering, ranking, substitutions and onboarding end to
-   end. Do not expose a diet until its data exists. Deferred by explicit scope.
+1. **Non-vegetarian recipes and food photography.** Harvest meat, fish and egg
+   recipes through `tools/catalog-harvest`, then replace the illustrated plates
+   with real dish photos. Both follow the settled phone UI.
 2. **Data scale.** Grow toward 300 ingredients, 800 recipes and 1,000 SKUs through
    the harvest pipeline, quality first.
 3. **Pilot instrumentation.** Implement the event definitions in

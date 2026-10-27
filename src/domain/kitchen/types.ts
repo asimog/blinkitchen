@@ -16,12 +16,9 @@ export type WeekDay = (typeof WEEK_DAYS)[number];
 
 export type MealSlot = (typeof MEAL_SLOTS)[number];
 
-export type DietPreference =
-  | "vegetarian"
-  | "vegan"
-  | "eggetarian"
-  | "non_vegetarian"
-  | "flexible";
+export const DIET_PREFERENCES = ["vegetarian", "non_vegetarian"] as const;
+
+export type DietPreference = (typeof DIET_PREFERENCES)[number];
 
 export type KitchenType = "fresh" | "existing";
 

@@ -140,10 +140,14 @@ They are design choices, not findings.
 
 ## Reproducing a run
 
-`/explore` replays a journey by calling `simulateJourney` for the selected
-archetype and rendering the resulting states: "Advance one week" simulates one
-more state, "Replay to Week 8" the full journey, "Reset" discards the in-memory
-states. Nothing about a simulated household is persisted.
+The policy and the app close weeks through the same function, `closeWeek`
+(`src/intelligence/week-close.ts`): assigned meals consume what is in stock,
+unrescued use-soon stock is recorded as spoiled, and the week completes.
+
+Simulation appears in the app in three places. The sample kitchen on `/start`
+saves the Mehtas after four simulated weeks as the browser household. The
+journey on `/kitchen` projects the remaining weeks from the user's real state
+without saving them. The lens compares against the four fixture journeys.
 
 ## Planned: a compact Week 1 to Week 8 comparison
 

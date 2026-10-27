@@ -259,8 +259,8 @@ Verified behaviour in the current code:
 - That any simulated archetype difference corresponds to a real segment.
 - That the current engine finds a globally optimal week; it chooses meals
   greedily against the partial plan.
-- That diets beyond vegetarian and vegan behave as the product intends; that
-  work is deferred by scope (see [DATA_MODEL.md](DATA_MODEL.md)).
+- That the non-vegetarian diet behaves as intended; the catalog has no meat
+  recipes yet (see [DATA_MODEL.md](DATA_MODEL.md)).
 
 ## What a successful pilot could lead to
 

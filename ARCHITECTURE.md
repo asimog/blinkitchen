@@ -70,26 +70,23 @@ The only effectful code is the browser localStorage boundary
 JSON imports). There is no server-side logic, no API route, no database and no
 auth. Next.js serves pages; all intelligence runs from the same pure functions:
 
-- `/kitchen`, `/blinkit` and `/explore/[id]` compute in the browser from the
-  browser-stored or fixture state.
-- `/` and `/explore` compute their projections at render time from the same
-  fixtures.
-
-Neither path persists anything, and both use the identical engine.
+- Every screen computes in the browser from the stored household through
+  `useKitchen` (`src/components/app/use-kitchen.ts`), which applies domain
+  commands, saves the resulting facts and rebuilds `WeekIntelligence`.
+- `/kitchen` also projects the remaining weeks with `simulateJourney` from the
+  household's real state, and builds the cohort lens from the four fixtures.
+  Projections are never saved.
 
 ## Module map
 
 ```text
 src/
-  app/                routes: /, /build, /kitchen, /explore, /explore/[id], /blinkit
+  app/                routes: /start, /, /week, /checkout, /remix, /pantry, /kitchen
   components/
-    shell/            SiteNav (primary navigation with current-page state)
-    onboarding/       BuildExperience, BuildWizard (three steps: household,
-                      how you eat, your kitchen) and onboarding-prefs.ts, the
-                      pure priority/quick-pick mapping
-    kitchen/          WeekView, JourneyBar and disclosed details, shared by /explore/[id] and /kitchen
-    explore/          household rail and the journey controller
-    blinkit/          cohort lens rendering
+    app/              one screen per route, use-kitchen.ts (the single client
+                      seam), starter-kitchen.ts (three answers -> profile and
+                      pantry facts), food.ts (placeholder plate colours),
+                      app.module.css
   domain/
     units.ts          Unit type, dimension rules, normalizeQuantity
     order.ts          compareStrings: locale-independent ordering for the core
@@ -98,7 +95,10 @@ src/
   intelligence/        index.ts (buildWeekIntelligence), meals (per-recipe ranking),
                       planner (plan-level greedy selection), journey (Week 1 to
                       Week 8 comparison), basket, substitutions, replenishment,
-                      learning, chains, use-soon, costing, diet, explanations, labels
+                      learning, chains, use-soon, costing, diet, explanations, labels,
+                      week-close (assigned meals count as cooked), pantry-timeline
+                      (day-by-day run-outs and carry-overs), remix (between-week
+                      stories)
   simulation/         fixtures.ts, policies.ts, simulate.ts
   insights/           blinkit.ts (buildBlinkitInsights)
   storage/            kitchen-storage.ts (localStorage seam)
@@ -153,8 +153,8 @@ than it deletes for a prototype whose job is to make household intelligence visi
 
 Plan selection is now plan-level (deterministic greedy, one slot at a time) with
 derived per-meal explanations, and `optional: true` lines no longer block a
-recipe or enter the basket. What remains: diet filtering covers only the
-vegetarian and vegan data the catalog carries (deferred by scope); ingredient
+recipe or enter the basket. What remains: diets are vegetarian and non-vegetarian, but the catalog
+has no meat recipes yet, so non-vegetarian sees the vegetarian catalog; ingredient
 `aliases` are ingestion provenance and are not used at runtime; and recipe
 quantities are approximate normalisations of the harvested amounts, good for
 basket reasoning but not nutrition. The current state of each is tracked in

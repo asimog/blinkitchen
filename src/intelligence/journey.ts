@@ -1,7 +1,8 @@
-import { formatRupees, roundQuantity } from "@/domain/units";
+import { formatRupees, normalizeQuantity, roundQuantity } from "@/domain/units";
 import { compareStrings } from "@/domain/order";
 import type { Catalog } from "@/catalog/types";
-import { recipeById } from "@/catalog/grocery-graph";
+import { ingredientById, recipeById } from "@/catalog/grocery-graph";
+import { cheapestUnitCost } from "@/intelligence/costing";
 import type { KitchenState } from "@/domain/kitchen/types";
 import { buildWeekIntelligence } from "@/intelligence";
 import type { Learning } from "@/intelligence/types";
@@ -178,4 +179,110 @@ export function compareJourney(kitchens: KitchenState[], catalog: Catalog): Jour
     week1Highlights,
     week8Highlights,
   };
+}
+
+export type HouseholdWeek = {
+  week: number;
+  mealsCooked: number;
+  /** Share of the value cooked this week that came from stock already at home (0..100). */
+  homeSharePercent: number;
+  /** Simulated value cooked from home stock instead of being bought again. */
+  notRebought: number;
+  wastedItems: number;
+};
+
+/**
+ * Per-week outcomes for one household, derived purely from its append-only
+ * facts: what it cooked, what it bought and what it threw away. Only weeks the
+ * household has completed are reported.
+ */
+export function householdWeeks(kitchen: KitchenState, catalog: Catalog): HouseholdWeek[] {
+  const weeks: HouseholdWeek[] = [];
+
+  const price = (ingredientId: string): number =>
+    cheapestUnitCost(catalog, ingredientId, kitchen.profile.locationId) ?? 0;
+
+  for (const choices of [...kitchen.weeklyChoices].sort((a, b) => a.week - b.week)) {
+    if (!choices.completed) continue;
+    const { week } = choices;
+    const used = new Map<string, number>();
+    const bought = new Map<string, number>();
+
+    for (const fact of kitchen.consumptionFacts) {
+      if (fact.week !== week || fact.kind !== "used") continue;
+      const key = `${fact.ingredientId}:${normalizeQuantity(fact.quantity, fact.unit).unit}`;
+      used.set(key, (used.get(key) ?? 0) + normalizeQuantity(fact.quantity, fact.unit).quantity);
+    }
+
+    for (const fact of kitchen.groceryFacts) {
+      if (fact.week !== week) continue;
+      const key = `${fact.ingredientId}:${normalizeQuantity(fact.quantity, fact.unit).unit}`;
+      bought.set(key, (bought.get(key) ?? 0) + normalizeQuantity(fact.quantity, fact.unit).quantity);
+    }
+
+    let usedValue = 0;
+    let homeValue = 0;
+
+    for (const [key, quantity] of used) {
+      const ingredientId = key.slice(0, key.lastIndexOf(":"));
+      const unitPrice = price(ingredientId);
+      usedValue += quantity * unitPrice;
+      homeValue += Math.max(0, quantity - (bought.get(key) ?? 0)) * unitPrice;
+    }
+
+    weeks.push({
+      week,
+      mealsCooked: kitchen.mealFacts.filter((fact) => fact.week === week).length,
+      homeSharePercent: usedValue > 0 ? Math.round((homeValue / usedValue) * 100) : 0,
+      notRebought: Math.round(homeValue),
+      wastedItems: kitchen.consumptionFacts.filter(
+        (fact) => fact.week === week && fact.kind === "wasted",
+      ).length,
+    });
+  }
+
+  return weeks;
+}
+
+/** Up to three plain-language things the kitchen has learned so far. */
+export function kitchenLearned(kitchen: KitchenState, catalog: Catalog, learning: Learning): string[] {
+  const lines: string[] = [];
+  const cooked = cookedCuisineNames(kitchen, catalog);
+  const top = topCuisine(learning);
+
+  if (top && cooked.includes(top.cuisine)) {
+    lines.push(`${humanizeId(top.cuisine)} is what this kitchen cooks most`);
+  }
+
+  const wasted = learning.wastedIngredients[0];
+  const wastedName = wasted ? ingredientById(catalog, wasted.ingredientId)?.name : undefined;
+
+  if (wastedName) lines.push(`${wastedName} tends to spoil here, so smaller packs`);
+
+  const accepted = kitchen.weeklyChoices
+    .flatMap((row) => row.substitutionDecisions)
+    .find((decision) => decision.accepted);
+
+  const swap = accepted
+    ? catalog.substitutions.find((row) => row.id === accepted.substitutionId)
+    : undefined;
+
+  if (swap) {
+    const from = ingredientById(catalog, swap.requestedIngredientId)?.name;
+    const to = ingredientById(catalog, swap.substituteIngredientId)?.name;
+
+    if (from && to) lines.push(`${to} works in place of ${from}`);
+  }
+
+  const frequent = learning.frequentIngredients.find((row) => {
+    const ingredient = ingredientById(catalog, row.ingredientId);
+
+    return ingredient && ingredient.category !== "spice" && ingredient.category !== "fat";
+  });
+
+  const frequentName = frequent ? ingredientById(catalog, frequent.ingredientId)?.name : undefined;
+
+  if (frequentName && lines.length < 3) lines.push(`${frequentName} goes into most meals`);
+
+  return lines.slice(0, 3);
 }
