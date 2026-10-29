@@ -114,7 +114,7 @@ shrinks baskets without improving repeat behaviour is not working.
 
 | # | Assumption | Prototype behaviour today | How it would be tested |
 | --- | --- | --- | --- |
-| 1 | Households will provide enough context for a useful Week 1 | Three-step wizard with quick picks; no real users have used it | Onboarding completion and time-to-Week-1 in a pilot |
+| 1 | Households will provide enough context for a useful Week 1 | Three taps, then a meals-first pantry question; no real users have used it | Onboarding completion and time-to-Week-1 in a pilot |
 | 2 | Pantry state changes what is bought | Basket subtracts pantry stock before pack sizing | Treatment versus control basket composition |
 | 3 | Observed behaviour is a better signal than stated preference | Cuisine affinity blends profile and cooked meals | Recommendation acceptance as facts accumulate |
 | 4 | Substitution acceptance is household-specific | Affinity shifts on accept/reject, ranked with compatibility | Swap acceptance rate by household over time |
@@ -124,9 +124,11 @@ shrinks baskets without improving repeat behaviour is not working.
 ## Onboarding friction is the primary product risk
 
 More context improves recommendations. Asking for too much context destroys
-adoption. The prototype now asks for three short steps — household, how you eat,
-your kitchen — with quick picks instead of sliders or an inventory, in about a
-minute. Whether that is still too much is the first thing a pilot must answer.
+adoption. The prototype now asks three taps — who's eating, veg or non-veg, which
+meals — and goes straight to meal cards. What is already home is asked only
+after the meals are chosen, as one of three answers ("the usual stuff", "a
+fresh new kitchen", or ticking this week's ingredients), never as an
+inventory. Whether that is still too much is the first thing a pilot must answer.
 Onboarding completion is therefore a first-class metric and a guardrail.
 
 ## Progressive learning

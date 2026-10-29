@@ -35,6 +35,8 @@ export type KitchenProfile = {
   /** Preferred cuisines, canonical cuisine ids from the catalog. */
   cuisines: string[];
   cookingDaysPerWeek: number;
+  /** Which meals of the day the household plans; at least one. */
+  mealSlots: MealSlot[];
   /** 0..1 preferences. */
   conveniencePreference: number;
   priceSensitivity: number;
@@ -104,6 +106,8 @@ export type WeeklyChoices = {
   week: number;
   selectedMeals: MealSelection[];
   skippedRecipeIds: string[];
+  /** Days the household is not cooking this week; they hold no meals. */
+  skippedDays: WeekDay[];
   substitutionDecisions: SubstitutionDecision[];
   completed: boolean;
 };

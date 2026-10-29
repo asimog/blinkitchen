@@ -182,6 +182,7 @@ describe("ranking behaviour", () => {
             week: 1,
             selectedMeals: [],
             skippedRecipeIds: [],
+            skippedDays: [],
             substitutionDecisions: [{ substitutionId: "paneer_to_tofu", accepted: true }],
             completed: false,
           },

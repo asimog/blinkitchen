@@ -7,7 +7,7 @@ import type { Catalog } from "@/catalog/types";
 import { applyKitchenCommand } from "@/domain/kitchen/commands";
 import type { KitchenCommand } from "@/domain/kitchen/commands";
 import { WEEK_DAYS } from "@/domain/kitchen/types";
-import type { KitchenState, WeekDay } from "@/domain/kitchen/types";
+import type { KitchenProfile, KitchenState, MealSlot, WeekDay } from "@/domain/kitchen/types";
 import { buildWeekIntelligence } from "@/intelligence";
 import type { WeekIntelligence } from "@/intelligence/types";
 import { saveKitchen } from "@/storage/kitchen-storage";
@@ -109,6 +109,17 @@ export function todayWeekDay(): WeekDay {
 /** True once this week's basket has been delivered into the pantry. */
 export function orderedThisWeek(kitchen: KitchenState): boolean {
   return kitchen.groceryFacts.some((fact) => fact.week === kitchen.week);
+}
+
+export const SLOT_LABEL: Record<MealSlot, string> = {
+  breakfast: "Breakfast",
+  lunch: "Lunch",
+  dinner: "Dinner",
+};
+
+/** The meal a day is remembered by: dinner when planned, else the latest slot. */
+export function mainSlot(profile: KitchenProfile): MealSlot {
+  return profile.mealSlots.includes("dinner") ? "dinner" : (profile.mealSlots.at(-1) ?? "dinner");
 }
 
 export const DAY_SHORT: Record<WeekDay, string> = {

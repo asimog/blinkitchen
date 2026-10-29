@@ -1,47 +1,61 @@
 import { expect, test } from "@playwright/test";
-import { startKitchen } from "./helpers";
+import { checkOutUsual, startKitchen } from "./helpers";
 
 test.describe("the kitchen loop", () => {
-  test("onboarding asks three things and nothing else", async ({ page }) => {
+  test("onboarding asks about people, diet and meals, never the pantry", async ({ page }) => {
     await page.goto("/start");
     await expect(page.getByText("1 of 3")).toBeVisible();
-    await page.getByRole("button", { name: "2", exact: true }).click();
+    await page.getByRole("button", { name: "7+" }).click();
+    await page.getByRole("button", { name: "More people" }).click();
+    await page.getByRole("button", { name: "9 people" }).click();
     await expect(page.getByRole("heading", { name: "How do you eat?" })).toBeVisible();
     await page.getByRole("button", { name: "Non-veg", exact: true }).click();
-    await expect(page.getByRole("heading", { name: "What's in your kitchen?" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Masalas" })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("textbox")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Which meals?" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Dinner" })).toHaveAttribute("aria-pressed", "true");
+    await page.getByRole("button", { name: "Breakfast" }).click();
+    await page.getByRole("button", { name: /Pick my meals/ }).click();
+    await expect(page.getByText("0 of 14 meals")).toBeVisible();
+    await expect(page.getByText("Mon · Breakfast")).toBeVisible();
   });
 
-  test("swipe, fill, check out, then see today and the pantry", async ({ page }) => {
+  test("swipe, skip a day, fill, say what's home, check out", async ({ page }) => {
     await startKitchen(page);
+    await expect(page.getByText("Swipe to add")).toBeVisible();
     await page.getByRole("button", { name: "Add to Mon" }).click();
-    await expect(page.getByText("1 of 7 dinners")).toBeVisible();
+    await expect(page.getByText("1 of 7 meals")).toBeVisible();
 
-    const skipped = page.getByRole("button", { name: /^Not / });
-    await skipped.click();
+    await page.getByRole("button", { name: /^Pass on / }).click();
+    await page.keyboard.press("ArrowRight");
+    await expect(page.getByText("2 of 7 meals")).toBeVisible();
+
+    await page.getByRole("button", { name: "Skip Wed" }).click();
+    await expect(page.getByText("2 of 6 meals")).toBeVisible();
     await page.getByRole("button", { name: "Fill the rest for me" }).click();
-    await expect(page.getByText("7 of 7 dinners")).toBeVisible();
+    await expect(page.getByText("6 of 6 meals")).toBeVisible();
 
-    await page.getByRole("link", { name: /^Get \d+ items/ }).click();
-    await expect(page.getByRole("heading", { name: "Your basket" })).toBeVisible();
-    await expect(page.getByText("Nothing is ordered.", { exact: false })).toBeVisible();
-    await page.getByRole("button", { name: /Place order/ }).click();
-
-    await expect(page).toHaveURL(/\/$/);
+    await checkOutUsual(page);
     await expect(page.getByRole("heading", { name: "What's cooking?" })).toBeVisible();
-    await expect(page.getByText("All at home")).toBeVisible();
 
     await page.getByRole("link", { name: "Pantry" }).click();
     await expect(page.getByRole("heading", { name: "Pantry" })).toBeVisible();
     await expect(page.getByText("Coming up")).toBeVisible();
   });
 
+  test("the perfectionist ticks only this week's ingredients", async ({ page }) => {
+    await startKitchen(page);
+    await page.getByRole("button", { name: "Fill the rest for me" }).click();
+    await page.getByRole("link", { name: /what's at home/ }).click();
+    await page.getByRole("button", { name: /The perfectionist/ }).click();
+    await page.getByRole("button", { name: "Salt", exact: true }).click();
+    await page.getByRole("button", { name: "1 at home" }).click();
+    await expect(page.getByRole("heading", { name: "Your basket" })).toBeVisible();
+    await expect(page.getByText(/1 items already home/)).toBeVisible();
+  });
+
   test("wrapping up a week counts meals as cooked and remixes the next", async ({ page }) => {
     await startKitchen(page);
     await page.getByRole("button", { name: "Fill the rest for me" }).click();
-    await page.getByRole("link", { name: /^Get \d+ items/ }).click();
-    await page.getByRole("button", { name: /Place order/ }).click();
+    await checkOutUsual(page);
     await page.getByRole("link", { name: "Week", exact: true }).click();
     await page.getByRole("button", { name: "Wrap up week 1" }).click();
 

@@ -144,6 +144,8 @@ The policy and the app close weeks through the same function, `closeWeek`
 (`src/intelligence/week-close.ts`): assigned meals consume what is in stock,
 unrescued use-soon stock is recorded as spoiled, and the week completes.
 
+Fixture households plan dinners only (`mealSlots: ["dinner"]`).
+
 Simulation appears in the app in three places. The sample kitchen on `/start`
 saves the Mehtas after four simulated weeks as the browser household. The
 journey on `/kitchen` projects the remaining weeks from the user's real state

@@ -1,74 +1,62 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Minus, Moon, Plus, Sun, Sunrise } from "lucide-react";
 import { createKitchenState } from "@/domain/kitchen/state";
-import type { DietPreference } from "@/domain/kitchen/types";
+import { MEAL_SLOTS } from "@/domain/kitchen/types";
+import type { DietPreference, MealSlot } from "@/domain/kitchen/types";
 import { buildFixtureKitchen, HOUSEHOLD_FIXTURES } from "@/simulation/fixtures";
 import { householdPolicy } from "@/simulation/policies";
 import { simulateJourney } from "@/simulation/simulate";
 import { LOCAL_KITCHEN_ID, saveKitchen } from "@/storage/kitchen-storage";
-import { ingredientTone } from "@/components/app/food";
-import { everydayMasalas, pantryItemsFromQuickPicks, quickPickGroups, starterProfile } from "@/components/app/starter-kitchen";
-import { useCatalog } from "@/components/app/use-kitchen";
+import { starterProfile } from "@/components/app/starter-kitchen";
+import { SLOT_LABEL, useCatalog } from "@/components/app/use-kitchen";
 import { ErrorNote, VegMark } from "@/components/app/ui";
 import styles from "@/components/app/app.module.css";
 
-const PEOPLE = [1, 2, 3, 4, 5, 6] as const;
+const PEOPLE = [2, 4, 6] as const;
+
+const BIG_FAMILY = { min: 7, max: 20, start: 8 } as const;
 
 const DIETS: { id: DietPreference; label: string }[] = [
   { id: "vegetarian", label: "Veg" },
   { id: "non_vegetarian", label: "Non-veg" },
 ];
 
+const SLOT_ICON = { breakfast: Sunrise, lunch: Sun, dinner: Moon } as const;
+
 const SAMPLE_WEEK = 4;
 
-const MAX_TILES = 15;
-
-const MASALA_TONE = "#C9802E";
-
+/**
+ * Three taps to the first meal card: who is eating, veg or non-veg, which
+ * meals of the day. What is already at home is asked later, once the chosen
+ * meals say which ingredients matter.
+ */
 export function Onboarding() {
   const router = useRouter();
   const catalog = useCatalog();
   const [people, setPeople] = useState<number | null>(null);
+  const [custom, setCustom] = useState<number | null>(null);
   const [diet, setDiet] = useState<DietPreference | null>(null);
-  const [picked, setPicked] = useState<string[]>([]);
-  const [masalas, setMasalas] = useState(true);
+  const [slots, setSlots] = useState<MealSlot[]>(["dinner"]);
   const [error, setError] = useState<string | null>(null);
   const locationId = catalog.locations[0]?.id ?? "delhi_south";
-
-  const tiles = useMemo(() => {
-    const seen = new Set<string>();
-
-    const groups = quickPickGroups(catalog);
-    const order = ["fresh_basics", "regularly_bought", "pantry_basics"];
-
-    return [...groups]
-      .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id))
-      .flatMap((group) => group.ingredients)
-      .filter((ingredient) => {
-        if (seen.has(ingredient.id) || ingredient.category === "spice") return false;
-        seen.add(ingredient.id);
-
-        return true;
-      })
-      .slice(0, MAX_TILES);
-  }, [catalog]);
-
   const step = people === null ? 1 : diet === null ? 2 : 3;
 
+  const toggleSlot = (slot: MealSlot) =>
+    setSlots((current) =>
+      current.includes(slot)
+        ? current.filter((row) => row !== slot)
+        : MEAL_SLOTS.filter((row) => row === slot || current.includes(row)),
+    );
+
   const finish = () => {
-    if (people === null || diet === null) return;
+    if (people === null || diet === null || slots.length === 0) return;
 
     const kitchen = createKitchenState({
       id: LOCAL_KITCHEN_ID,
-      profile: starterProfile(people, diet, locationId),
-      pantry: pantryItemsFromQuickPicks(
-        catalog,
-        [...picked, ...(masalas ? everydayMasalas(catalog, locationId).map((spice) => spice.id) : [])],
-        locationId,
-      ),
+      profile: starterProfile(people, diet, slots, locationId),
       createdAt: new Date().toISOString(),
     });
 
@@ -98,11 +86,11 @@ export function Onboarding() {
   };
 
   return (
-    <div className={`${styles.screen} ${styles.paper}`}>
+    <div className={`${styles.screen} ${styles.paper} ${styles.narrow}`}>
       <div className={styles.answered}>
         {people !== null ? (
           <button type="button" className={styles.answerChip} onClick={() => { setPeople(null); setDiet(null); }}>
-            {people === 6 ? "6+" : people} {people === 1 ? "person" : "people"}
+            {people} people
             <Check size={12} strokeWidth={3} aria-hidden />
           </button>
         ) : null}
@@ -117,7 +105,7 @@ export function Onboarding() {
       <div className={styles.onboardHead}>
         <p className={styles.stepCount}>{step} of 3</p>
         <h1 className={styles.display}>
-          {step === 1 ? "Who's eating?" : step === 2 ? "How do you eat?" : "What's in your kitchen?"}
+          {step === 1 ? "Who's eating?" : step === 2 ? "How do you eat?" : "Which meals?"}
         </h1>
       </div>
 
@@ -125,14 +113,45 @@ export function Onboarding() {
         <div className={styles.peopleGrid} role="group" aria-label="People in your home">
           {PEOPLE.map((count) => (
             <button key={count} type="button" className={styles.peopleTile} onClick={() => setPeople(count)}>
-              <span className={styles.peopleCount}>{count === 6 ? "6+" : count}</span>
+              <span className={styles.peopleCount}>{count}</span>
               <span className={styles.peopleDots} aria-hidden>
-                {Array.from({ length: Math.min(count, 6) }, (_, index) => (
+                {Array.from({ length: count }, (_, index) => (
                   <span key={index} />
                 ))}
               </span>
             </button>
           ))}
+          {custom === null ? (
+            <button type="button" className={styles.peopleTile} onClick={() => setCustom(BIG_FAMILY.start)}>
+              <span className={styles.peopleCount}>7+</span>
+              <span className={styles.peopleNote}>Big family</span>
+            </button>
+          ) : (
+            <div className={`${styles.peopleTile} ${styles.peopleCustom}`}>
+              <div className={styles.stepper}>
+                <button
+                  type="button"
+                  aria-label="Fewer people"
+                  disabled={custom <= BIG_FAMILY.min}
+                  onClick={() => setCustom(custom - 1)}
+                >
+                  <Minus size={16} aria-hidden />
+                </button>
+                <span className={styles.peopleCount} aria-live="polite">{custom}</span>
+                <button
+                  type="button"
+                  aria-label="More people"
+                  disabled={custom >= BIG_FAMILY.max}
+                  onClick={() => setCustom(custom + 1)}
+                >
+                  <Plus size={16} aria-hidden />
+                </button>
+              </div>
+              <button type="button" className={styles.smallAction} onClick={() => setPeople(custom)}>
+                {custom} people
+              </button>
+            </div>
+          )}
         </div>
       ) : null}
 
@@ -148,33 +167,23 @@ export function Onboarding() {
       ) : null}
 
       {step === 3 ? (
-        <div className={styles.pickGrid} role="group" aria-label="Already at home">
-          <button
-            type="button"
-            aria-pressed={masalas}
-            className={styles.pickTile}
-            onClick={() => setMasalas((on) => !on)}
-          >
-            <span className={styles.pickSwatch} style={{ background: MASALA_TONE }} />
-            <span>Masalas</span>
-          </button>
-          {tiles.map((ingredient) => {
-            const on = picked.includes(ingredient.id);
+        <div className={styles.slotGrid} role="group" aria-label="Meals to plan">
+          {MEAL_SLOTS.map((slot) => {
+            const Icon = SLOT_ICON[slot];
 
             return (
               <button
-                key={ingredient.id}
+                key={slot}
                 type="button"
-                aria-pressed={on}
-                className={styles.pickTile}
-                onClick={() =>
-                  setPicked((current) =>
-                    on ? current.filter((id) => id !== ingredient.id) : [...current, ingredient.id],
-                  )
-                }
+                aria-pressed={slots.includes(slot)}
+                className={styles.slotTile}
+                onClick={() => toggleSlot(slot)}
               >
-                <span className={styles.pickSwatch} style={{ background: ingredientTone(ingredient) }} />
-                <span>{ingredient.name}</span>
+                <Icon size={30} aria-hidden />
+                <span>{SLOT_LABEL[slot]}</span>
+                <span className={styles.slotCheck} aria-hidden>
+                  <Check size={14} strokeWidth={3} />
+                </span>
               </button>
             );
           })}
@@ -185,12 +194,9 @@ export function Onboarding() {
 
       <div className={styles.footer}>
         {step === 3 ? (
-          <>
-            <p className={styles.hint}>Not sure? Skip. Your kitchen learns as you cook.</p>
-            <button type="button" className={styles.primary} onClick={finish}>
-              Show my week <ArrowRight size={18} aria-hidden />
-            </button>
-          </>
+          <button type="button" className={styles.primary} onClick={finish} disabled={slots.length === 0}>
+            Pick my meals <ArrowRight size={18} aria-hidden />
+          </button>
         ) : (
           <button type="button" className={styles.quiet} onClick={openSample}>
             Or peek into a lived-in kitchen

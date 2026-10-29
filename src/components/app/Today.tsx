@@ -3,17 +3,20 @@
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ArrowRight, Repeat } from "lucide-react";
+import { currentChoices } from "@/domain/kitchen/state";
 import { WEEK_DAYS } from "@/domain/kitchen/types";
-import type { WeekDay } from "@/domain/kitchen/types";
+import type { MealSlot, WeekDay } from "@/domain/kitchen/types";
 import { humanizeId } from "@/intelligence";
 import { buildPantryTimeline, carryOver, orderedPlan } from "@/intelligence/pantry-timeline";
 import { dishName } from "@/components/app/food";
-import { DAY_LONG, DAY_SHORT, todayWeekDay, useKitchen } from "@/components/app/use-kitchen";
+import { DAY_LONG, DAY_SHORT, mainSlot, SLOT_LABEL, todayWeekDay, useKitchen } from "@/components/app/use-kitchen";
 import type { ReadyKitchen } from "@/components/app/use-kitchen";
 import { BottomNav, ErrorNote, Loading, Plate } from "@/components/app/ui";
 import styles from "@/components/app/app.module.css";
 
 const noSubscribe = () => () => {};
+
+const SLOT_MOMENT: Record<MealSlot, string> = { breakfast: "This morning", lunch: "Lunch", dinner: "Tonight" };
 
 /** The weekday is read on the client only, so the server never guesses it. */
 function useToday(): WeekDay | null {
@@ -33,9 +36,15 @@ function TodayView({ session, today }: { session: ReadyKitchen; today: WeekDay }
   const { catalog, kitchen, intelligence, error } = session;
   const plan = orderedPlan(intelligence.plan);
   const todayIndex = WEEK_DAYS.indexOf(today);
-  const meal = plan.find((row) => row.day === today && row.slot === "dinner") ?? plan.find((row) => row.day === today);
-  const earlier = plan.filter((row) => WEEK_DAYS.indexOf(row.day) < todayIndex).slice(-2);
-  const later = plan.filter((row) => WEEK_DAYS.indexOf(row.day) > todayIndex).slice(0, 2);
+  const main = mainSlot(kitchen.profile);
+  const off = currentChoices(kitchen).skippedDays.includes(today);
+  const todays = plan.filter((row) => row.day === today);
+  const meal = todays.find((row) => row.slot === main) ?? todays[0];
+  const alsoToday = todays.filter((row) => row !== meal);
+  const dayMeal = (row: (typeof plan)[number]) => plan.find((other) => other.day === row.day && other.slot === main) ?? row;
+  const perDay = plan.filter((row) => dayMeal(row) === row);
+  const earlier = perDay.filter((row) => WEEK_DAYS.indexOf(row.day) < todayIndex).slice(-2);
+  const later = perDay.filter((row) => WEEK_DAYS.indexOf(row.day) > todayIndex).slice(0, 2);
   const link = meal ? carryOver(intelligence, today) : null;
   const timeline = buildPantryTimeline(kitchen, catalog, intelligence);
 
@@ -56,7 +65,7 @@ function TodayView({ session, today }: { session: ReadyKitchen; today: WeekDay }
     : undefined;
 
   return (
-    <div className={`${styles.screen} ${styles.tawa}`}>
+    <div className={`${styles.screen} ${styles.tawa} ${styles.wide}`}>
       <header className={styles.todayHead}>
         <p lang="hi" className={styles.hindi}>आज क्या बनेगा?</p>
         <div className={styles.todayRow}>
@@ -69,6 +78,7 @@ function TodayView({ session, today }: { session: ReadyKitchen; today: WeekDay }
 
       <ErrorNote message={error} />
 
+      <div className={styles.todayGrid}>
       {meal ? (
         <section className={styles.hero} aria-label={`${DAY_LONG[today]}'s ${meal.slot}`}>
           <div className={styles.heroPlate}>
@@ -83,22 +93,35 @@ function TodayView({ session, today }: { session: ReadyKitchen; today: WeekDay }
           </div>
           <div className={styles.heroTitleRow}>
             <div>
-              <p className={styles.kickerLight}>Tonight · {meal.recipe.estimatedPreparationMinutes} min · {humanizeId(meal.recipe.cuisine)}</p>
+              <p className={styles.kickerLight}>{SLOT_MOMENT[meal.slot]} · {meal.recipe.estimatedPreparationMinutes} min · {humanizeId(meal.recipe.cuisine)}</p>
               <h2 className={styles.heroTitle}>{dishName(meal.recipe.name)}</h2>
             </div>
             <Link className={styles.swapButton} href={`/week?day=${today}`} aria-label={`Swap ${meal.recipe.name}`}>
               <Repeat size={20} aria-hidden />
             </Link>
           </div>
+          {alsoToday.length > 0 ? (
+            <ul className={styles.alsoToday} aria-label="Also today">
+              {alsoToday.map((row) => (
+                <li key={row.slot}>
+                  <Plate catalog={catalog} recipe={row.recipe} size={30} />
+                  <span>{SLOT_LABEL[row.slot]} · {dishName(row.recipe.name)}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </section>
       ) : (
         <section className={styles.heroEmpty}>
-          <h2 className={styles.heroTitle}>Nothing planned for {DAY_LONG[today].toLowerCase()}.</h2>
+          <h2 className={styles.heroTitle}>
+            {off ? "Day off from the kitchen." : `Nothing planned for ${DAY_LONG[today].toLowerCase()}.`}
+          </h2>
           <Link className={styles.primary} href={`/week?day=${today}`}>
-            Pick tonight&apos;s dinner <ArrowRight size={18} aria-hidden />
+            {off ? "Cook today after all" : "Pick today's meals"} <ArrowRight size={18} aria-hidden />
           </Link>
         </section>
       )}
+      <div className={styles.todaySide}>
 
       {link ? (
         <Link className={styles.chainHint} href="/pantry">
@@ -130,6 +153,8 @@ function TodayView({ session, today }: { session: ReadyKitchen; today: WeekDay }
           This week is a suggestion. Make it yours <ArrowRight size={16} aria-hidden />
         </Link>
       ) : null}
+      </div>
+      </div>
 
       <BottomNav pantryAlert={pantryAlert} />
     </div>

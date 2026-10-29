@@ -9,7 +9,7 @@ import { humanizeId } from "@/intelligence";
 import { buildRemixStories, storySelections, storySkippedRecipeId } from "@/intelligence/remix";
 import type { RemixStory } from "@/intelligence/remix";
 import { dishName } from "@/components/app/food";
-import { DAY_SHORT, useKitchen } from "@/components/app/use-kitchen";
+import { DAY_SHORT, mainSlot, useKitchen } from "@/components/app/use-kitchen";
 import type { ReadyKitchen } from "@/components/app/use-kitchen";
 import { Loading, Plate } from "@/components/app/ui";
 import styles from "@/components/app/app.module.css";
@@ -58,7 +58,7 @@ function Stories({ session }: { session: ReadyKitchen }) {
   }
 
   const keep = () => {
-    const additions = storySelections(story);
+    const additions = storySelections(story, mainSlot(kitchen.profile));
     const days = new Set(additions.map((meal) => `${meal.day}:${meal.slot}`));
     const kept = currentChoices(kitchen).selectedMeals.filter((meal) => !days.has(`${meal.day}:${meal.slot}`));
 

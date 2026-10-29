@@ -3,8 +3,8 @@ import { compareStrings } from "@/domain/order";
 import type { Catalog, Recipe } from "@/catalog/types";
 import { recipeRequirements } from "@/catalog/grocery-graph";
 import { currentChoices, pantryQuantity } from "@/domain/kitchen/state";
-import { WEEK_DAYS } from "@/domain/kitchen/types";
-import type { KitchenState } from "@/domain/kitchen/types";
+import { MEAL_SLOTS, WEEK_DAYS } from "@/domain/kitchen/types";
+import type { KitchenState, MealSlot, WeekDay } from "@/domain/kitchen/types";
 import { effectiveRequirement } from "@/intelligence/basket";
 import { unitCostOrZero } from "@/intelligence/costing";
 import { explainPlannedMeal } from "@/intelligence/explanations";
@@ -38,8 +38,6 @@ export const PLAN_WEIGHTS = {
   useSoonRescue: 0.09,
   variety: 0.14,
 } as const;
-
-const PLAN_MAX = 7;
 
 const RECENT_WEEKS = 2;
 
@@ -287,7 +285,19 @@ function addCommitted(
 }
 
 /**
- * Deterministic suggested plan: one meal per cooking day, each chosen greedily
+ * The (day, slot) pairs a suggested plan fills: the household's meal slots on
+ * its first `cookingDaysPerWeek` days that are not skipped this week.
+ */
+export function planningSlots(kitchen: KitchenState): { day: WeekDay; slot: MealSlot }[] {
+  const skipped = new Set(currentChoices(kitchen).skippedDays);
+  const days = WEEK_DAYS.filter((day) => !skipped.has(day)).slice(0, Math.max(0, kitchen.profile.cookingDaysPerWeek));
+  const slots = MEAL_SLOTS.filter((slot) => kitchen.profile.mealSlots.includes(slot));
+
+  return days.flatMap((day) => slots.map((slot) => ({ day, slot })));
+}
+
+/**
+ * Deterministic suggested plan: one meal per planning slot, each chosen greedily
  * against the partial plan. Discovery households keep one exploration meal when
  * the week would otherwise contain none.
  */
@@ -297,21 +307,17 @@ export function suggestPlan(
   learning: Learning,
   ranked: MealRecommendation[],
 ): PlannedMeal[] {
-  const planSize = Math.min(PLAN_MAX, Math.max(0, kitchen.profile.cookingDaysPerWeek));
+  const slots = planningSlots(kitchen);
   const plan: PlannedMeal[] = [];
 
-  if (planSize === 0 || ranked.length === 0) return plan;
+  if (slots.length === 0 || ranked.length === 0) return plan;
 
   const committed = new Map<string, number>();
   const cuisineCounts = new Map<string, number>();
   const usedRecipeIds = new Set<string>();
 
-  for (let slotIndex = 0; slotIndex < planSize; slotIndex += 1) {
-    const day = WEEK_DAYS[slotIndex];
-
-    if (!day) break;
-
-    const isFinalSlot = slotIndex === planSize - 1;
+  for (const [slotIndex, { day, slot }] of slots.entries()) {
+    const isFinalSlot = slotIndex === slots.length - 1;
 
     const needsDiscoveryMeal =
       kitchen.profile.explorationPreference >= 0.7 &&
@@ -320,7 +326,7 @@ export function suggestPlan(
 
     const context = planContext(kitchen, catalog, learning, committed, cuisineCounts);
 
-    let pool = ranked.filter((row) => !usedRecipeIds.has(row.recipe.id));
+    let pool = ranked.filter((row) => !usedRecipeIds.has(row.recipe.id) && row.recipe.mealSlots.includes(slot));
 
     if (needsDiscoveryMeal) {
       const discoveryPool = pool.filter((row) => row.recipe.discoveryLevel === "explore");
@@ -332,9 +338,6 @@ export function suggestPlan(
 
     for (const row of pool) {
       const evaluation = evaluatePlanCandidate(context, row.recipe);
-      const slot = row.recipe.mealSlots.includes("dinner") ? "dinner" : row.recipe.mealSlots[0];
-
-      if (!slot) continue;
 
       const candidate: PlannedMeal = {
         recipeId: row.recipe.id,
@@ -354,7 +357,7 @@ export function suggestPlan(
       if (better) best = { meal: candidate, utility: evaluation.utility };
     }
 
-    if (!best) break;
+    if (!best) continue;
 
     plan.push(best.meal);
     usedRecipeIds.add(best.meal.recipeId);

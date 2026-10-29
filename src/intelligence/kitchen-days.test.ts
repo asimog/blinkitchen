@@ -138,3 +138,32 @@ describe("remix stories", () => {
     expect(again.map(storySkippedRecipeId)).not.toContain(skippedId);
   });
 });
+
+describe("meal slots and skipped days", () => {
+  it("plans every covered slot with recipes for that slot, and leaves skipped days empty", () => {
+    const kitchen = run(
+      makeKitchen({}, { cookingDaysPerWeek: 7, mealSlots: ["breakfast", "dinner"] }),
+      { type: "set_day_skipped", day: "wednesday", skipped: true },
+    );
+
+    const plan = buildWeekIntelligence(kitchen, catalog).suggestedPlan;
+    expect(plan.some((meal) => meal.day === "wednesday")).toBe(false);
+    expect(plan.filter((meal) => meal.slot === "breakfast")).toHaveLength(6);
+    expect(plan.every((meal) => meal.recipe.mealSlots.includes(meal.slot))).toBe(true);
+
+    const dinnersOnly = buildWeekIntelligence(makeKitchen({}, { cookingDaysPerWeek: 7 }), catalog).suggestedPlan;
+    expect(dinnersOnly.every((meal) => meal.slot === "dinner")).toBe(true);
+    expect(dinnersOnly).toHaveLength(7);
+  });
+
+  it("skipping a day clears its meals, and planning a meal there un-skips it", () => {
+    const planned = withMeals(makeKitchen(), [...twoOnionDinners]);
+    const skipped = run(planned, { type: "set_day_skipped", day: "monday", skipped: true });
+    const choices = skipped.weeklyChoices.find((row) => row.week === skipped.week);
+    expect(choices?.skippedDays).toEqual(["monday"]);
+    expect(choices?.selectedMeals.map((meal) => meal.day)).toEqual(["tuesday"]);
+
+    const back = withMeals(skipped, [{ day: "monday", recipeId: "chole" }]);
+    expect(back.weeklyChoices.find((row) => row.week === back.week)?.skippedDays).toEqual([]);
+  });
+});

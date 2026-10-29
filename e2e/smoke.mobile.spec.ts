@@ -5,7 +5,7 @@ test("every tab fits a phone without sideways scroll", async ({ page }) => {
   await startKitchen(page);
   await page.getByRole("button", { name: "Fill the rest for me" }).click();
 
-  for (const path of ["/", "/week", "/checkout", "/pantry", "/kitchen"]) {
+  for (const path of ["/", "/week", "/stock", "/checkout", "/pantry", "/kitchen"]) {
     await page.goto(path);
     await expect(page.locator("main")).toBeVisible();
 

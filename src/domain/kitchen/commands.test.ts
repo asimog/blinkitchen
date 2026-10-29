@@ -389,6 +389,7 @@ describe("command limits mirror the storage schema", () => {
           week: 1,
           selectedMeals: [],
           skippedRecipeIds: Array.from({ length: 50 }, (_, index) => `recipe-${index}`),
+          skippedDays: [],
           substitutionDecisions: [],
           completed: false,
         },
@@ -407,6 +408,7 @@ describe("command limits mirror the storage schema", () => {
           week: 1,
           selectedMeals: [],
           skippedRecipeIds: [],
+          skippedDays: [],
           substitutionDecisions: Array.from({ length: 50 }, (_, index) => ({
             substitutionId: `swap-${index}`,
             accepted: true,
@@ -434,6 +436,7 @@ describe("command limits mirror the storage schema", () => {
           week: 1,
           selectedMeals: [],
           skippedRecipeIds: [],
+          skippedDays: [],
           substitutionDecisions: [
             { substitutionId: "paneer_to_tofu", accepted: true },
             ...Array.from({ length: 49 }, (_, index) => ({
@@ -478,6 +481,7 @@ describe("week advancement", () => {
           week: 1,
           selectedMeals: [],
           skippedRecipeIds: [],
+          skippedDays: [],
           substitutionDecisions: [],
           completed: true,
         },

@@ -24,7 +24,7 @@ updated in the same change, not afterwards.
 
 | Area | Now |
 | --- | --- |
-| Onboarding | Three steps: Your household, How you eat (priority chips), Your kitchen (quick picks + optional search); no review step |
+| Onboarding | Three taps: people (2, 4, 6 or a 7+ stepper), diet, meal slots; what's at home is asked after the meals, in three modes |
 | Week view | Meals and coverage first; compact basket alongside; pantry, editing, swaps and learning disclosed on demand |
 | Meal selection | `rankRecipes` ranks for discovery; `suggestPlan` is a deterministic greedy planner evaluating each candidate against the partial week |
 | Reuse signal | Per-recipe factor retained for ranking; plan-level cross-meal reuse uses actual committed requirements |
@@ -34,7 +34,7 @@ updated in the same change, not afterwards.
 | Data provenance | Offline harvest of Blinkit Recipes via `tools/catalog-harvest/`; generated fixtures committed; runtime never fetches |
 | Week 1 → Week 8 | `/kitchen` journey: completed weeks from facts (`householdWeeks`), remaining weeks projected from the household's state |
 | Storage | `blinkitchen:v3:kitchen`, Zod-validated, facts only |
-| Routes and CI | Seven phone routes (see Phase 8); CI runs lint, typecheck, unit tests, build and a Playwright job |
+| Routes and CI | Eight routes, phone and desktop (see Phase 8); CI runs lint, typecheck, unit tests, build and a Playwright job |
 | Tests | Unit suite across domain, catalog, intelligence, insights, simulation; Playwright desktop + mobile smoke |
 
 Remaining known limitations: the non-vegetarian diet has no meat recipes yet; ingredient aliases are ingestion provenance
@@ -169,6 +169,14 @@ view) were replaced by seven phone screens around one household:
 Cooking is never reported. `closeWeek` treats assigned meals as cooked, and the
 simulation policy now uses the same function. Diets were cut to vegetarian and
 non-vegetarian, and the storage key moved to v3.
+
+Follow-up, complete: meals come before the pantry. Onboarding asks people,
+diet and meal slots; the planner fills every chosen slot and lets any day be
+skipped (`set_day_skipped`); `/stock` then asks once what is home, from the
+ingredients the chosen meals need ("the usual stuff", "a fresh new kitchen",
+"the perfectionist"). The layout works on desktop too: a left rail, a centred
+column, and two columns on the planner and Today. Swipe cards show their swipe
+directions, and arrow keys swipe on a desktop.
 
 ## Test strategy
 

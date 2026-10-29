@@ -15,13 +15,19 @@ labelled; no simulated result is evidence about real Blinkit customers.
 
 ## Fastest demo path (about two minutes)
 
-The app is a phone-first kitchen. Open it on a phone, or in a narrow window.
+The app works on a phone and on a desktop. On a wide screen the tabs move to a
+left rail, and the planner and Today split into two columns.
 
-1. `/start` — three taps: who's eating, veg or non-veg, what's at home. Or open
-   the lived-in sample kitchen (the Mehtas, four simulated weeks in).
-2. `/week` — swipe dinners into the week, or "Fill the rest for me".
-3. `/checkout` — the plain prototype basket: only what is missing, with packs,
-   prices and the meals each item is for. Nothing is ordered.
+1. `/start` — three taps: who's eating (2, 4, 6, or a 7+ stepper), veg or
+   non-veg, and which meals to plan (breakfast, lunch, dinner). Or open the
+   lived-in sample kitchen (the Mehtas, four simulated weeks in).
+2. `/week` — swipe meals into the week (right adds, left passes; arrow keys on
+   a desktop), skip any day you are not cooking, or "Fill the rest for me".
+3. `/stock` — once, after the meals are chosen: what is already home? "The
+   usual stuff" assumes dry staples and masalas, "A fresh new kitchen" assumes
+   nothing, and "The perfectionist" ticks this week's ingredients one by one.
+   `/checkout` then shows the plain prototype basket: only what is missing, with
+   packs, prices and the meals each item is for. Nothing is ordered.
 4. `/` — "What's cooking? / आज क्या बनेगा?": tonight's dinner, what it rescues,
    and what carries into a later meal.
 5. `/pantry` — the shelf and the flags: what to use today, what runs out on which
@@ -62,9 +68,10 @@ structures carry their Blinkit source URL.
 
 | Route | What it shows |
 | --- | --- |
-| `/start` | Three-tap onboarding, or a lived-in sample kitchen |
-| `/` | Today: tonight's dinner, what it uses up, what carries over |
-| `/week` | Swipe planner for the week's dinners; wraps up the week |
+| `/start` | Three-tap onboarding (people, diet, meals of the day), or a lived-in sample kitchen |
+| `/` | Today: today's meals, what they use up, what carries over |
+| `/week` | Swipe planner for every planned meal, with day skipping; wraps up the week |
+| `/stock` | What's already home, asked once from the chosen meals |
 | `/checkout` | Prototype basket of only what is missing |
 | `/remix` | Between weeks: next week's changes as stories |
 | `/pantry` | Pantry shelf and a dated timeline of run-outs and use-soon items |
@@ -86,9 +93,9 @@ Open http://localhost:3000
 ```powershell
 npm run lint       # oxlint (anti-slop) + eslint
 npm run typecheck
-npm run test       # 148 unit tests across 19 files
+npm run test       # 149 unit tests across 19 files
 npm run build
-npm run test:e2e   # 6 Playwright tests; first time: npx playwright install chromium
+npm run test:e2e   # 7 Playwright tests; first time: npx playwright install chromium
 ```
 
 `npm run lint` includes the vendored anti-slop Oxlint ruleset
@@ -108,7 +115,7 @@ mobile smoke suite.
 
 ## Interface
 
-Seven phone screens, one primary action each. The household never reports
+Eight screens, one primary action each, on phone and desktop. The household never reports
 cooking: a meal assigned to a day counts as cooked when the week is wrapped up,
 which is what moves the pantry forward. Copy describes outcomes ("3 of 6 at
 home", "covered by this week's basket"), and mechanics stay in the engine.

@@ -9,6 +9,7 @@ export const testProfile: KitchenProfile = {
   diet: "vegetarian",
   cuisines: ["punjabi", "north_indian"],
   cookingDaysPerWeek: 5,
+  mealSlots: ["dinner"],
   conveniencePreference: 0.4,
   priceSensitivity: 0.5,
   explorationPreference: 0.3,

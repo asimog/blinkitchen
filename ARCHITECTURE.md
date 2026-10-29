@@ -81,7 +81,7 @@ auth. Next.js serves pages; all intelligence runs from the same pure functions:
 
 ```text
 src/
-  app/                routes: /start, /, /week, /checkout, /remix, /pantry, /kitchen
+  app/                routes: /start, /, /week, /stock, /checkout, /remix, /pantry, /kitchen
   components/
     app/              one screen per route, use-kitchen.ts (the single client
                       seam), starter-kitchen.ts (three answers -> profile and

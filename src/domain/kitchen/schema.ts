@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { unitSchema } from "@/domain/units";
-import { DIET_PREFERENCES, MAX_WEEKLY_MEALS, WEEK_MAX, WEEK_MIN } from "@/domain/kitchen/types";
+import { DIET_PREFERENCES, MAX_WEEKLY_MEALS, MEAL_SLOTS, WEEK_DAYS, WEEK_MAX, WEEK_MIN } from "@/domain/kitchen/types";
 
 const weekSchema = z.number().int().min(WEEK_MIN).max(WEEK_MAX);
 
@@ -14,6 +14,7 @@ export const kitchenProfileSchema = z.strictObject({
   diet: z.enum(DIET_PREFERENCES),
   cuisines: z.array(z.string().min(1)).max(12),
   cookingDaysPerWeek: z.number().int().min(0).max(7),
+  mealSlots: z.array(z.enum(MEAL_SLOTS)).min(1).max(MEAL_SLOTS.length).default(["dinner"]),
   conveniencePreference: preferenceSchema,
   priceSensitivity: preferenceSchema,
   explorationPreference: preferenceSchema,
@@ -75,6 +76,7 @@ export const weeklyChoicesSchema = z
     week: weekSchema,
     selectedMeals: z.array(mealSelectionSchema).max(MAX_WEEKLY_MEALS),
     skippedRecipeIds: z.array(z.string().min(1)).max(50),
+    skippedDays: z.array(z.enum(WEEK_DAYS)).max(WEEK_DAYS.length).default([]),
     substitutionDecisions: z.array(substitutionDecisionSchema).max(50),
     completed: z.boolean(),
   })

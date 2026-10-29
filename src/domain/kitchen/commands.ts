@@ -58,6 +58,7 @@ export type KitchenCommand =
   | { type: "waste_ingredient"; ingredientId: string; quantity: number; unit: Unit }
   | { type: "select_meals"; meals: MealSelection[] }
   | { type: "skip_recommendation"; recipeId: string }
+  | { type: "set_day_skipped"; day: MealSelection["day"]; skipped: boolean }
   | { type: "decide_substitution"; substitutionId: string; accepted: boolean }
   | { type: "complete_meal"; recipeId: string; day: MealSelection["day"]; slot: MealSelection["slot"] }
   | { type: "complete_week" };
@@ -319,10 +320,34 @@ export function applyKitchenCommand(
       }
 
       const choices = choicesForWeek(state, state.week);
+      const plannedDays = new Set(meals.map((meal) => meal.day));
 
       return {
         ok: true,
-        state: withChoices(state, { ...choices, selectedMeals: meals.map((meal) => ({ ...meal })) }),
+        state: withChoices(state, {
+          ...choices,
+          selectedMeals: meals.map((meal) => ({ ...meal })),
+          skippedDays: choices.skippedDays.filter((day) => !plannedDays.has(day)),
+        }),
+      };
+    }
+
+    case "set_day_skipped": {
+      if (!WEEK_DAYS.includes(command.day)) return fail("invalid_command", "Unknown day");
+      const choices = choicesForWeek(state, state.week);
+      const others = choices.skippedDays.filter((day) => day !== command.day);
+
+      return {
+        ok: true,
+        state: withChoices(state, {
+          ...choices,
+          skippedDays: command.skipped
+            ? WEEK_DAYS.filter((day) => day === command.day || others.includes(day))
+            : others,
+          selectedMeals: command.skipped
+            ? choices.selectedMeals.filter((meal) => meal.day !== command.day)
+            : choices.selectedMeals,
+        }),
       };
     }
 

@@ -1,13 +1,14 @@
 import { compareStrings } from "@/domain/order";
 import { WEEK_DAYS, WEEK_MIN } from "@/domain/kitchen/types";
-import type { DietPreference, KitchenProfile, PantryItem } from "@/domain/kitchen/types";
+import type { DietPreference, KitchenProfile, KitchenState, MealSlot, PantryItem } from "@/domain/kitchen/types";
 import type { Unit } from "@/domain/units";
 import { findProduct, listStaples } from "@/catalog/grocery-graph";
 import type { Catalog, Ingredient } from "@/catalog/types";
 
 /**
- * Deterministic onboarding boundary: three taps (people, diet, what is at
- * home) become the existing KitchenProfile fields and pantry facts. Every
+ * Deterministic onboarding boundary: three taps (people, diet, meals of the
+ * day) become the KitchenProfile, and the later "what's at home" answer
+ * becomes the starting pantry. Every
  * preference the household was not asked about starts neutral and is learned
  * from what it plans, skips and cooks.
  */
@@ -44,6 +45,7 @@ const STARTER_BUDGET = 1500;
 export function starterProfile(
   memberCount: number,
   diet: DietPreference,
+  mealSlots: MealSlot[],
   locationId: string,
 ): KitchenProfile {
   return {
@@ -54,6 +56,7 @@ export function starterProfile(
     diet,
     cuisines: [],
     cookingDaysPerWeek: WEEK_DAYS.length,
+    mealSlots,
     conveniencePreference: NEUTRAL_PREFERENCE,
     priceSensitivity: NEUTRAL_PREFERENCE,
     explorationPreference: NEUTRAL_PREFERENCE,
@@ -63,69 +66,37 @@ export function starterProfile(
   };
 }
 
-export type QuickPickGroupId = "pantry_basics" | "fresh_basics" | "regularly_bought";
-
-export type QuickPickGroup = {
-  id: QuickPickGroupId;
-  label: string;
-  ingredients: Ingredient[];
-};
-
-export const REGULARLY_BOUGHT_LIMIT = 8;
-
 /**
- * Non-staple ingredients cooked most often, ranked by recipe occurrence with a
- * name tie-break. Derived from the read-only catalog; never authored by hand.
+ * "The usual stuff": the shelf-stable staples and everyday masalas almost
+ * every Indian kitchen already has. Fresh staples (onion, milk) still get
+ * bought, because nobody can assume them.
  */
-export function listRegularlyBought(catalog: Catalog, limit: number): Ingredient[] {
-  const counts = new Map<string, number>();
+export function usualStaples(catalog: Catalog, locationId: string): Ingredient[] {
+  const shelf = listStaples(catalog).filter(
+    (ingredient) => ingredient.storageType === "shelf_stable" && findProduct(catalog, ingredient.id, locationId),
+  );
 
-  for (const recipe of catalog.recipes) {
-    for (const line of recipe.ingredients) {
-      counts.set(line.ingredientId, (counts.get(line.ingredientId) ?? 0) + 1);
-    }
-  }
+  const ids = new Set(shelf.map((ingredient) => ingredient.id));
 
-  const ranked: Ingredient[] = [];
-
-  for (const ingredient of catalog.ingredients) {
-    if (ingredient.staple) continue;
-
-    if (!counts.has(ingredient.id)) continue;
-    ranked.push(ingredient);
-  }
-
-  ranked.sort((a, b) => {
-    const difference = (counts.get(b.id) ?? 0) - (counts.get(a.id) ?? 0);
-
-    return difference !== 0 ? difference : compareStrings(a.name, b.name);
-  });
-
-  return ranked.slice(0, limit);
+  return [...shelf, ...everydayMasalas(catalog, locationId).filter((spice) => !ids.has(spice.id))];
 }
 
-/** Quick common ingredients, grouped for one glance: pantry, fresh, cooked often. */
-export function quickPickGroups(catalog: Catalog): QuickPickGroup[] {
-  const pantryBasics: Ingredient[] = [];
-  const freshBasics: Ingredient[] = [];
+/**
+ * Week 1 asks what is already at home once the meals are chosen. Until the
+ * household has stock or a delivery, the question is still open.
+ */
+export function needsHomeCheck(kitchen: KitchenState): boolean {
+  return kitchen.week === WEEK_MIN && kitchen.pantry.length === 0 && kitchen.groceryFacts.length === 0;
+}
 
-  for (const ingredient of listStaples(catalog)) {
-    if (ingredient.storageType === "perishable") {
-      freshBasics.push(ingredient);
-    } else {
-      pantryBasics.push(ingredient);
-    }
-  }
+/**
+ * The answer becomes the starting pantry, as if it had been there when the
+ * kitchen was created. Only allowed before anything was bought or cooked.
+ */
+export function withStartingPantry(kitchen: KitchenState, pantry: PantryItem[]): KitchenState | null {
+  if (!needsHomeCheck(kitchen) || kitchen.consumptionFacts.length > 0) return null;
 
-  return [
-    { id: "pantry_basics", label: "Pantry basics", ingredients: pantryBasics },
-    { id: "fresh_basics", label: "Fresh basics", ingredients: freshBasics },
-    {
-      id: "regularly_bought",
-      label: "Regularly bought",
-      ingredients: listRegularlyBought(catalog, REGULARLY_BOUGHT_LIMIT),
-    },
-  ];
+  return { ...kitchen, pantry: pantry.map((item) => ({ ...item })) };
 }
 
 export type TypicalPack = {
@@ -150,10 +121,11 @@ export function typicalPack(
 }
 
 /**
- * Quick pick -> pantry facts: one typical pack per unique ingredient, at the
- * starting week. Order follows the picks, so the same input is the same output.
+ * Ingredients at home -> pantry facts: one typical pack per unique ingredient,
+ * at the starting week. Order follows the input, so the same input is the same
+ * output.
  */
-export function pantryItemsFromQuickPicks(
+export function startingPantryItems(
   catalog: Catalog,
   ingredientIds: readonly string[],
   locationId: string,

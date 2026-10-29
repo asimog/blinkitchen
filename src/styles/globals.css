@@ -26,6 +26,7 @@
   --font-hindi: var(--nf-hindi), var(--nf-body), sans-serif;
   --radius: 20px;
   --frame: 480px;
+  --rail: 96px;
   --nav-h: 72px;
 }
 
@@ -88,6 +89,13 @@ a {
   min-height: 100dvh;
   margin: 0 auto;
   box-shadow: 0 0 60px rgba(27, 19, 16, 0.12);
+}
+
+@media (min-width: 960px) {
+  .app-frame {
+    max-width: none;
+    box-shadow: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

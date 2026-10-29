@@ -21,14 +21,16 @@ type KitchenState = {
 ```
 
 `KitchenProfile` carries household facts: display name, member count, location,
-weekly budget, diet, cuisines, cooking days per week, four 0..1 preference fields
+weekly budget, diet, cuisines, cooking days per week, the meal slots it plans
+(`mealSlots`, at least one of breakfast, lunch and dinner), four 0..1 preference fields
 (convenience, price, exploration, planning), kitchen type (`existing` or `fresh`)
 and `starterIngredientIds` (intentions for a fresh kitchen, never stock). Diet is
 `vegetarian` or `non_vegetarian`. Vegetarian keeps recipes and ingredients
 tagged vegetarian or vegan; non-vegetarian allows everything. The catalog has no
 meat recipes yet. Cuisines may be empty: onboarding does not ask, and affinity
 is learned from cooked meals. Onboarding starts every preference at a neutral
-0.5 and plans all seven dinners.
+0.5 and plans all seven days for the chosen meal slots. Stored kitchens without
+`mealSlots` parse as dinner only.
 `PantryItem` is `{ ingredientId, quantity, unit, useSoon, acquiredWeek }`:
 canonical id, non-negative quantity in a canonical unit, an explicit spoilage flag
 and the week it entered the kitchen (staleness evidence).
@@ -43,15 +45,18 @@ type MealFact        = { id; week; recipeId; day: WeekDay; slot: MealSlot };
 
 Fact ids are derived from week, index and content, never from clocks.
 `WeeklyChoices` is the only channel for explicit household decisions: selected
-meals (day, slot, recipe), skipped recipe ids, substitution decisions
-(substitution id, accepted) and whether the week is complete. The original
+meals (day, slot, recipe), skipped recipe ids, skipped days (days the household
+is not cooking; `set_day_skipped` clears their meals, and selecting a meal on a
+skipped day un-skips it), substitution decisions (substitution id, accepted) and
+whether the week is complete. The original
 specification listed `recommendationFeedback` as a separate fact array; it is
 folded in here because all three are week-scoped explicit choices — one channel,
 no duplicate authority. `preferenceFacts` is omitted: stated preferences are
 profile facts, and behavioural evidence is derived from the other facts.
 Week intent: `WEEK_MIN 1`, `WEEK_MAX 8`, 7 days, meal slots
-`breakfast | lunch | dinner`, at most 21 weekly meals, suggested plan size
-`min(7, cookingDaysPerWeek)`.
+`breakfast | lunch | dinner`, at most 21 weekly meals. The suggested plan fills
+the profile's meal slots on the first `cookingDaysPerWeek` days that are not
+skipped (`planningSlots`), each slot only with recipes tagged for it.
 
 ## What must never be persisted
 
@@ -309,8 +314,8 @@ whose absence never breaks a surface.
   household uses, buys and replenishes often, distinct from the catalog `staple`
   hint. `usualIngredientIds` ("ingredients this household normally keeps") is a
   potential stated fact in the profile, deliberately separate from `pantry[]`.
-- **"Low / some / plenty" pantry approximation.** Today quick picks create exact
-  pack quantities; a coarser input would translate to canonical quantities at the
+- **"Low / some / plenty" pantry approximation.** Today the "what's at home"
+  answer creates one exact typical pack per ingredient; a coarser input would translate to canonical quantities at the
   UI boundary, not in the domain.
 - **Ingestion hardening.** The harvest is a curated offline pipeline
   (`tools/catalog-harvest/`); a production ingestion service would add dedup

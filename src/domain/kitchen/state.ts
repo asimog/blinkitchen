@@ -36,6 +36,7 @@ function emptyWeeklyChoices(week: number): WeeklyChoices {
     week,
     selectedMeals: [],
     skippedRecipeIds: [],
+    skippedDays: [],
     substitutionDecisions: [],
     completed: false,
   };

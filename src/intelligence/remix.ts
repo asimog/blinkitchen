@@ -2,7 +2,7 @@ import { compareStrings } from "@/domain/order";
 import type { Catalog, Ingredient, Recipe } from "@/catalog/types";
 import { recipeById } from "@/catalog/grocery-graph";
 import { WEEK_DAYS } from "@/domain/kitchen/types";
-import type { KitchenState, MealSelection, WeekDay } from "@/domain/kitchen/types";
+import type { KitchenState, MealSelection, MealSlot, WeekDay } from "@/domain/kitchen/types";
 import { findIngredientChains } from "@/intelligence/chains";
 import { orderedPlan } from "@/intelligence/pantry-timeline";
 import type { MealRecommendation, WeekIntelligence } from "@/intelligence/types";
@@ -26,15 +26,15 @@ export type RemixStory =
 const CHAIN_MIN_MEALS = 3;
 
 /** Meals this story adds to the week when the household keeps it. */
-export function storySelections(story: RemixStory): MealSelection[] {
+export function storySelections(story: RemixStory, slot: MealSlot): MealSelection[] {
   switch (story.kind) {
     case "chain":
-      return story.meals.map((meal) => ({ day: meal.day, slot: "dinner", recipeId: meal.recipe.id }));
+      return story.meals.map((meal) => ({ day: meal.day, slot, recipeId: meal.recipe.id }));
     case "swap":
-      return [{ day: story.day, slot: "dinner", recipeId: story.to.id }];
+      return [{ day: story.day, slot, recipeId: story.to.id }];
     case "new":
     case "pantry":
-      return [{ day: story.day, slot: "dinner", recipeId: story.recipe.id }];
+      return [{ day: story.day, slot, recipeId: story.recipe.id }];
   }
 }
 

@@ -150,6 +150,7 @@ describe("accepted substitutions change the basket", () => {
             week: 1,
             selectedMeals: [{ day: "monday", slot: "dinner", recipeId: "palak_paneer" }],
             skippedRecipeIds: [],
+            skippedDays: [],
             substitutionDecisions: [{ substitutionId: "paneer_to_tofu", accepted: true }],
             completed: false,
           },
